@@ -16,6 +16,7 @@ import 'package:testtapp/screens/registration_screen.dart';
 
 import 'package:testtapp/widgets/alert_code.dart';
 
+//main//hiiiiiiiiiiiiiiiii
 final _auth = FirebaseAuth.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
