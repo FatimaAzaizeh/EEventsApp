@@ -18,13 +18,13 @@ class AdminScreen extends StatefulWidget {
 class _AdminScreenState extends State<AdminScreen> {
   final _auth = FirebaseAuth.instance;
   late String EmailAdmin;
-// Create a PageController to manage the pages in the PageView
+
+  Widget _currentMainSection =
+      mainSectionAdmin(); // Initially set to mainSectionAdmin
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     getCurrentUser();
   }
 
@@ -44,29 +44,56 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
+  void _changeMainSection(Widget newSection) {
+    setState(() {
+      _currentMainSection = newSection;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color.fromARGB(74, 225, 224, 225),
-      child: Row(
-        children: [
-          Positioned(child: SideMenuAdmin(AdminEmail: EmailAdmin)),
-          // AdminProfile(),
-          mainSectionAdmin(),
-        ],
+    return Scaffold(
+      body: Container(
+        color: Color.fromARGB(74, 225, 224, 225),
+        child: Row(
+          children: [
+            SideMenuAdmin(
+              AdminEmail: EmailAdmin,
+              changeMainSection: _changeMainSection,
+            ),
+            MainSectionContainer(child: _currentMainSection),
+          ],
+        ),
       ),
     );
   }
 }
 
-//The SideMenu
+class MainSectionContainer extends StatelessWidget {
+  final Widget child;
+
+  const MainSectionContainer({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 14,
+      child: Container(
+        child: child,
+      ),
+    );
+  }
+}
+
 class SideMenuAdmin extends StatefulWidget {
   final String AdminEmail;
+  final Function(Widget) changeMainSection;
 
   SideMenuAdmin({
-    super.key,
+    Key? key,
     required this.AdminEmail,
-  });
+    required this.changeMainSection,
+  }) : super(key: key);
 
   @override
   State<SideMenuAdmin> createState() => _SideMenuAdminState();
@@ -80,86 +107,71 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     return Expanded(
       flex: 4,
       child: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Container(
-            height: double.maxFinite,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Color.fromARGB(255, 194, 230, 226),
-                  ),
+        child: Container(
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            //borderRadius: BorderRadius.circular(),
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Color.fromARGB(255, 194, 230, 226),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
-                  child: Text(
-                    '${widget.AdminEmail}',
-                    style: TextStyle(fontSize: 20),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+                child: Text(
+                  '${widget.AdminEmail}',
+                  style: TextStyle(fontSize: 10),
                 ),
-                //add New Admin
-                buildListTile('أضافة مسؤول جديد', Icons.add, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddAdmin()),
-                  );
-                }),
-                // Approve Orders
-                Container(
-                  child: buildListTile(
-                      'تسجيل الخروج',
-                      Icons.logout,
-                      //  logout function
-
-                      () {}),
-                ),
-                // Add Category
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-                //Manage Offers
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-                //Stakeholder Management
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-                //Chat
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-                //Account Management
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-                //FeedBack
-                buildListTile('الأعدادات', Icons.account_circle, () {}),
-              ],
-            ),
+              ),
+              buildListTile(
+                'أضافة مسؤول جديد',
+                Icons.add,
+                () {
+                  widget.changeMainSection(AddAdmin());
+                },
+              ),
+              buildListTile('تسجيل الخروج', Icons.logout, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+              buildListTile('الأعدادات', Icons.account_circle, () {}),
+            ],
           ),
         ),
       ),
     );
   }
 
-//build the side section Button
   Widget buildListTile(String title, IconData icon, Function onPress) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ListTile(
         leading: Icon(
           icon,
-          size: 30,
+          size: 20,
           color: Colors.blue,
         ),
         title: Text(
           title,
           style: TextStyle(
-              fontFamily: 'ElMessiri',
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
+            fontFamily: 'ElMessiri',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         onTap: () {
           setState(() {
-            onPress(); // Navigate to the home page
+            onPress();
           });
         },
       ),

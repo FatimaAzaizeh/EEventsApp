@@ -25,8 +25,8 @@ class _AddAdminState extends State<AddAdmin> {
   @override
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 12,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: ModalProgressHUD(

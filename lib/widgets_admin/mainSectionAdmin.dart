@@ -20,9 +20,8 @@ class mainSectionAdmin extends StatelessWidget {
                 child: Container(
                   width: double.maxFinite,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.white,
-                  ),
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.white),
                 ),
               ),
             ),
