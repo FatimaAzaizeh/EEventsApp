@@ -1,0 +1,2 @@
+//hi
+class Admin {}
