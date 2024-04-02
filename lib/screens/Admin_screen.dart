@@ -107,45 +107,55 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     return Expanded(
       flex: 4,
       child: Drawer(
-        child: Container(
-          height: double.maxFinite,
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            //borderRadius: BorderRadius.circular(),
-            color: Colors.white,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Color.fromARGB(255, 194, 230, 226),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Container(
+            height: double.maxFinite,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceAround, // Distributes space evenly between the children
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Color.fromARGB(255, 194, 230, 226),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
-                child: Text(
-                  '${widget.AdminEmail}',
-                  style: TextStyle(fontSize: 10),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 50),
+                  child: Text(
+                    '${widget.AdminEmail}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
                 ),
-              ),
-              buildListTile(
-                'أضافة مسؤول جديد',
-                Icons.add,
-                () {
-                  widget.changeMainSection(AddAdmin());
-                },
-              ),
-              buildListTile('تسجيل الخروج', Icons.logout, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-              buildListTile('الأعدادات', Icons.account_circle, () {}),
-            ],
+                buildListTile(
+                  'أضافة مسؤول جديد',
+                  Icons.person_add_alt,
+                  () {
+                    widget.changeMainSection(AddAdmin());
+                  },
+                ),
+                buildListTile(' طلبات إنشاء حسابات الشركاء',
+                    Icons.add_business_outlined, () {}),
+                buildListTile(
+                    'تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {}),
+                buildListTile('الخدمات الخاصة بالمناسبات',
+                    Icons.room_service_outlined, () {}),
+                buildListTile('إدارة حسابات الشركاء',
+                    Icons.account_circle_outlined, () {}),
+                buildListTile('إدارة الطلبات', Icons.add_task, () {}),
+                buildListTile('تسجيل الخروج', Icons.logout, () {
+                  _auth.signOut();
+                  Navigator.pop(context);
+                }),
+              ],
+            ),
           ),
         ),
       ),
@@ -154,18 +164,18 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
 
   Widget buildListTile(String title, IconData icon, Function onPress) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10),
       child: ListTile(
         leading: Icon(
           icon,
-          size: 20,
+          size: 30,
           color: Colors.blue,
         ),
         title: Text(
           title,
           style: TextStyle(
             fontFamily: 'ElMessiri',
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
