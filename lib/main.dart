@@ -10,6 +10,7 @@ import 'package:testtapp/responsive.dart';
 import 'package:testtapp/screens/Add_Admin.dart';
 import 'package:testtapp/screens/Admin_screen.dart';
 import 'package:testtapp/screens/AnimatedTextPage.dart';
+import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Sign_in.dart';
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
             ChatScreen.screenRoute: (context) => ChatScreen(),
             RegistrationScreen.screenRoute: (context) => RegistrationScreen(),
             AddAdmin.screenRoute: (context) => AddAdmin(),
+            EventScreen.screenRoute: (context) => EventScreen(),
           },
           home: getHomeWidget(context),
         ));
