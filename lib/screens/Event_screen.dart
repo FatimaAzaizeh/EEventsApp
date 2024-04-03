@@ -21,52 +21,56 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<EventItemDisplay>>(
-      future: eventList,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          return GridView(
-            padding: EdgeInsets.all(10),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 7 / 8,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            children: snapshot.data!
-                .map((eventType) => EventItemDisplay(
-                      title: eventType.title,
-                      imageUrl: eventType.imageUrl,
-                      id: eventType.id,
-                    ))
-                .toList(),
-          );
-        }
-      },
+    return SafeArea(
+      child: Material(
+        child: FutureBuilder<List<EventItemDisplay>>(
+          future: eventList,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              return GridView(
+                padding: EdgeInsets.all(10),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 7 / 8,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                children: snapshot.data!
+                    .map((eventType) => EventItemDisplay(
+                          title: eventType.title,
+                          imageUrl: eventType.imageUrl,
+                          id: eventType.id,
+                        ))
+                    .toList(),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
-}
 
-Future<List<EventItemDisplay>> getEventDataFromFirebase() async {
-  try {
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-        await FirebaseFirestore.instance.collection('EventType').get();
+  Future<List<EventItemDisplay>> getEventDataFromFirebase() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('EventType').get();
 
-    List<EventItemDisplay> eventItems = snapshot.docs.map((doc) {
-      return EventItemDisplay(
-        title: doc.get('Name').toString(),
-        imageUrl: doc.get('imageUrl').toString(),
-        id: doc.id,
-      );
-    }).toList();
+      List<EventItemDisplay> eventItems = snapshot.docs.map((doc) {
+        return EventItemDisplay(
+          title: doc.get('Name').toString(),
+          imageUrl: doc.get('imageUrl').toString(),
+          id: doc.id,
+        );
+      }).toList();
 
-    return eventItems;
-  } catch (error) {
-    print('Error fetching events: $error');
-    throw error;
+      return eventItems;
+    } catch (error) {
+      print('Error fetching events: $error');
+      throw error;
+    }
   }
 }
