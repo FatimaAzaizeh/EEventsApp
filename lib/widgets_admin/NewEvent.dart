@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -58,43 +59,61 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        child: Column(
-          children: [
-            CustomTextField(
-              hintText: 'Enter Event Name:',
-              keyboardType: TextInputType.name,
-              onChanged: (value) {
-                setState(() {
-                  name = value; // Update the Name variable
-                });
-              },
-              obscureText: false,
+    return Row(
+        mainAxisAlignment: MainAxisAlignment
+            .spaceAround, // Distributes space evenly between the children
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              color: Colors.white,
+              width: 500,
+              height: double.maxFinite,
+              child: Column(
+                children: [
+                  CustomTextField(
+                    hintText: 'Enter Event Name:',
+                    keyboardType: TextInputType.name,
+                    onChanged: (value) {
+                      setState(() {
+                        name = value; // Update the Name variable
+                      });
+                    },
+                    obscureText: false,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Call the buildClassificationDropdown method where you want to display the dropdown
+                  buildClassificationDropdown(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CustomTextField(
+                    hintText: 'Enter Related Services:',
+                    keyboardType: TextInputType.name,
+                    onChanged: (value) {
+                      setState(() {
+                        serviceType =
+                            value.split(','); // Update the serviceType list
+                      });
+                    },
+                    obscureText: false,
+                  ),
+                ],
+              ),
             ),
-            SizedBox(
-              height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              color: Colors.white,
+              width: 400,
+              height: double.maxFinite,
+              child: EventScreen(),
             ),
-            // Call the buildClassificationDropdown method where you want to display the dropdown
-            buildClassificationDropdown(),
-            SizedBox(
-              height: 20,
-            ),
-            CustomTextField(
-              hintText: 'Enter Related Services:',
-              keyboardType: TextInputType.name,
-              onChanged: (value) {
-                setState(() {
-                  serviceType = value.split(','); // Update the serviceType list
-                });
-              },
-              obscureText: false,
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ]);
   }
 
   // Method to build the classification dropdown widget

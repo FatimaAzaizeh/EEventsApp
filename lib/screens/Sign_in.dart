@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:testtapp/responsive.dart';
 import 'package:testtapp/screens/Admin_screen.dart';
+import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
 import 'package:testtapp/widgets/alert_code.dart';
@@ -85,7 +86,7 @@ class _SignInState extends State<SignIn> {
                           email: email, password: password);
                       //User
                       if (user != null && !admin) {
-                        //Navigator.pushNamed(context, ChatScreen.screenRoute);
+                        Navigator.pushNamed(context, EventScreen.screenRoute);
                       }
                       //Admin
                       else if (user != null && admin) {

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:testtapp/models/EventType.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 
 class EventScreen extends StatefulWidget {
@@ -59,8 +58,8 @@ Future<List<EventItemDisplay>> getEventDataFromFirebase() async {
 
     List<EventItemDisplay> eventItems = snapshot.docs.map((doc) {
       return EventItemDisplay(
-        title: doc['Name'],
-        imageUrl: doc['imageUrl'],
+        title: doc.get('Name').toString(),
+        imageUrl: doc.get('imageUrl').toString(),
         id: doc.id,
       );
     }).toList();

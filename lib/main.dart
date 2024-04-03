@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:testtapp/firebase_options.dart';
 import 'package:testtapp/responsive.dart';
-import 'package:testtapp/screens/Add_Admin.dart';
+
 import 'package:testtapp/screens/Admin_screen.dart';
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
@@ -16,6 +16,7 @@ import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
 
 import 'package:testtapp/widgets/alert_code.dart';
+import 'package:testtapp/widgets_admin/Add_Admin.dart';
 
 //main//hiiiiiiiiiiiiiiiii
 final _auth = FirebaseAuth.instance;

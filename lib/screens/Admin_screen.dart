@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:testtapp/screens/Add_Admin.dart';
 import 'package:testtapp/screens/Event_screen.dart';
+import 'package:testtapp/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/widgets_admin/NewEvent.dart';
 import 'package:testtapp/widgets_admin/mainSectionAdmin.dart';
 
@@ -147,11 +147,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
                   widget.changeMainSection(AddEvent());
                 }),
-                buildListTile(
-                    'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
-                    () {
-                  widget.changeMainSection(EventScreen());
-                }),
+                buildListTile('الخدمات الخاصة بالمناسبات',
+                    Icons.room_service_outlined, () {}),
                 buildListTile('إدارة حسابات الشركاء',
                     Icons.account_circle_outlined, () {}),
                 buildListTile('إدارة الطلبات', Icons.add_task, () {}),
