@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
       onChanged; // Callback function triggered when the text changes.
   final bool
       obscureText; // Boolean flag to hide the text (e.g., for password input).
-
+  final TextEditingController TextController;
   // Constructor for initializing the properties.
   const CustomTextField({
     Key? key,
@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     required this.keyboardType,
     required this.onChanged,
     required this.obscureText,
+    required this.TextController,
   }) : super(key: key);
 
   // Build method to create the actual widget.
@@ -34,6 +35,7 @@ class CustomTextField extends StatelessWidget {
       textAlign: TextAlign.center,
       // Define the callback function to be called when text changes.
       onChanged: onChanged,
+      controller: TextController,
       // Define the appearance of the text field.
       decoration: InputDecoration(
         // Display hint text when the field is empty.

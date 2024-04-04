@@ -13,7 +13,7 @@ class EventType {
     required this.Name,
     required this.ServiceType,
     required this.Classification,
-    this.imageUrl,
+    required this.imageUrl,
   });
 
 //Method to add this object's data to the Firebase database.
@@ -22,7 +22,7 @@ class EventType {
       'Name': this.Name,
       'ServiceType': this.ServiceType,
       'Classification': this.Classification,
-      'ImageUrl': this.imageUrl,
+      'imageUrl': this.imageUrl,
     });
   }
 }

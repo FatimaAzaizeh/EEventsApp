@@ -2,36 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 
-class EventScreen extends StatefulWidget {
+class EventScreen extends StatelessWidget {
   static const String screenRoute = 'Event_screen';
-  const EventScreen({Key? key}) : super(key: key);
-
-  @override
-  State<EventScreen> createState() => _EventScreenState();
-}
-
-class _EventScreenState extends State<EventScreen> {
-  late Future<List<EventItemDisplay>> eventList;
-
-  @override
-  void initState() {
-    super.initState();
-    eventList = getEventDataFromFirebase();
-  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Material(
-        child: FutureBuilder<List<EventItemDisplay>>(
-          future: eventList,
+        child: StreamBuilder<QuerySnapshot>(
+          stream:
+              FirebaseFirestore.instance.collection('EventType').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-              return GridView(
+              final eventDocs = snapshot.data!.docs;
+              return GridView.builder(
                 padding: EdgeInsets.all(10),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
@@ -39,38 +27,20 @@ class _EventScreenState extends State<EventScreen> {
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
-                children: snapshot.data!
-                    .map((eventType) => EventItemDisplay(
-                          title: eventType.title,
-                          imageUrl: eventType.imageUrl,
-                          id: eventType.id,
-                        ))
-                    .toList(),
+                itemCount: eventDocs.length,
+                itemBuilder: (context, index) {
+                  final doc = eventDocs[index];
+                  return EventItemDisplay(
+                    title: doc['Name'].toString(),
+                    imageUrl: doc['imageUrl'].toString(),
+                    id: doc.id,
+                  );
+                },
               );
             }
           },
         ),
       ),
     );
-  }
-
-  Future<List<EventItemDisplay>> getEventDataFromFirebase() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection('EventType').get();
-
-      List<EventItemDisplay> eventItems = snapshot.docs.map((doc) {
-        return EventItemDisplay(
-          title: doc.get('Name').toString(),
-          imageUrl: doc.get('imageUrl').toString(),
-          id: doc.id,
-        );
-      }).toList();
-
-      return eventItems;
-    } catch (error) {
-      print('Error fetching events: $error');
-      throw error;
-    }
   }
 }

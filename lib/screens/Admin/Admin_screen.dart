@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:testtapp/screens/Event_screen.dart';
-import 'package:testtapp/widgets_admin/Add_Admin.dart';
-import 'package:testtapp/widgets_admin/NewEvent.dart';
-import 'package:testtapp/widgets_admin/mainSectionAdmin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
 
 late User signedInUser;
 

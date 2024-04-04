@@ -17,6 +17,8 @@ class AddAdmin extends StatefulWidget {
 }
 
 class _AddAdminState extends State<AddAdmin> {
+  final ControllerEmail = TextEditingController();
+  final ControllerPassword = TextEditingController();
   final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
@@ -44,6 +46,7 @@ class _AddAdminState extends State<AddAdmin> {
                     email = value;
                   },
                   obscureText: false,
+                  TextController: ControllerEmail,
                 ),
                 SizedBox(height: 8),
                 CustomTextField(
@@ -53,6 +56,7 @@ class _AddAdminState extends State<AddAdmin> {
                     password = value;
                   },
                   obscureText: true,
+                  TextController: ControllerPassword,
                 ),
                 SizedBox(height: 10),
                 ButtonDesign(

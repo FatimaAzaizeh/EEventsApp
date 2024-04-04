@@ -16,6 +16,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final Controller = TextEditingController();
   final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
@@ -46,6 +47,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   email = value;
                 },
                 obscureText: false,
+                TextController: Controller,
               ),
               SizedBox(height: 8),
               CustomTextField(
@@ -55,6 +57,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   password = value;
                 },
                 obscureText: true,
+                TextController: Controller,
               ),
               SizedBox(height: 10),
               ButtonDesign(

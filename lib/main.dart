@@ -7,18 +7,16 @@ import 'package:provider/provider.dart';
 
 import 'package:testtapp/firebase_options.dart';
 import 'package:testtapp/responsive.dart';
+import 'package:testtapp/screens/Admin/Admin_screen.dart';
 
-import 'package:testtapp/screens/Admin_screen.dart';
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Sign_in.dart';
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
 
-import 'package:testtapp/widgets/alert_code.dart';
-import 'package:testtapp/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 
-//main//hiiiiiiiiiiiiiiiii
 final _auth = FirebaseAuth.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +59,6 @@ class MyApp extends StatelessWidget {
             AnimatedTextPage.screenRoute: (context) => AnimatedTextPage(),
             SignIn.screenRoute: (context) => SignIn(),
             AdminScreen.screenRoute: (context) => AdminScreen(),
-            AlertCode.screenRoute: (context) => AlertCode(),
             ChatScreen.screenRoute: (context) => ChatScreen(),
             RegistrationScreen.screenRoute: (context) => RegistrationScreen(),
             AddAdmin.screenRoute: (context) => AddAdmin(),
