@@ -116,6 +116,12 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(30),
               color: Colors.white,
+              image: DecorationImage(
+                image: AssetImage(
+                  'assets/images/image.png',
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment
@@ -124,9 +130,16 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
                   child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Color.fromARGB(255, 194, 230, 226),
-                  ),
+                      radius: 60,
+                      backgroundColor: Colors.white,
+                      child: SizedBox(
+                        height: 120, // Adjust the height as needed
+                        width: 120, // Adjust the width as needed
+                        child: Image.asset(
+                          'assets/images/bunnyy.png',
+                          fit: BoxFit.cover, // You can change the fit as needed
+                        ),
+                      )),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 50),
@@ -165,28 +178,26 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
   }
 
   Widget buildListTile(String title, IconData icon, Function onPress) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          size: 30,
-          color: Colors.blue,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontFamily: 'ElMessiri',
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            onPress();
-          });
-        },
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 30,
+        color: Colors.blue,
       ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'ElMessiri',
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          onPress();
+          Colors.amberAccent;
+        });
+      },
     );
   }
 }
