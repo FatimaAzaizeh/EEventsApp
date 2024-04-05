@@ -171,22 +171,6 @@ class _AddEventState extends State<AddEvent> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        TextButton(
-                            onPressed: isButtonEnabled
-                                ? () {
-                                    EditEvent(id);
-                                    isButtonEnabled = false;
-                                  }
-                                : null,
-                            child: Icon(Icons.edit)),
-                        TextButton(
-                            onPressed: isButtonEnabled
-                                ? () {
-                                    DelEvent(id);
-                                    isButtonEnabled = false;
-                                  }
-                                : null,
-                            child: Icon(Icons.delete)),
                         Text('المناسبات',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -195,6 +179,34 @@ class _AddEventState extends State<AddEvent> {
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 60, 19, 60))),
+                        SizedBox(
+                          width: 220,
+                        ),
+                        TextButton(
+                          onPressed: isButtonEnabled
+                              ? () {
+                                  EditEvent(id);
+                                  isButtonEnabled = false;
+                                }
+                              : null,
+                          child: Icon(Icons.edit),
+                        ),
+                        TextButton(
+                            onPressed: isButtonEnabled
+                                ? () {
+                                    DelEvent(id);
+                                    isButtonEnabled = false;
+                                  }
+                                : null,
+                            child: Icon(Icons.delete)),
+                        TextButton(
+                            onPressed: () {
+                              ControllerName.clear();
+                              ControllerSer.clear();
+                              ControllerImage.clear();
+                              isButtonEnabled = false;
+                            },
+                            child: Icon(Icons.clear)),
                       ],
                     ),
                   ),
@@ -333,9 +345,6 @@ class _AddEventState extends State<AddEvent> {
                       setState(() {
                         getDataById(doc.id);
                       });
-                    },
-                    onLongPress: () {
-                      DelEvent(doc.id);
                     },
                     child: EventItemDisplay(
                       title: doc['Name'].toString(),
