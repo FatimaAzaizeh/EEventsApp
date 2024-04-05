@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/models/EventType.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 import 'package:testtapp/widgets/button_design.dart';
@@ -149,22 +150,46 @@ class _AddEventState extends State<AddEvent> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
+                borderRadius: BorderRadius.circular(30),
+                color: Color.fromARGB(221, 255, 255, 255)),
             width: 500,
             height: double.maxFinite,
             child: Column(
               children: [
-                CustomTextField(
-                  hintText: 'أسم المناسبة:',
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    name = value; // Update the Name variable
-                  },
-                  obscureText: false,
-                  TextController: ControllerName,
+                Container(
+                  width: double.maxFinite,
+                  height: 70,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('المناسبات',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 28,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
                 ),
+
+                SizedBox(
+                  height: 70,
+                ),
+                TextFieldDesign(
+                    Text: 'أسم المناسبة:',
+                    icon: Icons.title,
+                    ControllerTextField: ControllerName,
+                    onChanged: (value) {
+                      name = value; // Update the Name variable
+                      // Update the serviceType list
+                    },
+                    obscureTextField: false),
+
                 SizedBox(
                   height: 20,
                 ),
@@ -196,25 +221,23 @@ class _AddEventState extends State<AddEvent> {
                 SizedBox(
                   height: 20,
                 ),
-                CustomTextField(
-                  hintText: 'الخدمات المتعلقة بالمناسبة:',
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    serviceType =
-                        value.split(','); // Update the serviceType list
-                  },
-                  obscureText: false,
-                  TextController: ControllerSer,
-                ),
-                CustomTextField(
-                  hintText: 'إضافة صورة',
-                  keyboardType: TextInputType.url,
-                  onChanged: (value) {
-                    ImageUrl = value;
-                  },
-                  obscureText: false,
-                  TextController: ControllerImage,
-                ),
+                TextFieldDesign(
+                    Text: 'الخدمات المتعلقة بالمناسبة:',
+                    icon: Icons.room_service,
+                    ControllerTextField: ControllerSer,
+                    onChanged: (value) {
+                      serviceType =
+                          value.split(','); // Update the serviceType list
+                    },
+                    obscureTextField: false),
+                TextFieldDesign(
+                    Text: 'إضافة صورة:',
+                    icon: Icons.image,
+                    ControllerTextField: ControllerImage,
+                    onChanged: (value) {
+                      ImageUrl = value;
+                    },
+                    obscureTextField: false),
                 showEditButton
                     ? ButtonDesign(
                         onPressed: () {
