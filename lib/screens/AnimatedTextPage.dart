@@ -11,14 +11,26 @@ class AnimatedTextPage extends StatefulWidget {
 class _AnimatedTextPageState extends State<AnimatedTextPage> {
   String textToShow = '';
 
+  // Reusable DecorationImage instance for the background
+  final DecorationImage backgroundDecorationImage = const DecorationImage(
+    image: AssetImage('assets/images/123.png'),
+    fit: BoxFit.cover,
+  );
+
+  // Reusable DecorationImage instance for the logo
+  final DecorationImage logoDecorationImage = const DecorationImage(
+    image: AssetImage('assets/images/logo.png'),
+  );
+
   @override
   void initState() {
     super.initState();
     startTextAnimation();
   }
 
+  // Function to animate the text
   void startTextAnimation() {
-    const text = 'Eevents';
+    const text = 'Eeventş';
     const duration = Duration(milliseconds: 400); // Adjust duration as needed
     int index = 0;
 
@@ -38,36 +50,40 @@ class _AnimatedTextPageState extends State<AnimatedTextPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-              image: AssetImage(
-                'assets/images/backAnim3.png',
+      backgroundColor: Colors.black,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          image:
+              backgroundDecorationImage, // Background image using the reusable DecorationImage
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo using the reusable DecorationImage, with increased size
+            Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                image: logoDecorationImage,
               ),
-              fit: BoxFit.cover,
             ),
-          ),
-          child: Center(
-            child: Text(
+            SizedBox(height: 20), // Space between logo and text
+            Text(
               textToShow,
               style: TextStyle(
-                  fontSize: 90,
-                  fontFamily: 'DancingScript',
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  shadows: [
-                    /* Shadow(
-                      color: Colors.white,
-                      offset: Offset(3, 3),
-                      blurRadius: 2,
-                    ),*/
-                  ]),
+                fontSize: 90,
+                fontFamily: 'DancingScript',
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                shadows: [],
+              ),
             ),
-          ),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
