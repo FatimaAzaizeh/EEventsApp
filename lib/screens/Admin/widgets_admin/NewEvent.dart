@@ -253,7 +253,10 @@ class _AddEventState extends State<AddEvent> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+            ),
             width: 400,
             height: double.maxFinite,
             child: EventScreen(),

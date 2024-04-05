@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
@@ -55,7 +56,17 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(74, 225, 224, 225),
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/images/image2.png',
+            ),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Row(
           children: [
             SideMenuAdmin(
@@ -106,72 +117,50 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 4,
+      flex: 3,
       child: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Container(
-            height: double.maxFinite,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/image.png',
-                ),
-                fit: BoxFit.cover,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment
+              .spaceAround, // Distributes space evenly between the children
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage('assets/images/bunnyy.png'),
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceAround, // Distributes space evenly between the children
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
-                  child: CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.white,
-                      child: SizedBox(
-                        height: 120, // Adjust the height as needed
-                        width: 120, // Adjust the width as needed
-                        child: Image.asset(
-                          'assets/images/bunnyy.png',
-                          fit: BoxFit.cover, // You can change the fit as needed
-                        ),
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 50),
-                  child: Text(
-                    '${widget.AdminEmail}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                buildListTile(
-                  'أضافة مسؤول جديد',
-                  Icons.person_add_alt,
-                  () {
-                    widget.changeMainSection(AddAdmin());
-                  },
-                ),
-                buildListTile(' طلبات إنشاء حسابات الشركاء',
-                    Icons.add_business_outlined, () {}),
-                buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
-                  widget.changeMainSection(AddEvent());
-                }),
-                buildListTile('الخدمات الخاصة بالمناسبات',
-                    Icons.room_service_outlined, () {}),
-                buildListTile('إدارة حسابات الشركاء',
-                    Icons.account_circle_outlined, () {}),
-                buildListTile('إدارة الطلبات', Icons.add_task, () {}),
-                buildListTile('تسجيل الخروج', Icons.logout, () {
-                  _auth.signOut();
-                  Navigator.pop(context);
-                }),
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 50),
+              child: Text(
+                '${widget.AdminEmail}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
+            buildListTile(
+              'أضافة مسؤول جديد',
+              Icons.person_add_alt,
+              () {
+                widget.changeMainSection(AddAdmin());
+              },
+            ),
+            buildListTile(' طلبات إنشاء حسابات الشركاء',
+                Icons.add_business_outlined, () {}),
+            buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
+              widget.changeMainSection(AddEvent());
+            }),
+            buildListTile('الخدمات الخاصة بالمناسبات',
+                Icons.room_service_outlined, () {}),
+            buildListTile(
+                'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {}),
+            buildListTile('إدارة الطلبات', Icons.add_task, () {}),
+            buildListTile('تسجيل الخروج', Icons.logout, () {
+              _auth.signOut();
+              Navigator.pop(context);
+            }),
+          ],
         ),
       ),
     );
@@ -182,22 +171,23 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       leading: Icon(
         icon,
         size: 30,
-        color: Colors.blue,
+        color: Color.fromARGB(255, 14, 1, 1),
       ),
       title: Text(
         title,
         style: TextStyle(
-          fontFamily: 'ElMessiri',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
+            fontFamily: 'ElMessiri',
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(222, 21, 21, 21)),
       ),
       onTap: () {
         setState(() {
           onPress();
-          Colors.amberAccent;
         });
       },
+      hoverColor: Color.fromARGB(126, 222, 58, 165),
     );
   }
 }
+//tooltip: 'إنشاء حساب مسؤول جديد', import.

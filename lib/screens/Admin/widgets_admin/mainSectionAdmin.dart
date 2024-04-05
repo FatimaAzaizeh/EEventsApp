@@ -8,7 +8,7 @@ class mainSectionAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 12,
+      flex: 13,
       child: Container(
         height: double.maxFinite,
         child: Column(
