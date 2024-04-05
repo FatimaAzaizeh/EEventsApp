@@ -34,6 +34,8 @@ class _AddEventState extends State<AddEvent> {
   late String dropdownValue;
   List<String> classificationList = []; // Initialize classification list
   late String id;
+  bool isButtonEnabled = false;
+
   // Method to fetch classifications from Firestore
   void fetchClassificationsFromFirestore() async {
     try {
@@ -78,6 +80,7 @@ class _AddEventState extends State<AddEvent> {
         //  dropdownValue = snapshot.get('Classification');
         showEditButton = true;
         id = documentId;
+        isButtonEnabled = true;
       });
     } else {
       // Document with the provided ID does not exist
@@ -166,20 +169,37 @@ class _AddEventState extends State<AddEvent> {
                           topRight: Radius.circular(30))),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('المناسبات',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                        )),
+                    child: Row(
+                      children: [
+                        TextButton(
+                            onPressed: isButtonEnabled
+                                ? () {
+                                    EditEvent(id);
+                                    isButtonEnabled = false;
+                                  }
+                                : null,
+                            child: Icon(Icons.edit)),
+                        TextButton(
+                            onPressed: isButtonEnabled
+                                ? () {
+                                    DelEvent(id);
+                                    isButtonEnabled = false;
+                                  }
+                                : null,
+                            child: Icon(Icons.delete)),
+                        Text('المناسبات',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 28,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 60, 19, 60))),
+                      ],
+                    ),
                   ),
                 ),
 
-                SizedBox(
-                  height: 70,
-                ),
                 TextFieldDesign(
                     Text: 'أسم المناسبة:',
                     icon: Icons.title,
@@ -190,9 +210,6 @@ class _AddEventState extends State<AddEvent> {
                     },
                     obscureTextField: false),
 
-                SizedBox(
-                  height: 20,
-                ),
                 // Call the buildClassificationDropdown method where you want to display the dropdown
                 DropdownButton<String>(
                   value: classificationList.isNotEmpty ? dropdownValue : null,
@@ -218,9 +235,7 @@ class _AddEventState extends State<AddEvent> {
                     );
                   }).toList(),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+
                 TextFieldDesign(
                     Text: 'الخدمات المتعلقة بالمناسبة:',
                     icon: Icons.room_service,
@@ -238,37 +253,37 @@ class _AddEventState extends State<AddEvent> {
                       ImageUrl = value;
                     },
                     obscureTextField: false),
-                showEditButton
-                    ? ButtonDesign(
-                        onPressed: () {
-                          // Handle button press
-                          EditEvent(id);
-                        },
-                        color: Colors.blue,
-                        title: 'تعديل',
-                      )
-                    : ButtonDesign(
-                        color: Colors.blue,
-                        title: 'إضافة حدث',
-                        onPressed: () {
-                          setState(() {
-                            EventType newEvent = EventType(
-                                Name: name,
-                                ServiceType: serviceType,
-                                Classification: classification,
-                                imageUrl: ImageUrl);
-                            newEvent.addToFirestore();
 
-                            ControllerName.clear();
-                            ControllerSer.clear();
-                            ControllerImage.clear();
-                            QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.success,
-                            ); // That's it to display an alert, use other properties to customize.
-                          });
-                        },
-                      ),
+                Container(
+                    width: double.maxFinite,
+                    margin: EdgeInsets.only(bottom: 90),
+                    child: FloatingActionButton(
+                      backgroundColor: Color.fromARGB(135, 230, 72, 203),
+                      child: Text('إضافة مناسبة',
+                          style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 18,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.white)),
+                      onPressed: () {
+                        setState(() {
+                          EventType newEvent = EventType(
+                              Name: name,
+                              ServiceType: serviceType,
+                              Classification: classification,
+                              imageUrl: ImageUrl);
+                          newEvent.addToFirestore();
+
+                          ControllerName.clear();
+                          ControllerSer.clear();
+                          ControllerImage.clear();
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                          );
+                        });
+                      },
+                    )),
               ],
             ),
           ),
