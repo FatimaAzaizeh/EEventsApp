@@ -56,8 +56,13 @@ class _AnimatedTextPageState extends State<AnimatedTextPage> {
         height: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
-          image:
-              backgroundDecorationImage, // Background image using the reusable DecorationImage
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/images/back1.jpg',
+            ),
+            fit: BoxFit.cover,
+          ),
+          //backgroundDecorationImage, // Background image using the reusable DecorationImage
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

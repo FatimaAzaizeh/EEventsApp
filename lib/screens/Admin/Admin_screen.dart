@@ -155,7 +155,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 Icons.room_service_outlined, () {}),
             buildListTile(
                 'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {}),
-            buildListTile('إدارة الطلبات', Icons.add_task, () {}),
+            buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {}),
             buildListTile('تسجيل الخروج', Icons.logout, () {
               _auth.signOut();
               Navigator.pop(context);
