@@ -60,13 +60,7 @@ class _AdminScreenState extends State<AdminScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          color: Colors.white,
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/images/image9.png',
-            ),
-            fit: BoxFit.cover,
-          ),
+          color: Color.fromARGB(63, 209, 208, 208),
         ),
         child: Row(
           children: [
