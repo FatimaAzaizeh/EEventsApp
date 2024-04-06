@@ -63,7 +63,7 @@ class _AdminScreenState extends State<AdminScreen> {
           color: Colors.white,
           image: DecorationImage(
             image: AssetImage(
-              'assets/images/image2.png',
+              'assets/images/image9.png',
             ),
             fit: BoxFit.cover,
           ),
