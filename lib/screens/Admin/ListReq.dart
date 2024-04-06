@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:testtapp/screens/Admin/widgets_admin/imagescroll.dart';
 import 'package:toggle_list/toggle_list.dart';
 
 const Color appColor = Color.fromARGB(179, 205, 220, 236);
 
 class ListReq extends StatelessWidget {
   static const String screenRoute = 'ListReq';
+  List<String> imageUrls = [
+    'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg', // Add more image URLs as needed
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +115,32 @@ class ListReq extends StatelessWidget {
               color: Colors.white,
               height: 2,
               thickness: 2,
+            ),
+            Container(
+              height: 200,
+              child: ListView.builder(
+                shrinkWrap: true,
+                controller: TrackingScrollController(),
+                scrollDirection: Axis.horizontal, // Scroll horizontally
+                itemCount: imageUrls.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.network(
+                      imageUrls[index],
+                      //width: 300, // Set the width of each image
+                      //fit: BoxFit.cover, // Adjust the image size
+                    ),
+                  );
+                },
+              ),
+            ),
+            Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ImageScroll(),
+              ),
             ),
             ButtonBar(
               alignment: MainAxisAlignment.spaceAround,
