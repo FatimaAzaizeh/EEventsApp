@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:testtapp/screens/Admin/widgets_admin/imagescroll.dart';
 import 'package:toggle_list/toggle_list.dart';
 
 const Color appColor = Color.fromARGB(179, 205, 220, 236);
@@ -119,7 +118,6 @@ class ListReq extends StatelessWidget {
             Container(
               height: 200,
               child: ListView.builder(
-                shrinkWrap: true,
                 controller: TrackingScrollController(),
                 scrollDirection: Axis.horizontal, // Scroll horizontally
                 itemCount: imageUrls.length,
@@ -133,13 +131,6 @@ class ListReq extends StatelessWidget {
                     ),
                   );
                 },
-              ),
-            ),
-            Container(
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ImageScroll(),
               ),
             ),
             ButtonBar(
