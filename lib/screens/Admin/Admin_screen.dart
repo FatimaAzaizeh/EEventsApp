@@ -149,34 +149,39 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
             ),
             buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
               widget.changeMainSection(AddAdmin());
-            }, 0),
+            }, 0, 1),
             buildListTile(
                 'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined, () {
               widget.changeMainSection(ListReq());
-            }, notificationCount),
+            }, notificationCount, 2),
             buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
               widget.changeMainSection(AddEvent());
-            }, 0),
+            }, 0, 3),
             buildListTile('الخدمات الخاصة بالمناسبات',
-                Icons.room_service_outlined, () {}, 0),
+                Icons.room_service_outlined, () {}, 0, 4),
             buildListTile('إدارة حسابات الشركاء', Icons.account_circle_outlined,
-                () {}, 0),
-            buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0),
+                () {}, 0, 5),
+            buildListTile(
+                'إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0, 6),
             buildListTile('تسجيل الخروج', Icons.logout, () {
               _auth.signOut();
               Navigator.pop(context);
-            }, 0),
+            }, 0, 7),
           ],
         ),
       ),
     );
   }
 
+  int _selectedIndex =
+      -1; // Track the selected index, -1 means none is selected
+
   Widget buildListTile(
     String title,
     IconData icon,
-    Function onPress,
+    Function() onPress,
     int? notificationCount,
+    int index, // Pass the index of the ListTile
   ) {
     return ListTile(
       leading: Icon(
@@ -187,18 +192,22 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       title: Text(
         title,
         style: TextStyle(
-            fontFamily: 'ElMessiri',
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(222, 21, 21, 21)),
+          fontFamily: 'ElMessiri',
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(222, 21, 21, 21),
+        ),
       ),
-      trailing: _buildNotificationBadge(notificationCount!),
+      trailing: _buildNotificationBadge(notificationCount ?? 0),
       onTap: () {
         setState(() {
-          onPress();
+          _selectedIndex = index; // Update the selected index
         });
+        onPress(); // Call the onPress callback
       },
+      selected: _selectedIndex == index, // Check if this index is selected
       hoverColor: Color.fromARGB(126, 222, 58, 165),
+      selectedTileColor: Color.fromARGB(207, 222, 58, 165),
     );
   }
 
