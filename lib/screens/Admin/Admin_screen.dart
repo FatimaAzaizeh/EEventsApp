@@ -96,7 +96,7 @@ class MainSectionContainer extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: Color.fromARGB(221, 255, 255, 255)),
+              color: Color.fromARGB(0, 255, 255, 255)),
           child: child,
         ),
       ),
@@ -137,7 +137,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               child: CircleAvatar(
                 radius: 60,
                 backgroundColor: Colors.white,
-                backgroundImage: AssetImage('assets/images/bunnyy.png'),
+                // backgroundImage: AssetImage('assets/images/bunnyy.png'),
               ),
             ),
             Padding(
