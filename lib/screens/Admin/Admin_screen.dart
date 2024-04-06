@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
@@ -90,8 +91,14 @@ class MainSectionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 14,
-      child: Container(
-        child: child,
+      child: Padding(
+        padding: const EdgeInsets.all(60.0),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Color.fromARGB(221, 255, 255, 255)),
+          child: child,
+        ),
       ),
     );
   }
@@ -113,6 +120,7 @@ class SideMenuAdmin extends StatefulWidget {
 
 class _SideMenuAdminState extends State<SideMenuAdmin> {
   final _auth = FirebaseAuth.instance;
+  int notificationCount = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -139,34 +147,37 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             ),
+            buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
+              widget.changeMainSection(AddAdmin());
+            }, 0),
             buildListTile(
-              'أضافة مسؤول جديد',
-              Icons.person_add_alt,
-              () {
-                widget.changeMainSection(AddAdmin());
-              },
-            ),
-            buildListTile(' طلبات إنشاء حسابات الشركاء',
-                Icons.add_business_outlined, () {}),
+                'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined, () {
+              widget.changeMainSection(ListReq());
+            }, notificationCount),
             buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
               widget.changeMainSection(AddEvent());
-            }),
+            }, 0),
             buildListTile('الخدمات الخاصة بالمناسبات',
-                Icons.room_service_outlined, () {}),
-            buildListTile(
-                'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {}),
-            buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {}),
+                Icons.room_service_outlined, () {}, 0),
+            buildListTile('إدارة حسابات الشركاء', Icons.account_circle_outlined,
+                () {}, 0),
+            buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0),
             buildListTile('تسجيل الخروج', Icons.logout, () {
               _auth.signOut();
               Navigator.pop(context);
-            }),
+            }, 0),
           ],
         ),
       ),
     );
   }
 
-  Widget buildListTile(String title, IconData icon, Function onPress) {
+  Widget buildListTile(
+    String title,
+    IconData icon,
+    Function onPress,
+    int? notificationCount,
+  ) {
     return ListTile(
       leading: Icon(
         icon,
@@ -181,6 +192,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(222, 21, 21, 21)),
       ),
+      trailing: _buildNotificationBadge(notificationCount!),
       onTap: () {
         setState(() {
           onPress();
@@ -189,5 +201,28 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       hoverColor: Color.fromARGB(126, 222, 58, 165),
     );
   }
-}
+
 //tooltip: 'إنشاء حساب مسؤول جديد', import.
+  Widget _buildNotificationBadge(int count) {
+    if (count > 0) {
+      return Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Color.fromARGB(176, 0, 0, 0),
+        ),
+        child: Text(
+          count.toString() + '+',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      return SizedBox
+          .shrink(); // Return an empty SizedBox if count is 0 or less
+    }
+  }
+}

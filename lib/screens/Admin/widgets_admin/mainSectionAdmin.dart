@@ -10,7 +10,7 @@ class mainSectionAdmin extends StatelessWidget {
     return Expanded(
       flex: 13,
       child: Container(
-        height: double.maxFinite,
+          /* height: double.maxFinite,
         child: Column(
           children: [
             Expanded(
@@ -85,8 +85,8 @@ class mainSectionAdmin extends StatelessWidget {
               ),
             )
           ],
-        ),
-      ),
+        ),*/
+          ),
     );
   }
 }

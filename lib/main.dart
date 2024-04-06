@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:testtapp/firebase_options.dart';
 import 'package:testtapp/responsive.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
+import 'package:testtapp/screens/Admin/ListReq.dart';
 
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
             RegistrationScreen.screenRoute: (context) => RegistrationScreen(),
             AddAdmin.screenRoute: (context) => AddAdmin(),
             EventScreen.screenRoute: (context) => EventScreen(),
+            ListReq.screenRoute: (context) => ListReq(),
           },
           home: getHomeWidget(context),
         ));
