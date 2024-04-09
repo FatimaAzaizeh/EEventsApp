@@ -9,6 +9,7 @@ import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
+import 'package:testtapp/screens/MyStepperPage.dart';
 
 late User signedInUser;
 
@@ -207,8 +208,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                     'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {
                   widget.changeMainSection(VendorList());
                 }, 0, 5),
-                buildListTile(
-                    'إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0, 6),
+                buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {
+                  widget.changeMainSection(MyStepperPage());
+                }, 0, 6),
                 buildListTile('تسجيل الخروج', Icons.logout, () {
                   _auth.signOut();
                   Navigator.pop(context);
