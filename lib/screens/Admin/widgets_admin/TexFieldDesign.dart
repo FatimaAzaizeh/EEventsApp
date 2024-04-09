@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testtapp/constants.dart';
 
 class TextFieldDesign extends StatelessWidget {
   final String Text;
@@ -32,14 +33,14 @@ class TextFieldDesign extends StatelessWidget {
             // Define padding for the content inside the text field.
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Color.fromARGB(46, 168, 166, 166),
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(30),
             ),
             icon: Icon(
               icon,
-              color: Color.fromARGB(255, 10, 1, 4),
+              color: Colors.black,
             ),
           ),
           controller: ControllerTextField,

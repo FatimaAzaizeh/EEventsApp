@@ -1,9 +1,14 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/constants.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/DesignFun.dart';
 
 import 'package:toggle_list/toggle_list.dart';
 
-const Color appColor = Color.fromARGB(179, 205, 220, 236);
+const Color appColor = Colors.white;
+const Color iconColor = Colors.black;
 
 class ListReq extends StatelessWidget {
   static const String screenRoute = 'ListReq';
@@ -17,22 +22,9 @@ class ListReq extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(0, 252, 252, 252),
-      appBar: AppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-          ),
-        ),
-        title: Text(
-          'طلبات إنشاء حساب الشركاء',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      ),
-      body: StreamBuilderList(),
+    return FunDesign(
+      titleAppBar: 'طلبات إنشاء حساب الشركاء',
+      child: StreamBuilderList(),
     );
   }
 
@@ -51,20 +43,26 @@ class ListReq extends StatelessWidget {
 
         List<DocumentSnapshot> documents = snapshot.data!.docs;
 
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ToggleList(
-            divider: const SizedBox(height: 10),
-            toggleAnimationDuration: const Duration(milliseconds: 400),
-            scrollPosition: AutoScrollPosition.begin,
-            trailing: const Padding(
-              padding: EdgeInsets.all(10),
-              child: Icon(Icons.expand_more),
+        return Container(
+          color: Color.fromARGB(0, 255, 255, 255),
+          height: double.maxFinite,
+          child: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Center(
+              child: ToggleList(
+                divider: const SizedBox(height: 10),
+                toggleAnimationDuration: const Duration(milliseconds: 400),
+                scrollPosition: AutoScrollPosition.begin,
+                trailing: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Icon(Icons.expand_more),
+                ),
+                children: documents.map((doc) {
+                  var data = doc.data() as Map<String, dynamic>;
+                  return buildToggleListItem(data);
+                }).toList(),
+              ),
             ),
-            children: documents.map((doc) {
-              var data = doc.data() as Map<String, dynamic>;
-              return buildToggleListItem(data);
-            }).toList(),
           ),
         );
       },
@@ -75,13 +73,16 @@ class ListReq extends StatelessWidget {
     return ToggleListItem(
       leading: const Padding(
         padding: EdgeInsets.all(10),
-        child: Icon(Icons.account_circle),
+        child: Icon(
+          Icons.account_circle,
+          color: Color.fromARGB(169, 14, 13, 13),
+        ),
       ),
       title: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
           data['companyOwnerName'],
-          style: TextStyle(fontSize: 18),
+          style: StyleTextAdmin(18, Colors.black),
         ),
       ),
       divider: const Divider(
@@ -95,19 +96,19 @@ class ListReq extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius:
               const BorderRadius.vertical(bottom: Radius.circular(20)),
-          color: appColor.withOpacity(0.15),
+          color: appColor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               data['accountName'],
-              style: TextStyle(fontSize: 14),
+              style: StyleTextAdmin(14, Colors.black),
             ),
             const SizedBox(height: 8),
             Text(
               data['information'],
-              style: TextStyle(fontSize: 14),
+              style: StyleTextAdmin(14, Colors.black),
             ),
             const SizedBox(height: 8),
             const Divider(
@@ -115,19 +116,19 @@ class ListReq extends StatelessWidget {
               height: 2,
               thickness: 2,
             ),
+            //"Scrolling image display."
             Container(
               height: 200,
               child: ListView.builder(
                 controller: TrackingScrollController(),
                 scrollDirection: Axis.horizontal, // Scroll horizontally
                 itemCount: imageUrls.length,
+
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image.network(
                       imageUrls[index],
-                      //width: 300, // Set the width of each image
-                      //fit: BoxFit.cover, // Adjust the image size
                     ),
                   );
                 },
@@ -138,34 +139,42 @@ class ListReq extends StatelessWidget {
               buttonHeight: 32.0,
               buttonMinWidth: 90.0,
               children: [
-                TextButton(
-                  onPressed: () {
-                    // Implement accept logic
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
-                      Text('قبول'),
-                    ],
+                Tooltip(
+                  waitDuration: Duration(milliseconds: 600),
+                  message: 'قبول إنشاء الحساب ', // Tooltip message
+                  child: TextButton(
+                    onPressed: () {
+                      // Implement accept logic
+                    },
+                    child: const Column(
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: iconColor,
+                        ), // Icon to display
+                        Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
+                        Text('موافقة'),
+                      ],
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    // Implement reject logic
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(
-                        Icons.cancel_sharp,
-                        color: Color.fromARGB(255, 250, 92, 81),
-                      ),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
-                      Text('رفض'),
-                    ],
+                Tooltip(
+                  waitDuration: Duration(milliseconds: 600),
+                  message: 'رفض إنشاء الحساب ', // Tooltip message
+                  child: TextButton(
+                    onPressed: () {
+                      // Implement accept logic
+                    },
+                    child: const Column(
+                      children: [
+                        Icon(
+                          Icons.cancel_sharp,
+                          color: iconColor,
+                        ), // Icon to display
+                        Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
+                        Text('رفض'),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -174,7 +183,7 @@ class ListReq extends StatelessWidget {
         ),
       ),
       headerDecoration: const BoxDecoration(
-        color: Colors.white,
+        color: appColor,
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       expandedHeaderDecoration: const BoxDecoration(

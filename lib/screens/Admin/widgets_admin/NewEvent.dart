@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/EventType.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
-import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/widgets/Event_item.dart';
-import 'package:testtapp/widgets/button_design.dart';
-import 'package:testtapp/widgets/textfield_design.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -223,6 +221,7 @@ class _AddEventState extends State<AddEvent> {
                     obscureTextField: false),
 
                 // Call the buildClassificationDropdown method where you want to display the dropdown
+
                 DropdownButton<String>(
                   value: classificationList.isNotEmpty ? dropdownValue : null,
                   icon: const Icon(Icons.arrow_downward),
@@ -270,7 +269,7 @@ class _AddEventState extends State<AddEvent> {
                     width: double.maxFinite,
                     margin: EdgeInsets.only(bottom: 90),
                     child: FloatingActionButton(
-                      backgroundColor: Color.fromARGB(135, 230, 72, 203),
+                      backgroundColor: kColor1,
                       child: Text('إضافة مناسبة',
                           style: TextStyle(
                               fontFamily: 'Amiri',

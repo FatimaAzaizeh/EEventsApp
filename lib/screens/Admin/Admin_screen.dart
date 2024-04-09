@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/DesignFun.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
@@ -56,19 +58,26 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(8, 158, 158, 158),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(63, 209, 208, 208),
-        ),
+        /*  decoration: const BoxDecoration(
+                image: DecorationImage(
+          image: AssetImage(
+            'assets/images/Admin.png',
+          ),
+          fit: BoxFit.cover,
+        )
+            )*/
         child: Row(
           children: [
             SideMenuAdmin(
               AdminEmail: EmailAdmin,
               changeMainSection: _changeMainSection,
             ),
-            MainSectionContainer(child: _currentMainSection),
+            MainSectionContainer(
+                titleAppBarText: 'nothing', child: _currentMainSection),
           ],
         ),
       ),
@@ -78,19 +87,34 @@ class _AdminScreenState extends State<AdminScreen> {
 
 class MainSectionContainer extends StatelessWidget {
   final Widget child;
-
-  const MainSectionContainer({Key? key, required this.child}) : super(key: key);
-
+  final String titleAppBarText;
+  const MainSectionContainer(
+      {Key? key, required this.child, required this.titleAppBarText})
+      : super(key: key);
+//"the part of the page that will be changed"
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 14,
       child: Padding(
-        padding: const EdgeInsets.all(60.0),
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Color.fromARGB(0, 255, 255, 255)),
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                topRight: Radius.circular(30),
+                bottomRight: Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                color: kColor4
+                    .withOpacity(0.5), // Color of the shadow with opacity
+                spreadRadius: 8, // Amount of spreading of the shadow
+                blurRadius: 7, // Amount of blurring of the shadow
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
           child: child,
         ),
       ),
@@ -120,48 +144,78 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
-      child: Drawer(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment
-              .spaceAround, // Distributes space evenly between the children
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 25, 20, 7),
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.white,
-                // backgroundImage: AssetImage('assets/images/bunnyy.png'),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50), bottomLeft: Radius.circular(50)),
+            // shape: BoxShape.rectangle,
+            // border: Border.all(width: 1, color: kColor0),
+
+            boxShadow: [
+              BoxShadow(
+                color: kColor4
+                    .withOpacity(0.5), // Color of the shadow with opacity
+                spreadRadius: 8, // Amount of spreading of the shadow
+                blurRadius: 7, // Amount of blurring of the shadow
+                offset: Offset(0, 3),
+                // Position of the shadow (horizontal, vertical)
               ),
+            ],
+          ),
+          child: Drawer(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            //shadowColor: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceAround, // Distributes space evenly between the children
+              children: [
+                Container(
+                  alignment: Alignment.topCenter,
+                  // color: kColor1,
+                  width: double.maxFinite,
+                  child: CircleAvatar(
+                    radius: 90,
+                    backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                    backgroundImage: AssetImage('assets/images/logo.png'),
+                    child: Text(
+                      //'${widget.AdminEmail}',
+                      'Eevents',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: kColor1),
+                    ),
+                  ),
+                ),
+                buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
+                  widget.changeMainSection(AddAdmin());
+                }, 0, 1),
+                buildListTile(
+                    'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined,
+                    () {
+                  widget.changeMainSection(ListReq());
+                }, notificationCount, 2),
+                buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
+                  widget.changeMainSection(AddEvent());
+                }, 0, 3),
+                buildListTile('الخدمات الخاصة بالمناسبات',
+                    Icons.room_service_outlined, () {}, 0, 4),
+                buildListTile(
+                    'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {
+                  widget.changeMainSection(VendorList());
+                }, 0, 5),
+                buildListTile(
+                    'إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0, 6),
+                buildListTile('تسجيل الخروج', Icons.logout, () {
+                  _auth.signOut();
+                  Navigator.pop(context);
+                }, 0, 7),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 50),
-              child: Text(
-                '${widget.AdminEmail}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-            ),
-            buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
-              widget.changeMainSection(AddAdmin());
-            }, 0, 1),
-            buildListTile(
-                'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined, () {
-              widget.changeMainSection(ListReq());
-            }, notificationCount, 2),
-            buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
-              widget.changeMainSection(AddEvent());
-            }, 0, 3),
-            buildListTile('الخدمات الخاصة بالمناسبات',
-                Icons.room_service_outlined, () {}, 0, 4),
-            buildListTile('إدارة حسابات الشركاء', Icons.account_circle_outlined,
-                () {}, 0, 5),
-            buildListTile(
-                'إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0, 6),
-            buildListTile('تسجيل الخروج', Icons.logout, () {
-              _auth.signOut();
-              Navigator.pop(context);
-            }, 0, 7),
-          ],
+          ),
         ),
       ),
     );
@@ -178,34 +232,29 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     int index, // Pass the index of the ListTile
   ) {
     return ListTile(
-      leading: Icon(
-        icon,
-        size: 30,
-        color: Color.fromARGB(255, 14, 1, 1),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'ElMessiri',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Color.fromARGB(222, 21, 21, 21),
+        leading: Icon(
+          icon,
+          size: 28,
+          color: Color.fromARGB(255, 14, 1, 1),
         ),
-      ),
-      trailing: _buildNotificationBadge(notificationCount ?? 0),
-      onTap: () {
-        setState(() {
-          _selectedIndex = index; // Update the selected index
-        });
-        onPress(); // Call the onPress callback
-      },
-      selected: _selectedIndex == index, // Check if this index is selected
-      hoverColor: Color.fromARGB(126, 222, 58, 165),
-      selectedTileColor: Color.fromARGB(207, 222, 58, 165),
-    );
+        title: Text(
+          title,
+          style: StyleTextAdmin(14, Colors.black),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: _buildNotificationBadge(notificationCount ?? 0),
+        onTap: () {
+          setState(() {
+            _selectedIndex = index; // Update the selected index
+          });
+          onPress(); // Call the onPress callback
+        },
+        selected: _selectedIndex == index, // Check if this index is selected
+        hoverColor: kColor2,
+        selectedTileColor: kColor2);
   }
 
-//tooltip: 'إنشاء حساب مسؤول جديد', import.
   Widget _buildNotificationBadge(int count) {
     if (count > 0) {
       return Container(
