@@ -39,6 +39,7 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Row(
         children: [
           SideMenuAdmin(
@@ -63,7 +64,68 @@ class MainSectionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 14,
-      child: child,
+      child: Padding(
+        padding: const EdgeInsets.all(7.0),
+        child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: MediaQuery.sizeOf(context).height * 0.05,
+              backgroundColor: AdminColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40)),
+              actions: <Widget>[
+                Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                        ),
+                        tooltip: 'Show Snackbar',
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('This is a snackbar')));
+                        },
+                      ),
+                      Container(
+                        width: 300,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              hintText: 'بحث',
+                              hintStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic,
+                                  color: AdminColor),
+                              suffixIcon: Icon(
+                                Icons.check_circle,
+                                color: AdminColor,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    ])
+              ],
+            ),
+            backgroundColor: Colors.white,
+            body: Container(
+                width: double.maxFinite,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: child,
+                ))),
+      ),
     );
   }
 }
@@ -113,10 +175,15 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                     radius: 85,
                     backgroundColor: Color.fromARGB(0, 255, 255, 255),
                     backgroundImage: AssetImage('assets/images/logo.png'),
+                    //إيفِنْتْس
                     child: Text(
                         //'${widget.AdminEmail}',
-                        ' إيفِنْتْس',
-                        style: StyleTextAdmin(20, AdminColor)),
+                        'Eeventş',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'DancingScript',
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20)),
                   ),
                 ),
                 buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {

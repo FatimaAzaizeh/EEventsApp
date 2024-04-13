@@ -15,6 +15,8 @@ const kColor6 = Color.fromARGB(255, 234, 209, 218);
 const kDefaultPadding = 20.0;
 //Main color for admin page.
 const AdminColor = kColor0;
+const List<Color> gradientColors = [kColor0, kColor1, kColor2, kColor3];
+
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {
   return TextStyle(
       fontFamily: 'Amiri',

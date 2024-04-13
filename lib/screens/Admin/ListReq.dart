@@ -4,7 +4,7 @@ import 'package:testtapp/constants.dart';
 
 import 'package:toggle_list/toggle_list.dart';
 
-const Color appColor = Colors.white;
+const Color appColor = kColor1;
 const Color iconColor = Colors.black;
 
 class ListReq extends StatelessWidget {
@@ -69,14 +69,14 @@ class ListReq extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Icon(
           Icons.account_circle,
-          color: Color.fromARGB(169, 14, 13, 13),
+          color: AdminColor,
         ),
       ),
       title: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
           data['companyOwnerName'],
-          style: StyleTextAdmin(18, Colors.black),
+          style: StyleTextAdmin(18, AdminColor),
         ),
       ),
       divider: const Divider(
@@ -88,21 +88,32 @@ class ListReq extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
+          color: Colors.white,
+          // Rounded corners
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey
+                  .withOpacity(0.1), // Color of the shadow with opacity
+              spreadRadius: 4, // Amount of spreading of the shadow
+              blurRadius: 3, // Amount of blurring of the shadow
+              offset: Offset(0, 3),
+              // Position of the shadow (horizontal, vertical)
+            ),
+          ],
           borderRadius:
               const BorderRadius.vertical(bottom: Radius.circular(20)),
-          color: appColor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               data['accountName'],
-              style: StyleTextAdmin(14, Colors.black),
+              style: StyleTextAdmin(14, AdminColor),
             ),
             const SizedBox(height: 8),
             Text(
               data['information'],
-              style: StyleTextAdmin(14, Colors.black),
+              style: StyleTextAdmin(14, AdminColor),
             ),
             const SizedBox(height: 8),
             const Divider(
@@ -144,7 +155,7 @@ class ListReq extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check_circle,
-                          color: iconColor,
+                          color: AdminColor,
                         ), // Icon to display
                         Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
                         Text('موافقة'),
@@ -176,12 +187,36 @@ class ListReq extends StatelessWidget {
           ],
         ),
       ),
-      headerDecoration: const BoxDecoration(
-        color: appColor,
+      headerDecoration: BoxDecoration(
+        color: Colors.white,
+        // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey
+                .withOpacity(0.2), // Color of the shadow with opacity
+            spreadRadius: 8, // Amount of spreading of the shadow
+            blurRadius: 7, // Amount of blurring of the shadow
+            offset: Offset(0, 3),
+            // Position of the shadow (horizontal, vertical)
+          ),
+        ],
+
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
-      expandedHeaderDecoration: const BoxDecoration(
-        color: appColor,
+      expandedHeaderDecoration: BoxDecoration(
+        color: Colors.white,
+        // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey
+                .withOpacity(0.1), // Color of the shadow with opacity
+            spreadRadius: 4, // Amount of spreading of the shadow
+            blurRadius: 3, // Amount of blurring of the shadow
+            offset: Offset(0, 3),
+            // Position of the shadow (horizontal, vertical)
+          ),
+        ],
+
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
     );
