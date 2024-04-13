@@ -6,7 +6,8 @@ final _firestore = FirebaseFirestore.instance;
 class EventType {
   String Name; //Name the Event
   List<String> ServiceType = []; //ServiceType belongs to the event
-  String Classification; //Classification of the event.
+
+  var Classification; //Classification of the event.
   String? imageUrl;
 
   EventType({

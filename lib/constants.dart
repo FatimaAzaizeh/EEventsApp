@@ -13,11 +13,13 @@ const kColor5 = Color.fromARGB(255, 233, 203, 202);
 const kColor6 = Color.fromARGB(255, 234, 209, 218);
 
 const kDefaultPadding = 20.0;
-
+//Main color for admin page.
+const AdminColor = kColor0;
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {
   return TextStyle(
       fontFamily: 'Amiri',
       fontSize: SizeText,
       fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.bold,
       color: colorText);
 }

@@ -1,9 +1,6 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/DesignFun.dart';
 
 import 'package:toggle_list/toggle_list.dart';
 
@@ -22,10 +19,7 @@ class ListReq extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FunDesign(
-      titleAppBar: 'طلبات إنشاء حساب الشركاء',
-      child: StreamBuilderList(),
-    );
+    return StreamBuilderList();
   }
 
   StreamBuilder<QuerySnapshot<Object?>> StreamBuilderList() {

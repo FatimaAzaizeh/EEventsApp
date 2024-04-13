@@ -33,14 +33,14 @@ class TextFieldDesign extends StatelessWidget {
             // Define padding for the content inside the text field.
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             filled: true,
-            fillColor: Color.fromARGB(46, 168, 166, 166),
+            fillColor: Colors.white,
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(30),
             ),
             icon: Icon(
               icon,
-              color: Colors.black,
+              color: AdminColor,
             ),
           ),
           controller: ControllerTextField,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -7,6 +8,8 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/EventType.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
+
+// Other import statements and code
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -277,7 +280,14 @@ class _AddEventState extends State<AddEvent> {
                               fontStyle: FontStyle.italic,
                               color: Colors.white)),
                       onPressed: () {
-                        setState(() {
+                        setState(() async {
+                          // Perform Firestore query based on the selected dropdown value
+                          QuerySnapshot<Map<String, dynamic>> querySnapshot =
+                              await FirebaseFirestore.instance
+                                  .collection('Classifications')
+                                  .where('Name', isEqualTo: classification)
+                                  .get();
+
                           EventType newEvent = EventType(
                               Name: name,
                               ServiceType: serviceType,

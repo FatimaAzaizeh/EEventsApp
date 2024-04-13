@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart'; //firebase
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/DesignFun.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -28,71 +27,69 @@ class _AddAdminState extends State<AddAdmin> {
   @override
   @override
   Widget build(BuildContext context) {
-    return FunDesign(
-        titleAppBar: 'إنشاء مسؤول جديد',
-        child: Column(//mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          TextFieldDesign(
-            Text: 'إدخال البريد الإلكتروني',
-            icon: Icons.account_circle,
-            ControllerTextField: ControllerEmail,
-            onChanged: (value) {
-              email = value;
-            },
-            obscureTextField: false,
-          ),
-          TextFieldDesign(
-            Text: 'إدخال كلمة المرور',
-            icon: Icons.password,
-            ControllerTextField: ControllerPassword,
-            onChanged: (value) {
-              password = value;
-            },
-            obscureTextField: true,
-          ),
-          SizedBox(height: 8),
-          Padding(
+    return Column(//mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+      TextFieldDesign(
+        Text: 'إدخال البريد الإلكتروني',
+        icon: Icons.account_circle,
+        ControllerTextField: ControllerEmail,
+        onChanged: (value) {
+          email = value;
+        },
+        obscureTextField: false,
+      ),
+      TextFieldDesign(
+        Text: 'إدخال كلمة المرور',
+        icon: Icons.password,
+        ControllerTextField: ControllerPassword,
+        onChanged: (value) {
+          password = value;
+        },
+        obscureTextField: true,
+      ),
+      SizedBox(height: 8),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          style: const ButtonStyle(
+              animationDuration: Durations.long3,
+              backgroundColor: MaterialStatePropertyAll(AdminColor)),
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              style: const ButtonStyle(
-                  animationDuration: Durations.long3,
-                  backgroundColor: MaterialStatePropertyAll(kColor2)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('إنشاء حساب مسؤول جديد',
-                    style: StyleTextAdmin(17, Colors.black)),
-              ),
-              onPressed: () async {
-                setState(() {
-                  showSpinner = true;
-                });
-
-                try {
-                  final newUser = await _auth.createUserWithEmailAndPassword(
-                      email: email, password: password);
-
-                  _firestore.collection('adminUser').add({
-                    'Email': email,
-                  });
-                  print('تم اضافة الادمن');
-                  setState(() {
-                    showSpinner = false;
-                    ControllerEmail.clear();
-                    ControllerPassword.clear();
-                    QuickAlert.show(
-                        context: context,
-                        customAsset: 'assets/images/Completionanimation.gif',
-                        width: 300,
-                        title: 'تم إضافة $email',
-                        type: QuickAlertType.success,
-                        confirmBtnText: 'إغلاق');
-                  });
-                } catch (e) {
-                  print(e);
-                }
-              },
-            ),
+            child: Text('إنشاء حساب مسؤول جديد',
+                style: StyleTextAdmin(17, Colors.white)),
           ),
-        ]));
+          onPressed: () async {
+            setState(() {
+              showSpinner = true;
+            });
+
+            try {
+              final newUser = await _auth.createUserWithEmailAndPassword(
+                  email: email, password: password);
+
+              _firestore.collection('adminUser').add({
+                'Email': email,
+              });
+              print('تم اضافة الادمن');
+              setState(() {
+                showSpinner = false;
+                ControllerEmail.clear();
+                ControllerPassword.clear();
+                QuickAlert.show(
+                    context: context,
+                    customAsset: 'assets/images/Completionanimation.gif',
+                    width: 300,
+                    title: 'تم إضافة $email',
+                    type: QuickAlertType.success,
+                    confirmBtnText: 'إغلاق');
+              });
+            } catch (e) {
+              print(e);
+            }
+          },
+        ),
+      ),
+    ]);
   }
 }
