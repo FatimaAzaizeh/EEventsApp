@@ -8,6 +8,7 @@ import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
+import 'package:testtapp/screens/user/home_page.dart';
 import 'package:testtapp/widgets/button_design.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
@@ -89,7 +90,7 @@ class _SignInState extends State<SignIn> {
                           email: email, password: password);
                       //User
                       if (user != null && !admin) {
-                        Navigator.pushNamed(context, EventScreen.screenRoute);
+                        Navigator.pushNamed(context, HomePage.screenRoute);
                       }
                       //Admin
                       else if (user != null && admin) {
