@@ -18,6 +18,8 @@ import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/registration_screen.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/user/free_shopping_page.dart';
+import 'package:testtapp/screens/user/home_page.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -66,6 +68,8 @@ class MyApp extends StatelessWidget {
             AddAdmin.screenRoute: (context) => AddAdmin(),
             EventScreen.screenRoute: (context) => EventScreen(),
             ListReq.screenRoute: (context) => ListReq(),
+            HomePage.screenRoute: (context) => HomePage(),
+            FreeShopping.screenRoute: (context) => FreeShopping(),
           },
           home: getHomeWidget(context),
         ));
