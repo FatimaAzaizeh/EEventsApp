@@ -69,14 +69,15 @@ class ListReq extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Icon(
           Icons.account_circle,
-          color: AdminColor,
+          color: Colors.black,
+          size: 24,
         ),
       ),
       title: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
           data['companyOwnerName'],
-          style: StyleTextAdmin(18, AdminColor),
+          style: StyleTextAdmin(16, Colors.black),
         ),
       ),
       divider: const Divider(
@@ -108,12 +109,12 @@ class ListReq extends StatelessWidget {
           children: [
             Text(
               data['accountName'],
-              style: StyleTextAdmin(14, AdminColor),
+              style: StyleTextAdmin(14, Colors.black),
             ),
             const SizedBox(height: 8),
             Text(
               data['information'],
-              style: StyleTextAdmin(14, AdminColor),
+              style: StyleTextAdmin(14, Colors.black),
             ),
             const SizedBox(height: 8),
             const Divider(

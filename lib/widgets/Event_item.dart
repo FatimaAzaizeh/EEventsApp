@@ -6,11 +6,13 @@ class EventItemDisplay extends StatelessWidget {
     required this.id,
     required this.title,
     required this.imageUrl,
+    required this.onTapFunction,
   }) : super(key: key);
 
   final String id;
   final String title;
   final String imageUrl;
+  final Function onTapFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class EventItemDisplay extends StatelessWidget {
       borderRadius: BorderRadius.circular(15),
       onTap: () {
         // Handle onTap if needed
+        onTapFunction();
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

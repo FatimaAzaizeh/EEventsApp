@@ -117,6 +117,14 @@ flutter:
          - asset: assets/fonts/Dancing_Script/static/DancingScript-Regular.ttf
          - asset: assets/fonts/Dancing_Script/static/DancingScript-SemiBold.ttf
          
+     - family: Marhey
+       fonts:
+         - asset: assets/fonts/Marhey/static/Marhey-Bold.ttf
+         - asset: assets/fonts/Marhey/static/Marhey-Light.ttf
+         - asset: assets/fonts/Marhey/static/Marhey-Medium.ttf
+         - asset: assets/fonts/Marhey/static/Marhey-Regular.ttf
+         - asset: assets/fonts/Marhey/static/Marhey-SemiBold.ttf
+         
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
