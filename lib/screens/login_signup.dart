@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/chat_screen.dart';
@@ -17,8 +18,12 @@ class LoginSignupScreen extends StatefulWidget {
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  TextEditingController NameController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController emailSingUpController = TextEditingController();
+  TextEditingController passwordSingUpController = TextEditingController();
   final Controller = TextEditingController();
+  final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   bool isSignupScreen = true;
   bool isMale = true;
@@ -28,39 +33,29 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     try {
       if (isSignupScreen) {
         final newUser = await _auth.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text,
+          email: emailSingUpController.text.trim(),
+          password: passwordSingUpController.text,
         );
+        CurrentUser newCurrentUser = CurrentUser(
+            Name: NameController.text.toString(),
+            Email: emailSingUpController.text.toString(),
+            Gender: genderController.text.toString());
+        newCurrentUser.addToFirestore();
 
-        // Add user to Firestore after successful registration
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(newUser.user!.uid)
-            .set({
-          'email': emailController.text.trim(),
-          'isAdmin': isAdmin,
-          // Add more user details here as needed
-        });
-
-        if (isAdmin) {
-          // Navigate to admin screen if user is an admin
-          Navigator.pushNamed(context, AdminScreen.screenRoute);
-        } else {
-          // Navigate to regular user screen (e.g., EventScreen)
-          Navigator.pushNamed(context, EventScreen.screenRoute);
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
       } else {
         // Sign in logic
         final user = await _auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text,
         );
-
-        if (user != null && isAdmin) {
-          Navigator.pushNamed(context, AdminScreen.screenRoute);
-        } else {
-          Navigator.pushNamed(context, EventScreen.screenRoute);
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
       }
     } catch (e) {
       print('Authentication Error: $e');
@@ -209,8 +204,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       margin: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          buildTextField(Icons.mail_outline, "info@demouri.com", false, true),
-          buildTextField(Icons.lock_outline, "**********", true, false),
+          buildTextField(Icons.mail_outline, "info@dana.com", false, true,
+              emailController),
+          buildTextField(Icons.lock_outline, "**********", true, false,
+              passwordController),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -246,11 +243,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       margin: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          buildTextField(
-              Icons.account_box_outlined, "اسم المستخدم", false, false),
-          buildTextField(
-              Icons.email_outlined, "البريد الالكتروني", false, true),
-          buildTextField(Icons.lock_outline, "كلمة السر", true, false),
+          buildTextField(Icons.account_box_outlined, "اسم المستخدم", false,
+              false, NameController),
+          buildTextField(Icons.email_outlined, "البريد الالكتروني", false, true,
+              emailSingUpController),
+          buildTextField(Icons.lock_outline, "كلمة السر", true, false,
+              passwordSingUpController),
           Padding(
             padding: const EdgeInsets.only(top: 10, left: 10),
             child: Row(
@@ -259,6 +257,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   onTap: () {
                     setState(() {
                       isMale = true;
+                      genderController.text = 'male';
                     });
                   },
                   child: Row(
@@ -296,6 +295,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   onTap: () {
                     setState(() {
                       isMale = false;
+                      genderController.text = 'female';
                     });
                   },
                   child: Row(
@@ -428,10 +428,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           child: !showShadow
               ? GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                    _authenticateUser();
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -462,12 +459,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
-  Widget buildTextField(
-      IconData icon, String hintText, bool isPassword, bool isEmail) {
+  Widget buildTextField(IconData icon, String hintText, bool isPassword,
+      bool isEmail, TextEditingController ControllerTextField) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: TextField(
         obscureText: isPassword,
+        controller: ControllerTextField,
         keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
         decoration: InputDecoration(
           prefixIcon: Icon(
