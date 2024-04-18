@@ -12,6 +12,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
 import 'package:testtapp/screens/MyStepperPage.dart';
+import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
 final _auth = FirebaseAuth.instance;
 
@@ -204,8 +205,11 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                       () {
                     widget.changeMainSection(AddEvent());
                   }, 0, 3),
-                  buildListTile('الخدمات الخاصة بالمناسبات',
-                      Icons.room_service_outlined, () {}, 0, 4),
+                  buildListTile(
+                      'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
+                      () {
+                    widget.changeMainSection(VendorPanelScreen());
+                  }, 0, 4),
                   buildListTile(
                       'إدارة حسابات الشركاء', Icons.account_circle_outlined,
                       () {

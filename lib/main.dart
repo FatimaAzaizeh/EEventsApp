@@ -20,6 +20,7 @@ import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/user/free_shopping_page.dart';
 import 'package:testtapp/screens/user/home_page.dart';
+import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
             HomePage.screenRoute: (context) => HomePage(),
             FreeShopping.screenRoute: (context) => FreeShopping(),
             SignIn.screenRoute: (context) => SignIn(),
+            VendorPanelScreen.screenRoute: (context) => VendorPanelScreen(),
           },
           home: getHomeWidget(context),
         ));
@@ -86,6 +88,7 @@ Widget getHomeWidget(BuildContext context) {
       return SignIn();
     }
   } else {
-    return AnimatedTextPage(); // If not running on desktop, show AnimatedTextPage
+    return VendorPanelScreen();
+    //AnimatedTextPage(); // If not running on desktop, show AnimatedTextPage
   }
 }
