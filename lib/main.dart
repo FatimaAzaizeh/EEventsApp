@@ -13,9 +13,9 @@ import 'package:testtapp/screens/Admin/ListReq.dart';
 
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
-import 'package:testtapp/screens/Sign_in.dart';
+import 'package:testtapp/screens/loginAdmin.dart';
+import 'package:testtapp/screens/login_signup.dart';
 import 'package:testtapp/screens/chat_screen.dart';
-import 'package:testtapp/screens/registration_screen.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/user/free_shopping_page.dart';
@@ -61,15 +61,15 @@ class MyApp extends StatelessWidget {
           },
           routes: {
             AnimatedTextPage.screenRoute: (context) => AnimatedTextPage(),
-            SignIn.screenRoute: (context) => SignIn(),
+            LoginSignupScreen.screenRoute: (context) => LoginSignupScreen(),
             AdminScreen.screenRoute: (context) => AdminScreen(),
             ChatScreen.screenRoute: (context) => ChatScreen(),
-            RegistrationScreen.screenRoute: (context) => RegistrationScreen(),
             AddAdmin.screenRoute: (context) => AddAdmin(),
             EventScreen.screenRoute: (context) => EventScreen(),
             ListReq.screenRoute: (context) => ListReq(),
             HomePage.screenRoute: (context) => HomePage(),
             FreeShopping.screenRoute: (context) => FreeShopping(),
+            SignIn.screenRoute: (context) => SignIn(),
           },
           home: getHomeWidget(context),
         ));
@@ -83,7 +83,7 @@ Widget getHomeWidget(BuildContext context) {
       // Check if there's a currently authenticated user
       return AdminScreen(); // If there is an authenticated user, show the AdminScreen
     } else {
-      return SignIn(); // If there's no authenticated user, show the SignIn screen
+      return SignIn();
     }
   } else {
     return AnimatedTextPage(); // If not running on desktop, show AnimatedTextPage
