@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
-/*
-class ImageScroll extends StatefulWidget {
+import 'package:firebase_storage/firebase_storage.dart';
+
+class ImageReaderScreen extends StatefulWidget {
   @override
-  _ImageScrollState createState() => _ImageScrollState();
+  _ImageReaderScreenState createState() => _ImageReaderScreenState();
 }
 
-class _ImageScrollState extends State<ImageScroll> {
-  // final FirebaseStorage _storage = FirebaseStorage.instance;
+class _ImageReaderScreenState extends State<ImageReaderScreen> {
   List<String> imageUrls = [];
 
   @override
   void initState() {
     super.initState();
-    _loadImageUrls();
+    fetchImageUrls();
   }
 
-  Future<void> _loadImageUrls() async {
-    List<String> urls = await _getImageUrlsFromFirebase();
-    setState(() {
-      imageUrls = urls;
-    });
-  }
-
-  Future<List<String>> _getImageUrlsFromFirebase() async {
+  Future<void> fetchImageUrls() async {
     try {
-      //Reference storageRef = _storage.ref();
-      // ListResult result = await storageRef.listAll();
-      List<String> urls = await Future.wait(
-          //result.items.map((item) => item.getDownloadURL()),
-          );
-      return urls;
+      final ListResult result = await FirebaseStorage.instance.ref().listAll();
+
+      for (final Reference ref in result.items) {
+        final imageUrl = await ref.getDownloadURL();
+        setState(() {
+          imageUrls.add(imageUrl);
+        });
+      }
     } catch (e) {
-      print('Error loading images: $e');
-      return []; // Return empty list in case of error
+      print('Error fetching image URLs: $e');
     }
   }
 
@@ -40,30 +34,22 @@ class _ImageScrollState extends State<ImageScroll> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firebase Image Gallery'),
+        title: Text('Image Reader'),
       ),
-      body: Container(
-        height: 200,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(imageUrls.length, (index) {
-              double parallaxOffset = 0.5; // Adjust parallax effect speed
-              return Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Transform.translate(
-                
-                  child: Image.network(
-                    imageUrls[index],
-                    width: 300,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
+      body: ListView.builder(
+        itemCount: imageUrls.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.network(
+              imageUrls[index],
+              width: 300,
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+          );
+        },
       ),
     );
   }
-}*/
+}

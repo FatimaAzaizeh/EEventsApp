@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker_web/image_picker_web.dart';
@@ -39,20 +38,21 @@ class _VendorPanelScreenState extends State<VendorPanelScreen> {
     try {
       final storageRef = FirebaseStorage.instance.ref('images/$_imageName');
 
-      // Upload the image data to Firebase Storage
-      final uploadTask = storageRef.putBlob(Blob(imageBytes));
+      await storageRef.putData(imageBytes);
 
-      // Wait for the upload task to complete
-      await uploadTask;
-
-      // Retrieve the download URL of the uploaded image
       final downloadUrl = await storageRef.getDownloadURL();
-
       setState(() {
-        _imageUrl = downloadUrl; // Set the download URL to display the image
+        _imageUrl = downloadUrl;
       });
 
       print('Image uploaded to Firebase Storage: $_imageUrl');
+
+      // Here you can save the _imageUrl to Firestore or perform other operations
+      // For example:
+      // FirebaseFirestore.instance.collection('images').add({
+      //   'imageUrl': _imageUrl,
+      //   'imageName': _imageName,
+      // });
     } catch (e) {
       print('Error uploading image to Firebase Storage: $e');
     }
