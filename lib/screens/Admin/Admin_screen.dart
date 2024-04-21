@@ -78,17 +78,17 @@ class MainSectionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 14,
+      flex: 16,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
             appBar: AppBar(
               title: Text(
                 'مرحبا',
-                style: StyleTextAdmin(16, Colors.white),
+                style: StyleTextAdmin(16, Colors.black),
               ),
               toolbarHeight: MediaQuery.sizeOf(context).height * 0.05,
-              backgroundColor: AdminColor,
+              backgroundColor: AdminColor.withOpacity(0.6),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40)),
               actions: <Widget>[

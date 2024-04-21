@@ -4,7 +4,7 @@ import 'package:testtapp/constants.dart';
 
 import 'package:toggle_list/toggle_list.dart';
 
-const Color appColor = kColor1;
+const Color appColor = Colors.black;
 const Color iconColor = Colors.black;
 
 class ListReq extends StatelessWidget {
@@ -70,14 +70,13 @@ class ListReq extends StatelessWidget {
         child: Icon(
           Icons.account_circle,
           color: Colors.black,
-          size: 24,
         ),
       ),
       title: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
           data['companyOwnerName'],
-          style: StyleTextAdmin(16, Colors.black),
+          style: StyleTextAdmin(18, Colors.black),
         ),
       ),
       divider: const Divider(

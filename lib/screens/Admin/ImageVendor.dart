@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
-class ImageReaderScreen extends StatefulWidget {
+class ImageScroll extends StatefulWidget {
   @override
-  _ImageReaderScreenState createState() => _ImageReaderScreenState();
+  _ImageScrollState createState() => _ImageScrollState();
 }
 
-class _ImageReaderScreenState extends State<ImageReaderScreen> {
+class _ImageScrollState extends State<ImageScroll> {
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
   List<String> imageUrls = [];
 
   @override
   void initState() {
     super.initState();
-    fetchImageUrls();
+    _loadImageUrls();
   }
 
-  Future<void> fetchImageUrls() async {
-    try {
-      final ListResult result = await FirebaseStorage.instance.ref().listAll();
+  Future<void> _loadImageUrls() async {
+    List<String> urls = await _getImageUrlsFromFirebase();
+    setState(() {
+      imageUrls = urls;
+    });
+  }
 
-      for (final Reference ref in result.items) {
-        final imageUrl = await ref.getDownloadURL();
-        setState(() {
-          imageUrls.add(imageUrl);
-        });
-      }
+  Future<List<String>> _getImageUrlsFromFirebase() async {
+    try {
+      //Reference storageRef = _storage.ref();
+      // ListResult result = await storageRef.listAll();
+      List<String> urls = await Future.wait(
+          //result.items.map((item) => item.getDownloadURL()),
+          );
+      return urls;
     } catch (e) {
-      print('Error fetching image URLs: $e');
+      print('Error loading images: $e');
+      return []; // Return empty list in case of error
     }
   }
 
@@ -34,21 +40,29 @@ class _ImageReaderScreenState extends State<ImageReaderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Reader'),
+        title: Text('Firebase Image Gallery'),
       ),
-      body: ListView.builder(
-        itemCount: imageUrls.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.network(
-              imageUrls[index],
-              width: 300,
-              height: 300,
-              fit: BoxFit.cover,
-            ),
-          );
-        },
+      body: Container(
+        height: 200,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(imageUrls.length, (index) {
+              double parallaxOffset = 0.5; // Adjust parallax effect speed
+              return Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Transform.translate(
+                  offset: Offset(3, 4),
+                  child: Image.network(
+                    imageUrls[index],
+                    width: 300,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
       ),
     );
   }
