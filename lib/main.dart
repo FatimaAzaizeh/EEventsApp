@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:testtapp/constants.dart';
+
 
 import 'package:testtapp/firebase_options.dart';
 import 'package:testtapp/responsive.dart';
@@ -13,9 +13,10 @@ import 'package:testtapp/screens/Admin/ListReq.dart';
 
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
-import 'package:testtapp/screens/Sign_in.dart';
+
 import 'package:testtapp/screens/chat_screen.dart';
-import 'package:testtapp/screens/registration_screen.dart';
+import 'package:testtapp/screens/login-signup.dart';
+
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 
@@ -59,10 +60,10 @@ class MyApp extends StatelessWidget {
           },
           routes: {
             AnimatedTextPage.screenRoute: (context) => AnimatedTextPage(),
-            SignIn.screenRoute: (context) => SignIn(),
+            LoginSignupScreen.screenRoute: (context) => LoginSignupScreen(),
             AdminScreen.screenRoute: (context) => AdminScreen(),
             ChatScreen.screenRoute: (context) => ChatScreen(),
-            RegistrationScreen.screenRoute: (context) => RegistrationScreen(),
+            
             AddAdmin.screenRoute: (context) => AddAdmin(),
             EventScreen.screenRoute: (context) => EventScreen(),
             ListReq.screenRoute: (context) => ListReq(),
@@ -79,7 +80,7 @@ Widget getHomeWidget(BuildContext context) {
       // Check if there's a currently authenticated user
       return AdminScreen(); // If there is an authenticated user, show the AdminScreen
     } else {
-      return SignIn(); // If there's no authenticated user, show the SignIn screen
+      return LoginSignupScreen(); // If there's no authenticated user, show the SignIn screen
     }
   } else {
     return AnimatedTextPage(); // If not running on desktop, show AnimatedTextPage
