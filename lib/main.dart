@@ -13,6 +13,7 @@ import 'package:testtapp/screens/Admin/ListReq.dart';
 
 import 'package:testtapp/screens/AnimatedTextPage.dart';
 import 'package:testtapp/screens/Event_screen.dart';
+import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
 
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/loginAdmin.dart';
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
             AddAdmin.screenRoute: (context) => AddAdmin(),
             EventScreen.screenRoute: (context) => EventScreen(),
             ListReq.screenRoute: (context) => ListReq(),
+            VendorScreen.screenRoute: (context) => VendorScreen(),
           },
           home: getHomeWidget(context),
         ));

@@ -14,7 +14,9 @@ class VendorList extends StatelessWidget {
       children: [
         SizedBox(height: kDefaultPadding),
         StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Vendors').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('VendorRequest')
+              .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();

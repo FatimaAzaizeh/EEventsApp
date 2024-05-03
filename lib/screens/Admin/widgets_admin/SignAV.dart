@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
+import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
 import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/user/home_page.dart';
 
@@ -179,7 +180,7 @@ class _SignInState extends State<SignIn> {
                                                             !admin) {
                                                           Navigator.pushNamed(
                                                               context,
-                                                              HomePage
+                                                              VendorScreen
                                                                   .screenRoute);
                                                         }
                                                         //Admin
