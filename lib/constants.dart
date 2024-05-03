@@ -12,6 +12,10 @@ const kColor4 = Color.fromARGB(255, 244, 231, 228);
 const kColor5 = Color.fromARGB(255, 233, 203, 202);
 const kColor6 = Color.fromARGB(255, 234, 209, 218);
 
+const kColorA = Color.fromARGB(255, 162, 115, 150);
+
+const kColorD = Color.fromARGB(255, 249, 240, 241);
+
 const kDefaultPadding = 20.0;
 //Main color for admin page.
 const AdminColor = kColor1;

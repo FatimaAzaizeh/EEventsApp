@@ -47,13 +47,13 @@ class _AdminScreenState extends State<AdminScreen> {
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-            'assets/images/AAdminn.png',
+            'assets/images/Adm.png',
           ),
           fit: BoxFit.cover,
         ),
       ),
       child: Scaffold(
-        backgroundColor: BackgroundAdminPage,
+        backgroundColor: Colors.black.withOpacity(0.1),
         body: Row(
           children: [
             SideMenuAdmin(
@@ -85,7 +85,7 @@ class MainSectionContainer extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 'مرحبا',
-                style: StyleTextAdmin(16, Colors.black),
+                style: StyleTextAdmin(16, Colors.white),
               ),
               toolbarHeight: MediaQuery.sizeOf(context).height * 0.05,
               backgroundColor: AdminColor.withOpacity(0.6),

@@ -31,15 +31,17 @@ class _AddAdminState extends State<AddAdmin> {
       padding: const EdgeInsets.all(80.0),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: kColor1.withOpacity(0.3)
-            /*  gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: gradientColors,
-            // Replace kColorX with your defined colors
-          ),*/
+          borderRadius: BorderRadius.circular(30),
+          color: kColor1.withOpacity(0.3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withOpacity(0.3),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
             ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(200.0),
           child: Center(
@@ -73,7 +75,7 @@ class _AddAdminState extends State<AddAdmin> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text('إنشاء حساب مسؤول جديد',
-                        style: StyleTextAdmin(17, Colors.black)),
+                        style: StyleTextAdmin(17, Colors.white)),
                   ),
                   onPressed: () async {
                     setState(() {
