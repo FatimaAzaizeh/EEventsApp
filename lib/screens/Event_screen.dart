@@ -34,6 +34,7 @@ class EventScreen extends StatelessWidget {
                     title: doc['Name'].toString(),
                     imageUrl: doc['imageUrl'].toString(),
                     id: doc.id,
+                    onTapFunction: () {},
                   );
                 },
               );

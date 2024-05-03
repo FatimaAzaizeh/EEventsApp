@@ -202,10 +202,12 @@ class _AddEventState extends State<AddEvent> {
                             child: Icon(Icons.delete)),
                         TextButton(
                             onPressed: () {
-                              ControllerName.clear();
-                              ControllerSer.clear();
-                              ControllerImage.clear();
-                              isButtonEnabled = false;
+                              setState(() {
+                                ControllerName.clear();
+                                ControllerSer.clear();
+                                ControllerImage.clear();
+                                isButtonEnabled = false;
+                              });
                             },
                             child: Icon(Icons.clear)),
                       ],
@@ -349,17 +351,13 @@ class _AddEventState extends State<AddEvent> {
                 itemCount: eventDocs.length,
                 itemBuilder: (context, index) {
                   final doc = eventDocs[index];
-                  return TextButton(
-                    onPressed: () {
-                      setState(() {
-                        getDataById(doc.id);
-                      });
+                  return EventItemDisplay(
+                    title: doc['Name'].toString(),
+                    imageUrl: doc['imageUrl'].toString(),
+                    id: doc.id,
+                    onTapFunction: () {
+                      getDataById(doc.id);
                     },
-                    child: EventItemDisplay(
-                      title: doc['Name'].toString(),
-                      imageUrl: doc['imageUrl'].toString(),
-                      id: doc.id,
-                    ),
                   );
                 },
               );

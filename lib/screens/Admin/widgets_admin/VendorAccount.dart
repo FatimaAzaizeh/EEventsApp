@@ -176,26 +176,26 @@ class _VendorCardState extends State<VendorCard> {
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Text(
                   widget.vendor.name ?? '',
-                  style: StyleTextAdmin(24, AdminColor),
+                  style: StyleTextAdmin(20, Colors.black),
                   textAlign: TextAlign.right,
                 ),
               ),
               Text(
                 widget.vendor.source ?? '',
-                style: StyleTextAdmin(15, AdminColor),
+                style: StyleTextAdmin(15, Colors.black),
               ),
               SizedBox(height: kDefaultPadding / 2),
               Text(
                 widget.vendor.text ?? '',
                 maxLines: 4,
-                style: StyleTextAdmin(14, AdminColor),
+                style: StyleTextAdmin(14, Colors.black),
                 overflow: TextOverflow.ellipsis,
               ),
               TextButton(
                   onPressed: () {},
                   child: Text(
                     ' المزيد من المعلومات ...',
-                    style: StyleTextAdmin(12, AdminColor),
+                    style: StyleTextAdmin(12, Colors.black),
                   ))
             ]));
   }

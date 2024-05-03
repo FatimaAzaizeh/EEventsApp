@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-/*
+
 class ImageScroll extends StatefulWidget {
   @override
   _ImageScrollState createState() => _ImageScrollState();
@@ -52,7 +52,7 @@ class _ImageScrollState extends State<ImageScroll> {
               return Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Transform.translate(
-                
+                  offset: Offset(3, 4),
                   child: Image.network(
                     imageUrls[index],
                     width: 300,
@@ -66,4 +66,4 @@ class _ImageScrollState extends State<ImageScroll> {
       ),
     );
   }
-}*/
+}
