@@ -19,6 +19,13 @@ const kColorD = Color.fromARGB(255, 249, 240, 241);
 const kDefaultPadding = 20.0;
 //Main color for admin page.
 const AdminColor = kColor1;
+
+//admin/Vendor  color
+const kColorBack = Color.fromARGB(255, 236, 232, 232);
+const kColorMenu = Color.fromARGB(255, 246, 242, 242);
+const kColorPress = Color.fromARGB(255, 231, 195, 189);
+const kColorIcon = Color.fromARGB(255, 222, 164, 162);
+
 const List<Color> gradientColors = [kColor0, kColor1, kColor2, kColor3];
 
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {

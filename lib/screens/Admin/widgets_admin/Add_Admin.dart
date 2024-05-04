@@ -32,7 +32,7 @@ class _AddAdminState extends State<AddAdmin> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: kColor1.withOpacity(0.3),
+          color: kColorMenu,
           boxShadow: [
             BoxShadow(
               color: Colors.white.withOpacity(0.3),

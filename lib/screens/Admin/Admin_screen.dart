@@ -45,7 +45,7 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        backgroundColor: Colors.black.withOpacity(0.1),
+        backgroundColor: kColorBack,
         body: Row(
           children: [
             SideMenuAdmin(
@@ -74,66 +74,6 @@ class MainSectionContainer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                'مرحبا',
-                style: StyleTextAdmin(16, Colors.white),
-              ),
-              toolbarHeight: MediaQuery.sizeOf(context).height * 0.05,
-              backgroundColor: AdminColor.withOpacity(0.6),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40)),
-              actions: <Widget>[
-                Row(children: [
-                  Container(
-                    width: 300,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          hintText: 'بحث',
-                          hintStyle: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 18,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.black),
-                          suffixIcon: Icon(
-                            Icons.check_circle,
-                            color: AdminColor,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Show Snackbar',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('This is a snackbar')));
-                    },
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        _auth.signOut();
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                      )),
-                ])
-              ],
-            ),
             backgroundColor: const Color.fromARGB(0, 255, 255, 255),
             body: Container(
                 width: double.maxFinite,
@@ -170,31 +110,50 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
         padding: const EdgeInsets.only(top: 10, bottom: 15),
         child: Container(
           decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromARGB(255, 239, 182, 178),
+                // Color.fromARGB(255, 242, 207, 137),
+                Colors.white,
+              ],
+            ),
+            //color: kColor2,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Drawer(
             // Set the background color of the Drawer to transparent
-            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+            backgroundColor: const Color.fromARGB(0, 255, 255, 255),
 
             child: Column(children: [
               Container(
                 alignment: Alignment.topCenter,
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
                 width: double.maxFinite,
-                child: Image(image: AssetImage('assets/images/logo4.png')),
+                child: Image(image: AssetImage('assets/images/name.png')),
               ),
               Column(children: [
                 buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
                   widget.changeMainSection(AddAdmin());
                 }, 0, 1),
+                SizedBox(
+                  height: 5,
+                ),
                 buildListTile(
                     'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined,
                     () {
                   widget.changeMainSection(ListReq());
                 }, notificationCount, 2),
+                SizedBox(
+                  height: 5,
+                ),
                 buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
                   widget.changeMainSection(AddEvent());
                 }, 0, 3),
+                SizedBox(
+                  height: 5,
+                ),
                 buildListTile(
                     'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
                     () {
@@ -230,8 +189,11 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     int index,
   ) {
     return ListTile(
-      contentPadding: EdgeInsets.all(20),
-
+      contentPadding: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
+        // Set shape with rounded corners
+        borderRadius: BorderRadius.circular(30),
+      ),
       leading: Icon(
         icon,
         size: 24,
@@ -253,7 +215,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       },
       selected: _selectedIndex == index,
 
-      selectedTileColor: Colors.white,
+      selectedTileColor: kColorBack,
+      hoverColor: Colors.white,
       // Adjust selected tile color
     );
   }
@@ -262,7 +225,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     if (_selectedIndex == index) {
       return AdminColor; // Use kColor1 when tile is selected
     } else {
-      return Colors.black; // Use white color otherwise
+      return Colors.grey; // Use white color otherwise
     }
   }
 
