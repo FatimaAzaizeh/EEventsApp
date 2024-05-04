@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Vendor/button.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
+
+final _firestore = FirebaseFirestore.instance;
 
 class DrawerVendor extends StatefulWidget {
   const DrawerVendor({Key? key}) : super(key: key);
@@ -154,6 +157,58 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       }
                     },
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        child: IconButton(
+                          onPressed: () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles();
+                            if (result != null) {
+                              fileBytes = result.files.first.bytes;
+                              setState(() async {
+                                showSpinner = true;
+                                fileName = result.files.first.name;
+                                // Upload file to Firebase Storage
+                                final TaskSnapshot uploadTask =
+                                    await FirebaseStorage.instance
+                                        .ref('uploads/$fileName')
+                                        .putData(fileBytes!);
+
+                                // Get download URL of the uploaded file
+                                String imageUrl =
+                                    await uploadTask.ref.getDownloadURL();
+
+                                // Add the download URL to Firestore
+                                await _firestore.collection('image').add({
+                                  'name': imageUrl,
+                                });
+
+                                print('Download URL: $imageUrl');
+                                showSpinner = false;
+                              });
+                            }
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add, size: 16),
+                        ),
+                      ),
+                      Container(
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add, size: 16),
+                        ),
+                      )
+                    ],
                   ),
                   Text(
                     fileName,

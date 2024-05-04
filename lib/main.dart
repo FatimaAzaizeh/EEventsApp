@@ -19,6 +19,7 @@ import 'package:testtapp/screens/chat_screen.dart';
 import 'package:testtapp/screens/loginAdmin.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/login_signup.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
             EventScreen.screenRoute: (context) => EventScreen(),
             ListReq.screenRoute: (context) => ListReq(),
             VendorScreen.screenRoute: (context) => VendorScreen(),
+            LoginSignupScreen.screenRoute: (context) => LoginSignupScreen(),
           },
           home: getHomeWidget(context),
         ));
