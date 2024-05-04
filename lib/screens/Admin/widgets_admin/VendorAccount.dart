@@ -32,6 +32,7 @@ class VendorList extends StatelessWidget {
                 description: doc['Description'],
                 socialMedia: doc['SocialMedia'],
                 state: doc['State'] ?? false,
+                images: [],
               );
             }).toList();
 

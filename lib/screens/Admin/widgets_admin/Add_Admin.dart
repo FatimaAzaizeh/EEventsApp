@@ -85,11 +85,20 @@ class _AddAdminState extends State<AddAdmin> {
                     try {
                       final newUser =
                           await _auth.createUserWithEmailAndPassword(
-                              email: email, password: password);
+                        email: email,
+                        password: password,
+                      );
 
-                      _firestore.collection('adminUser').add({
-                        'Email': email,
-                      });
+                      if (newUser.user != null) {
+                        String? uid = newUser
+                            .user!.uid; // Access the UID from the created user
+
+                        _firestore.collection('user_types').add({
+                          'id': uid,
+                          'name': 'Admin',
+                        });
+                      }
+
                       print('تم اضافة الادمن');
                       setState(() {
                         showSpinner = false;

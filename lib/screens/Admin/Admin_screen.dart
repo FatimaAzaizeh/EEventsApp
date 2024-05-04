@@ -44,14 +44,6 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-            'assets/images/Adm.png',
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
       child: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.1),
         body: Row(
@@ -78,7 +70,7 @@ class MainSectionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 16,
+      flex: 12,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
@@ -182,49 +174,45 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
           ),
           child: Drawer(
             // Set the background color of the Drawer to transparent
-            backgroundColor: AdminColor,
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
 
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 50),
-              child: Column(children: [
-                Container(
-                  alignment: Alignment.topCenter,
-                  padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
-                  width: 200,
-                  child: Image(image: AssetImage('assets/images/name.png')),
-                ),
-                Column(children: [
-                  buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
-                    widget.changeMainSection(AddAdmin());
-                  }, 0, 1),
-                  buildListTile('طلبات إنشاء حسابات الشركاء ',
-                      Icons.add_business_outlined, () {
-                    widget.changeMainSection(ListReq());
-                  }, notificationCount, 2),
-                  buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add,
-                      () {
-                    widget.changeMainSection(AddEvent());
-                  }, 0, 3),
-                  buildListTile(
-                      'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
-                      () {
-                    widget.changeMainSection(VendorPanelScreen());
-                  }, 0, 4),
-                  buildListTile(
-                      'إدارة حسابات الشركاء', Icons.account_circle_outlined,
-                      () {
-                    widget.changeMainSection(VendorList());
-                  }, 0, 5),
-                  buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {
-                    widget.changeMainSection(MyStepperPage());
-                  }, 0, 6),
-                  /*buildListTile('تسجيل الخروج', Icons.logout, () {
-                      _auth.signOut();
-                      Navigator.pop(context);
-                    }, 0, 7),*/
-                ])
-              ]),
-            ),
+            child: Column(children: [
+              Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
+                width: double.maxFinite,
+                child: Image(image: AssetImage('assets/images/logo4.png')),
+              ),
+              Column(children: [
+                buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
+                  widget.changeMainSection(AddAdmin());
+                }, 0, 1),
+                buildListTile(
+                    'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined,
+                    () {
+                  widget.changeMainSection(ListReq());
+                }, notificationCount, 2),
+                buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
+                  widget.changeMainSection(AddEvent());
+                }, 0, 3),
+                buildListTile(
+                    'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
+                    () {
+                  widget.changeMainSection(VendorPanelScreen());
+                }, 0, 4),
+                buildListTile(
+                    'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {
+                  widget.changeMainSection(VendorList());
+                }, 0, 5),
+                buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {
+                  widget.changeMainSection(MyStepperPage());
+                }, 0, 6),
+                /*buildListTile('تسجيل الخروج', Icons.logout, () {
+                    _auth.signOut();
+                    Navigator.pop(context);
+                  }, 0, 7),*/
+              ])
+            ]),
           ),
         ),
       ),
@@ -274,7 +262,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     if (_selectedIndex == index) {
       return AdminColor; // Use kColor1 when tile is selected
     } else {
-      return Colors.white; // Use white color otherwise
+      return Colors.black; // Use white color otherwise
     }
   }
 
@@ -289,7 +277,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
         child: Text(
           count.toString() + '+',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),

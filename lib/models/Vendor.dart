@@ -13,6 +13,7 @@ class Vendor {
   final String? socialMedia;
   final String? description;
   final bool state;
+  final List<String> images;
 
   Vendor({
     required this.CommercialName,
@@ -20,6 +21,7 @@ class Vendor {
     required this.socialMedia,
     required this.description,
     required this.state,
+    required this.images,
   });
 
   String? get id => null;
@@ -47,8 +49,9 @@ class Vendor {
 
       // Add documents to the sub-collection
       await subCollectionRef.add({
-        'field1': 'value1',
-        'field2': 'value2',
+        'Image1': images.first,
+        'Image2': 'hi',
+        'Image3': 'hi',
         // Add more fields as needed
       });
 

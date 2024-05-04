@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:testtapp/screens/login-signup.dart';
+import 'package:testtapp/screens/login_signup.dart';
 
 class AnimatedTextPage extends StatefulWidget {
   static const String screenRoute = 'AnimatedTextPage';
@@ -21,7 +21,7 @@ class _AnimatedTextPageState extends State<AnimatedTextPage> {
   // Function to animate the text
   void startTextAnimation() {
     const text = 'Eeventş';
-    const duration = Duration(milliseconds:700); // Adjust duration as needed
+    const duration = Duration(milliseconds: 700); // Adjust duration as needed
     int index = 0;
 
     Timer.periodic(duration, (Timer timer) {

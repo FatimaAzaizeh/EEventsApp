@@ -175,6 +175,11 @@ class _SignInState extends State<SignIn> {
                                                                 email: email,
                                                                 password:
                                                                     password);
+                                                        String? uid =
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                ?.uid;
                                                         //User
                                                         if (user != null &&
                                                             !admin) {
@@ -194,24 +199,41 @@ class _SignInState extends State<SignIn> {
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
-                                                                      'adminUser')
-                                                                  .where(
-                                                                      'Email',
+                                                                      'users')
+                                                                  .where('id',
                                                                       isEqualTo:
-                                                                          email)
+                                                                          uid)
                                                                   .snapshots();
+
                                                           collectionStream.listen(
                                                               (querySnapshot) {
                                                             // Check if there are documents that match the query
                                                             if (querySnapshot
                                                                 .docs
                                                                 .isNotEmpty) {
-                                                              // User with the specified email exists in the 'adminUser' collection
+                                                              // Iterate through the documents
+                                                              for (QueryDocumentSnapshot<
+                                                                      Map<String,
+                                                                          dynamic>> doc
+                                                                  in querySnapshot
+                                                                      .docs) {
+                                                                // Access the data of each document
+                                                                Map<String,
+                                                                        dynamic>
+                                                                    data =
+                                                                    doc.data();
 
-                                                              Navigator.pushNamed(
-                                                                  context,
-                                                                  AdminScreen
-                                                                      .screenRoute);
+                                                                // Check if the user is an admin
+                                                                if (data[
+                                                                        'user_type'] ==
+                                                                    1) {
+                                                                  Navigator.pushNamed(
+                                                                      context,
+                                                                      AdminScreen
+                                                                          .screenRoute);
+                                                                  return; // Exit the function after navigating
+                                                                }
+                                                              }
                                                             } else {
                                                               // User with the specified email doesn't exist in the 'adminUser' collection
                                                               print(

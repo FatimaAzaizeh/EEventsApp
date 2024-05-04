@@ -10,7 +10,7 @@ import 'package:testtapp/screens/user/home_page.dart';
 import 'package:testtapp/widgets/palette.dart';
 
 class LoginSignupScreen extends StatefulWidget {
-  static const String screenRoute = 'LoginSignupScreen';
+  static const String screenRoute = 'login_signup';
   @override
   _LoginSignupScreenState createState() => _LoginSignupScreenState();
 }
@@ -36,11 +36,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           email: emailSingUpController.text.trim(),
           password: passwordSingUpController.text,
         );
-        CurrentUser newCurrentUser = CurrentUser(
-            Name: NameController.text.toString(),
-            Email: emailSingUpController.text.toString(),
-            Gender: genderController.text.toString());
-        newCurrentUser.addToFirestore();
+        if (newUser.user != null) {
+          String? uid =
+              newUser.user!.uid; // Access the UID from the created user
+
+          CurrentUser newCurrentUser = CurrentUser(
+            UID: uid,
+            email: emailSingUpController.text.toString(),
+            name: NameController.text.toString(),
+            user_type_id: '2',
+            phone: '',
+            addresss: '',
+            is_active: true,
+          );
+          newCurrentUser.addToFirestore();
+        }
 
         Navigator.push(
           context,
