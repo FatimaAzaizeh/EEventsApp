@@ -48,8 +48,11 @@ class _AdminScreenState extends State<AdminScreen> {
         backgroundColor: kColorBack,
         body: Row(
           children: [
-            SideMenuAdmin(
-              changeMainSection: _changeMainSection,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+              child: SideMenuAdmin(
+                changeMainSection: _changeMainSection,
+              ),
             ),
             MainSectionContainer(
                 titleAppBarText: 'nothing', child: _currentMainSection),
@@ -70,17 +73,12 @@ class MainSectionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 12,
+      flex: 14,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
             backgroundColor: const Color.fromARGB(0, 255, 255, 255),
-            body: Container(
-                width: double.maxFinite,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: child,
-                ))),
+            body: child),
       ),
     );
   }
@@ -114,13 +112,21 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color.fromARGB(255, 239, 182, 178),
-                // Color.fromARGB(255, 242, 207, 137),
-                Colors.white,
+                Color.fromARGB(255, 255, 221, 192).withOpacity(0.9),
+                Colors.white.withOpacity(0.1),
               ],
             ),
+            // color: Color.fromARGB(255, 243, 197, 191),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromARGB(0, 96, 96, 96).withOpacity(0.5),
+                spreadRadius: 8,
+                blurRadius: 7,
+                offset: Offset(3, 3), // changes position of shadow
+              ),
+            ],
             //color: kColor2,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Drawer(
             // Set the background color of the Drawer to transparent
@@ -128,17 +134,22 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
 
             child: Column(children: [
               Container(
+                height: MediaQuery.sizeOf(context).height * 0.2,
+                //color: Colors.white,
                 alignment: Alignment.topCenter,
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
                 width: double.maxFinite,
-                child: Image(image: AssetImage('assets/images/name.png')),
+                child: Image(
+                  image: AssetImage('assets/images/logo99.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
-              Column(children: [
+              Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                 buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
                   widget.changeMainSection(AddAdmin());
                 }, 0, 1),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 buildListTile(
                     'طلبات إنشاء حسابات الشركاء ', Icons.add_business_outlined,
@@ -146,26 +157,35 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   widget.changeMainSection(ListReq());
                 }, notificationCount, 2),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {
                   widget.changeMainSection(AddEvent());
                 }, 0, 3),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 buildListTile(
                     'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
                     () {
                   widget.changeMainSection(VendorPanelScreen());
                 }, 0, 4),
+                SizedBox(
+                  height: 20,
+                ),
                 buildListTile(
                     'إدارة حسابات الشركاء', Icons.account_circle_outlined, () {
                   widget.changeMainSection(VendorList());
                 }, 0, 5),
+                SizedBox(
+                  height: 20,
+                ),
                 buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {
                   widget.changeMainSection(MyStepperPage());
                 }, 0, 6),
+                SizedBox(
+                  height: 20,
+                ),
                 /*buildListTile('تسجيل الخروج', Icons.logout, () {
                     _auth.signOut();
                     Navigator.pop(context);
@@ -192,20 +212,19 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       contentPadding: EdgeInsets.all(10),
       shape: RoundedRectangleBorder(
         // Set shape with rounded corners
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(10),
       ),
       leading: Icon(
-        icon,
-        size: 24,
-        color: _getTileColor(index),
+        icon, size: 28, color: _getTileColor(index),
+        shadows: [Shadow(color: _getTileColor(index), offset: Offset(0, 2))],
+        //_getTileColor(index),
       ),
       title: Text(
         title,
-        style: StyleTextAdmin(16, _getTileColor(index)),
-        maxLines: 1,
+        style: StyleTextAdmin(18, _getTileColor(index)),
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: _buildNotificationBadge(notificationCount ?? 0),
 
       onTap: () {
         setState(() {
@@ -216,39 +235,16 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       selected: _selectedIndex == index,
 
       selectedTileColor: kColorBack,
-      hoverColor: Colors.white,
+      hoverColor: const Color.fromARGB(255, 104, 102, 102),
       // Adjust selected tile color
     );
   }
 
   Color _getTileColor(int index) {
     if (_selectedIndex == index) {
-      return AdminColor; // Use kColor1 when tile is selected
+      return Colors.black; // Use kColor1 when tile is selected
     } else {
-      return Colors.grey; // Use white color otherwise
-    }
-  }
-
-  Widget _buildNotificationBadge(int count) {
-    if (count > 0) {
-      return Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color.fromARGB(176, 0, 0, 0),
-        ),
-        child: Text(
-          count.toString() + '+',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      );
-    } else {
-      return SizedBox
-          .shrink(); // Return an empty SizedBox if count is 0 or less
+      return Color.fromARGB(255, 68, 67, 67); // Use white color otherwise
     }
   }
 }

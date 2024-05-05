@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 //The colors to be used in the app and the required padding space.
 //"The main color of the app."
@@ -22,10 +24,12 @@ const AdminColor = kColor1;
 
 //admin/Vendor  color
 const kColorBack = Color.fromARGB(255, 236, 232, 232);
-const kColorMenu = Color.fromARGB(255, 246, 242, 242);
+
 const kColorPress = Color.fromARGB(255, 231, 195, 189);
 const kColorIcon = Color.fromARGB(255, 222, 164, 162);
 
+const AdminButton = Color.fromARGB(255, 68, 67, 67);
+const AdminMenu = Color.fromARGB(255, 243, 197, 191);
 const List<Color> gradientColors = [kColor0, kColor1, kColor2, kColor3];
 
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {
