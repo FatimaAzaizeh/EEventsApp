@@ -111,8 +111,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.9),
                 kColor2,
+                Colors.white.withOpacity(0.9),
               ],
             ),
             // color: Color.fromARGB(255, 243, 197, 191),
