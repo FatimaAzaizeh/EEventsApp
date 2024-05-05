@@ -111,8 +111,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color.fromARGB(255, 255, 221, 192).withOpacity(0.9),
-                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.9),
+                kColor2,
               ],
             ),
             // color: Color.fromARGB(255, 243, 197, 191),
@@ -133,13 +133,13 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
 
             child: Column(children: [
               Container(
-                height: MediaQuery.sizeOf(context).height * 0.2,
+                height: MediaQuery.sizeOf(context).height * 0.3,
                 //color: Colors.white,
                 alignment: Alignment.topCenter,
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
                 width: double.maxFinite,
                 child: Image(
-                  image: AssetImage('assets/images/logo99.png'),
+                  image: AssetImage('assets/images/logo9.png'),
                   fit: BoxFit.cover,
                 ),
               ),
