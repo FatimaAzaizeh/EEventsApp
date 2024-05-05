@@ -31,7 +31,11 @@ const kColorIcon = Color.fromARGB(255, 222, 164, 162);
 const AdminButton = Color.fromARGB(255, 68, 67, 67);
 const AdminMenu = Color.fromARGB(255, 243, 197, 191);
 const List<Color> gradientColors = [kColor0, kColor1, kColor2, kColor3];
-
+const Color iconColor = Color.fromARGB(255, 149, 164, 173);
+const Color activeColor = Color(0xFF09126C);
+const Color textColor1 = Color.fromARGB(255, 104, 118, 125);
+const Color textColor2 = Color.fromARGB(255, 106, 124, 125);
+const Color googleColor = Color(0xFFDE4B39);
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {
   return TextStyle(
       fontFamily: 'Marhey',
