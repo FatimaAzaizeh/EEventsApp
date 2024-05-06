@@ -124,7 +124,7 @@ class _VendorCardState extends State<VendorCard> {
               CircleAvatar(
                 radius: 32,
                 backgroundImage: NetworkImage(widget.vendor.email ?? ''),
-                backgroundColor: AdminColor,
+                backgroundColor: ColorPink_100,
               ),
               Switch(
                 value: _currentValue,
@@ -144,7 +144,7 @@ class _VendorCardState extends State<VendorCard> {
                       cancelBtnTextStyle:
                           TextStyle(fontSize: 16, color: Colors.grey),
                       cancelBtnText: 'لا',
-                      confirmBtnColor: AdminColor,
+                      confirmBtnColor: kColorBack,
                       customAsset: 'assets/images/logo.png',
                       onConfirmBtnTap: () {
                         _updateValue(value);
@@ -156,7 +156,7 @@ class _VendorCardState extends State<VendorCard> {
                     );
                   });
                 },
-                activeColor: AdminColor,
+                activeColor: Colors.amber,
                 inactiveTrackColor: Colors.grey,
                 inactiveThumbColor: Colors.white,
               ),

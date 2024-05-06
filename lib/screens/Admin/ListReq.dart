@@ -154,7 +154,7 @@ class ListReq extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check_circle,
-                          color: AdminColor,
+                          color: AdminButton,
                         ), // Icon to display
                         Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
                         Text('موافقة'),

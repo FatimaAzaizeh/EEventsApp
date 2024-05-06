@@ -20,7 +20,6 @@ final _auth = FirebaseAuth.instance;
 //kColor1.withOpacity(0.2);
 Color BackgroundAdminPage = Colors.white.withOpacity(0.6);
 final TextEditingController ControllerSearch = TextEditingController();
-final List<Color> gradientColors = [kColor0, kColor1, kColor2, kColor3];
 
 class VendorScreen extends StatefulWidget {
   static const String screenRoute = 'Vendo_screen';
@@ -88,7 +87,7 @@ class MainSectionContainer extends StatelessWidget {
                 style: StyleTextAdmin(16, Colors.white),
               ),
               toolbarHeight: MediaQuery.sizeOf(context).height * 0.05,
-              backgroundColor: AdminColor.withOpacity(0.6),
+              backgroundColor: Colors.white.withOpacity(0.6),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40)),
               actions: <Widget>[
@@ -111,7 +110,7 @@ class MainSectionContainer extends StatelessWidget {
                               color: Colors.black),
                           suffixIcon: Icon(
                             Icons.check_circle,
-                            color: AdminColor,
+                            color: Colors.white,
                           ),
                           filled: true,
                           fillColor: Colors.white,
@@ -182,7 +181,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
           ),
           child: Drawer(
             // Set the background color of the Drawer to transparent
-            backgroundColor: AdminColor,
+            backgroundColor: Colors.white,
 
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 50),
@@ -201,10 +200,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                       Icons.add_business_outlined, () {
                     widget.changeMainSection(ListReq());
                   }, notificationCount, 2),
-                  buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add,
-                      () {
-                    widget.changeMainSection(AddEvent());
-                  }, 0, 3),
+                  buildListTile(
+                      'تسجيل حدث أو مناسبة جديدة', Icons.post_add, () {}, 0, 3),
                   buildListTile(
                       'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
                       () {
@@ -271,7 +268,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
 
   Color _getTileColor(int index) {
     if (_selectedIndex == index) {
-      return AdminColor; // Use kColor1 when tile is selected
+      return Colors.white; // Use kColor1 when tile is selected
     } else {
       return Colors.white; // Use white color otherwise
     }

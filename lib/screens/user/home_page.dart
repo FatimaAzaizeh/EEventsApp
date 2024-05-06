@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 50.0,
                 fontWeight: FontWeight.bold,
-                color: kColor2,
+                color: Colors.white,
               ),
             ),
           ),
@@ -64,8 +64,9 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pushNamed(context, 'Event_screen');
                       },
                       label: 'Choose your event',
-                      color: kColor0,
-                      borderColor: kColor0, // Use the same color as the text
+                      color: Colors.white,
+                      borderColor:
+                          Colors.white, // Use the same color as the text
                     ),
                   ),
                   SizedBox(height: 16.0),
@@ -75,8 +76,9 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pushNamed(context, FreeShopping.screenRoute);
                       },
                       label: 'Free shopping',
-                      color: kColor1,
-                      borderColor: kColor1, // Use the same color as the text
+                      color: Colors.white,
+                      borderColor:
+                          Colors.white, // Use the same color as the text
                     ),
                   ),
                 ],

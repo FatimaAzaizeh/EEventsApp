@@ -33,7 +33,7 @@ class _AddAdminState extends State<AddAdmin> {
       height: double.maxFinite,
       decoration: BoxDecoration(
           borderRadius: BorderRadiusDirectional.circular(5),
-          color: Colors.white,
+          color: ColorPurple_70,
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(96, 96, 96,

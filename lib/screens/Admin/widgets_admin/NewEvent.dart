@@ -274,7 +274,7 @@ class _AddEventState extends State<AddEvent> {
                     width: double.maxFinite,
                     margin: EdgeInsets.only(bottom: 90),
                     child: FloatingActionButton(
-                      backgroundColor: kColor1,
+                      backgroundColor: ColorPink_100,
                       child: Text('إضافة مناسبة',
                           style: TextStyle(
                               fontFamily: 'Amiri',
