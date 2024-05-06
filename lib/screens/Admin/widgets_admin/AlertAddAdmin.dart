@@ -135,7 +135,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
               ),
               onPressed: () async {
                 setState(() {
-                  showSpinner = true;
+                  showSpinner = true; //ما ببين في مشكلة
                 });
 
                 try {
@@ -172,6 +172,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     showSpinner = false;
                     ControllerEmail.clear();
                     ControllerPassword.clear();
+                    fileBytes = null;
                     QuickAlert.show(
                         context: context,
                         customAsset: 'assets/images/Completionanimation.gif',
