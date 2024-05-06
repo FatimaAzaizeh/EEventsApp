@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Side_menu.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
@@ -129,7 +130,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 40,
-                      child: Image.network(
+                      backgroundImage: NetworkImage(
                           'https://firebasestorage.googleapis.com/v0/b/eeventsapp-183f1.appspot.com/o/profile.png?alt=media&token=b1db5f64-430e-4aac-81f2-1beb47c316c6'),
                     ),
                   ),
@@ -205,7 +206,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 title: 'إدارة الأصناف والخدمات ',
                 icon: Icons.add_task,
                 onPress: () {
-                  widget.changeMainSection(VendorList());
+                  widget.changeMainSection(AllAdmin());
                 },
                 index: 6,
               ),
