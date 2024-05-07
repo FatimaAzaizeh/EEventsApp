@@ -189,7 +189,7 @@ class _SignInState extends State<SignIn> {
                                                                   .instance
                                                                   .collection(
                                                                       'users')
-                                                                  .where('UID',
+                                                                  .where('id',
                                                                       isEqualTo:
                                                                           uid)
                                                                   .snapshots();
@@ -214,7 +214,7 @@ class _SignInState extends State<SignIn> {
 
                                                                 // Check if the user is an admin
                                                                 if (data[
-                                                                        'user_type'] ==
+                                                                        'user_type_id'] ==
                                                                     '1') {
                                                                   Navigator.pushNamed(
                                                                       context,

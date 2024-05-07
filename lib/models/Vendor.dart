@@ -1,63 +1,66 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-import 'package:testtapp/constants.dart';
-
-final _firestore = FirebaseFirestore.instance;
-
-// Define a Vendor class to hold Firestore document data
 class Vendor {
-  final String? CommercialName;
-  final String? email;
-  final String? socialMedia;
-  final String? description;
-  final bool state;
-  final List<String> images;
+  String id;
+  String businessName;
+  String email;
+  String contactNumber;
+  String logoUrl;
+  String instagramUrl;
+  String website;
+  String bio;
+  String serviceTypesId;
+  String businessTypesId;
+  String address;
+  String locationUrl;
+  String workingHourFrom;
+  String workingHourTo;
+  String verificationCode;
+  Timestamp createdAt;
+  int vendorStatusId;
 
   Vendor({
-    required this.CommercialName,
+    required this.id,
+    required this.businessName,
     required this.email,
-    required this.socialMedia,
-    required this.description,
-    required this.state,
-    required this.images,
+    required this.contactNumber,
+    required this.logoUrl,
+    required this.instagramUrl,
+    required this.website,
+    required this.bio,
+    required this.serviceTypesId,
+    required this.businessTypesId,
+    required this.address,
+    required this.locationUrl,
+    required this.workingHourFrom,
+    required this.workingHourTo,
+    required this.verificationCode,
+    required this.createdAt,
+    required this.vendorStatusId,
   });
-
-  String? get id => null;
 
   Future<void> addToFirestore() async {
     // Generate a new document ID (automatically provided by Firestore)
-    String documentId = _firestore.collection('VendorRequest').doc().id;
+    String documentId =
+        FirebaseFirestore.instance.collection('vendor').doc().id;
     // Use the generated document ID to set the document in Firestore
-    await _firestore.collection('VendorRequest').doc(documentId).set({
-      'CommercialName': this.CommercialName,
-      'Email': this.email,
-      'Description': this.description,
-      'SocialMedia': this.socialMedia,
-      'State': false,
-      'ImageUrl': "ImageVendor",
+    await FirebaseFirestore.instance.collection('vendor').doc(documentId).set({
+      'business_name': businessName,
+      'email': email,
+      'contact_number': contactNumber,
+      'logo_url': logoUrl,
+      'instagram_url': instagramUrl,
+      'website': website,
+      'bio': bio,
+      'service_types_id': serviceTypesId,
+      'business_types_id': businessTypesId,
+      'address': address,
+      'location_url': locationUrl,
+      'working_hour_from': workingHourFrom,
+      'working_hour_to': workingHourTo,
+      'verification_code': verificationCode,
+      'created_at': createdAt,
+      'vendor_status_id': vendorStatusId,
     });
-
-    try {
-      DocumentReference parentDocumentRef =
-          _firestore.collection('VendorRequest').doc(documentId);
-
-      // Reference to the sub-collection you want to create
-      CollectionReference subCollectionRef =
-          parentDocumentRef.collection('ImageVendor');
-
-      // Add documents to the sub-collection
-      await subCollectionRef.add({
-        'Image1': images.first,
-        'Image2': 'hi',
-        'Image3': 'hi',
-        // Add more fields as needed
-      });
-
-      print('Sub-collection created successfully.');
-    } catch (error) {
-      print('Error creating sub-collection: $error');
-    }
   }
 }

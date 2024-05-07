@@ -311,25 +311,6 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           showSpinner = true;
                         });
                         // Handle sign up logic
-
-                        Vendor vendorNew = Vendor(
-                          CommercialName: _commercialName.text,
-                          email: _emailController.text,
-                          socialMedia: _socialMedia.text,
-                          description: _description.text,
-                          state: false,
-                          images: images,
-                        );
-                        vendorNew.addToFirestore();
-
-                        _commercialName.clear();
-                        _emailController.clear();
-                        _passwordController.clear();
-                        _socialMedia.clear();
-                        _description.clear();
-                        setState(() {
-                          showSpinner = false;
-                        });
                       },
                       child: Text('تقديم الطلب'),
                     ),

@@ -197,7 +197,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 icon: Icons.account_circle_outlined,
                 onPress: () {
                   setState(() {});
-                  widget.changeMainSection(VendorList());
+                  // widget.changeMainSection(VendorList());
                 },
                 index: 5,
               ),
@@ -217,7 +217,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 onPress: () {
                   _auth.signOut();
                   Navigator.pop(context);
-                  widget.changeMainSection(VendorList());
+                  //   widget.changeMainSection(VendorList());
                 },
                 index: 7,
               ),

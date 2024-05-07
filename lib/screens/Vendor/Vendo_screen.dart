@@ -210,7 +210,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   buildListTile(
                       'إدارة حسابات الشركاء', Icons.account_circle_outlined,
                       () {
-                    widget.changeMainSection(VendorList());
+                    //  widget.changeMainSection(VendorList());
                   }, 0, 5),
                   buildListTile(
                       'إدارة الأصناف والخدمات ', Icons.add_task, () {}, 0, 6),
