@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,9 @@ import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
 final _auth = FirebaseAuth.instance;
-
+String userName = "name";
+String userEmail = "email";
+String userImage = "";
 final TextEditingController ControllerSearch = TextEditingController();
 
 class AdminScreen extends StatefulWidget {
@@ -24,7 +27,51 @@ class AdminScreen extends StatefulWidget {
   State<AdminScreen> createState() => _AdminScreenState();
 }
 
+Future<void> getCurrentUserInfo() async {
+  String uid = _auth.currentUser!.uid;
+
+  DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .where('id', isEqualTo: uid)
+      .get()
+      .then((querySnapshot) => querySnapshot.docs.first);
+
+  if (userSnapshot.exists) {
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+    userName = userData['name'] ??
+        ''; // Save the 'name' field from the user data, or null if it's null
+    userEmail = userData['email'] ??
+        ''; // Save the 'email' field from the user data, or null if it's null
+    userImage = userData['Image_url'];
+  }
+}
+
 class _AdminScreenState extends State<AdminScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    initialize();
+  }
+
+  void initialize() async {
+    await getCurrentUserInfo(); // Wait for getCurrentUserInfo() to complete
+    if (userName != null && userEmail != null) {
+      setState(() {
+        userName;
+        userEmail;
+        userImage;
+      });
+      print('User Name: $userName');
+      print('User Email: $userEmail');
+      // Continue with your initialization logic here
+    } else {
+      print('User data not available.');
+      // Handle the case where user data is not available
+    }
+  }
+
   Widget _currentMainSection = Container();
 
   void _changeMainSection(Widget newSection) {
@@ -130,15 +177,14 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 40,
-                      backgroundImage: NetworkImage(
-                          'https://firebasestorage.googleapis.com/v0/b/eeventsapp-183f1.appspot.com/o/profile.png?alt=media&token=b1db5f64-430e-4aac-81f2-1beb47c316c6'),
+                      backgroundImage: NetworkImage(userImage),
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'name',
+                        userName,
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -148,7 +194,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                         height: 8,
                       ),
                       Text(
-                        'email',
+                        userEmail,
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                     ],
