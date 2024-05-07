@@ -1,114 +1,81 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/models/Vendor.dart';
 
-class VendorList extends StatelessWidget {
+bool state = true;
+
+class VendorList extends StatefulWidget {
+  static const String screenRoute = 'VendorAccount';
   const VendorList({Key? key}) : super(key: key);
 
   @override
+  State<VendorList> createState() => _VendorListState();
+}
+
+class _VendorListState extends State<VendorList> {
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: kDefaultPadding),
-        StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('VendorRequest')
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
+    return Container(
+      height: double.maxFinite,
+      width: double.maxFinite,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('vendor')
+            .where('vendor_status_id', isEqualTo: '2')
+            .snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          final vendors = snapshot.data?.docs
+                  .map((doc) => doc.data() as Map<String, dynamic>)
+                  .toList() ??
+              [];
 
-            final List<Vendor> vendors = snapshot.data!.docs.map((doc) {
-              return Vendor(
-                CommercialName: doc['CommercialName'],
-                email: doc['Email'],
-                description: doc['Description'],
-                socialMedia: doc['SocialMedia'],
-                state: doc['State'] ?? false,
-                images: [],
-              );
-            }).toList();
-
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: vendors.map((vendor) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: kDefaultPadding),
-                    child: VendorCard(
-                      vendor: vendor,
-                    ),
-                  );
-                }).toList(),
-              ),
-            );
-          },
-        ),
-      ],
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: vendors.map((vendorData) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: VendorCard(vendorData: vendorData),
+                );
+              }).toList(),
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
 class VendorCard extends StatefulWidget {
-  final Vendor vendor;
+  final Map<String, dynamic> vendorData;
 
-  const VendorCard({
-    Key? key,
-    required this.vendor,
-  }) : super(key: key);
+  const VendorCard({Key? key, required this.vendorData}) : super(key: key);
 
   @override
   State<VendorCard> createState() => _VendorCardState();
 }
 
 class _VendorCardState extends State<VendorCard> {
-  late bool _currentValue;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentValue = widget.vendor.state ?? false;
-  }
-
-  void _updateValue(bool newValue) async {
-    setState(() {
-      _currentValue = newValue;
-    });
-
-    try {
-      await FirebaseFirestore.instance
-          .collection('Vendors')
-          .doc(widget.vendor
-              .id) // Assuming you have an 'id' field in your Vendor model
-          .update({'State': newValue});
-
-      print('Vendor state updated successfully!');
-    } catch (error) {
-      print('Error updating vendor state: $error');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 250,
       height: 300,
-      padding: EdgeInsets.all(kDefaultPadding),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 4,
-            blurRadius: 3,
+            color: Colors.grey.withOpacity(0.4),
+            spreadRadius: 8,
+            blurRadius: 7,
             offset: Offset(0, 3),
           ),
         ],
@@ -117,66 +84,39 @@ class _VendorCardState extends State<VendorCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                radius: 32,
-                backgroundImage: NetworkImage(widget.vendor.email ?? ''),
-                backgroundColor: ColorPink_100,
-              ),
-              Switch(
-                value: _currentValue,
-                onChanged: (value) {
-                  setState(() {
-                    QuickAlert.show(
-                      width: 300,
-                      context: context,
-                      type: QuickAlertType.confirm,
-                      barrierDismissible: false,
-                      title: _currentValue
-                          ? 'هل أنت متأكد من إلغاء نشاط هذا الحساب؟'
-                          : 'هل أنت متأكد من إعادة تنشيط هذا الحساب؟',
-                      confirmBtnText: 'نعم',
-                      confirmBtnTextStyle:
-                          TextStyle(fontSize: 16, color: Colors.white),
-                      cancelBtnTextStyle:
-                          TextStyle(fontSize: 16, color: Colors.grey),
-                      cancelBtnText: 'لا',
-                      confirmBtnColor: kColorBack,
-                      customAsset: 'assets/images/logo.png',
-                      onConfirmBtnTap: () {
-                        _updateValue(value);
-                        Navigator.of(context).pop();
-                      },
-                      onCancelBtnTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  });
-                },
-                activeColor: Colors.amber,
-                inactiveTrackColor: Colors.grey,
-                inactiveThumbColor: Colors.white,
-              ),
-            ],
+          CircleAvatar(
+            radius: 32,
+            backgroundImage: NetworkImage(widget.vendorData['logo_url'] ?? ''),
+            backgroundColor: Colors.pink[100],
+          ),
+          Switch(
+            value: state,
+            onChanged: (value) {
+              widget.vendorData['vendor_status_id'] = '3';
+              setState(() {
+                state = false;
+              });
+              // Handle switch change here
+            },
+            activeColor: ColorPink_100,
+            inactiveTrackColor: Colors.grey,
+            inactiveThumbColor: Colors.white,
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 15),
             child: Text(
-              widget.vendor.CommercialName ?? '',
+              widget.vendorData['business_name'] ?? '',
               style: TextStyle(fontSize: 20, color: Colors.black),
               textAlign: TextAlign.right,
             ),
           ),
           Text(
-            widget.vendor.description ?? '',
+            widget.vendorData['bio'] ?? '',
             style: TextStyle(fontSize: 15, color: Colors.black),
           ),
-          SizedBox(height: kDefaultPadding / 2),
+          SizedBox(height: 8),
           Text(
-            widget.vendor.description ?? '',
+            widget.vendorData['instagram_url'] ?? '',
             maxLines: 4,
             style: TextStyle(fontSize: 14, color: Colors.black),
             overflow: TextOverflow.ellipsis,
@@ -184,7 +124,7 @@ class _VendorCardState extends State<VendorCard> {
           TextButton(
             onPressed: () {},
             child: Text(
-              ' المزيد من المعلومات ...',
+              'More Information...',
               style: TextStyle(fontSize: 12, color: Colors.black),
             ),
           ),
@@ -193,4 +133,3 @@ class _VendorCardState extends State<VendorCard> {
     );
   }
 }
-*/

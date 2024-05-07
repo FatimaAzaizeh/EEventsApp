@@ -41,10 +41,11 @@ class Vendor {
 
   Future<void> addToFirestore() async {
     // Generate a new document ID (automatically provided by Firestore)
-    String documentId =
-        FirebaseFirestore.instance.collection('vendor').doc().id;
+    CollectionReference vendor =
+        FirebaseFirestore.instance.collection('vendor');
     // Use the generated document ID to set the document in Firestore
-    await FirebaseFirestore.instance.collection('vendor').doc(documentId).set({
+    await vendor.add({
+      'id': id,
       'business_name': businessName,
       'email': email,
       'contact_number': contactNumber,
@@ -62,5 +63,37 @@ class Vendor {
       'created_at': createdAt,
       'vendor_status_id': vendorStatusId,
     });
+  }
+
+  static Future<void> updateStatusIdInFirestore(
+      String new_vendor_status_id, String id) async {
+    try {
+      // Get a reference to the document you want to update
+// Get a reference to the document you want to update
+      // Get a reference to the document you want to update
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('vendor')
+          .where('UID', isEqualTo: id)
+          .get();
+
+      // Check if any documents match the query
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first document (assuming id is unique)
+        DocumentSnapshot docSnapshot = querySnapshot.docs.first;
+        // Get the reference to the document
+        DocumentReference vendorRef = docSnapshot.reference;
+
+        // Update the bio field of the document
+        await vendorRef.update({
+          'vendor_status_id': '2',
+        });
+
+        print(' updated successfully');
+      } else {
+        print('No document found with id: $id');
+      }
+    } catch (error) {
+      print('Error updating : $error');
+    }
   }
 }

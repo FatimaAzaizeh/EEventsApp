@@ -12,6 +12,9 @@ import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/email_acceptance.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/email_send.dart';
 
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
@@ -64,6 +67,8 @@ class MyApp extends StatelessWidget {
         ListReq.screenRoute: (context) => ListReq(),
         VendorScreen.screenRoute: (context) => VendorScreen(),
         AllAdmin.screenRoute: (context) => AllAdmin(),
+        SendEmail.screenRoute: (context) => SendEmail(),
+        VendorList.screenRoute: (context) => VendorList(),
       },
       home: AdminLogin(),
     );

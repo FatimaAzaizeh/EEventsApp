@@ -242,7 +242,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 title: 'إدارة حسابات الشركاء',
                 icon: Icons.account_circle_outlined,
                 onPress: () {
-                  setState(() {});
+                  setState(() {
+                    widget.changeMainSection(VendorList());
+                  });
                   // widget.changeMainSection(VendorList());
                 },
                 index: 5,
