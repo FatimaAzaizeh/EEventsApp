@@ -10,7 +10,6 @@ import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
 
 import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
@@ -30,8 +29,7 @@ class VendorScreen extends StatefulWidget {
 }
 
 class _VendorScreenState extends State<VendorScreen> {
-  Widget _currentMainSection =
-      mainSectionAdmin(); // Initially set to mainSectionAdmin
+  Widget _currentMainSection = Container(); // Initially set to mainSectionAdmin
 
   @override
   void _changeMainSection(Widget newSection) {

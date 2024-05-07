@@ -9,7 +9,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/Side_menu.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
+
 import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
 final _auth = FirebaseAuth.instance;
@@ -25,7 +25,7 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
-  Widget _currentMainSection = mainSectionAdmin();
+  Widget _currentMainSection = Container();
 
   void _changeMainSection(Widget newSection) {
     setState(() {
