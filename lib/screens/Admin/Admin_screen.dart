@@ -119,7 +119,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
                 width: double.maxFinite,
                 child: Image(
-                  image: AssetImage('assets/images/image.png'),
+                  image: AssetImage('assets/images/Logo.png'),
                   fit: BoxFit.cover,
                 ),
               ),

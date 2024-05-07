@@ -68,27 +68,15 @@ class _SignInState extends State<SignIn> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          height: 70,
-                                          width: 70,
+                                          height: 100,
+                                          width: 200,
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                               image: AssetImage(
-                                                  'assets/images/logo.png'),
+                                                  'assets/images/Logo.png'),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          top: 0,
-                                          left: 0,
-                                          right: 0,
-                                          child: Container(
-                                              height: 180,
-                                              child: Center(
-                                                  child: Text(
-                                                'Eeventş',
-                                                style: TextStyle(fontSize: 40),
-                                              ))),
                                         ),
                                         SizedBox(height: 10),
                                         Text('البريد الالكتروني'),
@@ -164,7 +152,7 @@ class _SignInState extends State<SignIn> {
                                                   ButtonDesign(
                                                     color: Color.fromARGB(
                                                         245, 242, 194, 164),
-                                                    title: 'Sign in',
+                                                    title: 'تسجيل الدخول ',
                                                     onPressed: () async {
                                                       setState(() {
                                                         showSpinner = true;

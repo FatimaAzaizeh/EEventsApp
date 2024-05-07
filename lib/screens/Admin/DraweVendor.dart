@@ -2,15 +2,21 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Vendor/button.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
 final _firestore = FirebaseFirestore.instance;
+Uint8List? fileBytes;
+String fileName = "لم يتم اختيار صورة ";
 
 class DrawerVendor extends StatefulWidget {
   const DrawerVendor({Key? key}) : super(key: key);
@@ -25,7 +31,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
   final TextEditingController _commercialName = TextEditingController();
   final TextEditingController _socialMedia = TextEditingController();
   final TextEditingController _description = TextEditingController();
-
+  late String imageUrl;
   String email = '';
   String socialMedia = '';
   String commercialName = '';
@@ -35,6 +41,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
   Uint8List? fileBytes;
   bool showSpinner = false;
   List<String> images = [];
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -146,8 +153,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
 
                           // Get download URL of the uploaded file
 
-                          String imageUrl =
-                              await uploadTask.ref.getDownloadURL();
+                          imageUrl = await uploadTask.ref.getDownloadURL();
 
                           images.add(imageUrl);
                           images.add(imageUrl);
@@ -218,6 +224,75 @@ class _DrawerVendorState extends State<DrawerVendor> {
                     ),
                   ),
                   SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: const ButtonStyle(
+                          animationDuration: Durations.long3,
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.black)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('إنشاء حساب  ',
+                            style: StyleTextAdmin(17, Colors.white)),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          showSpinner = true; //ما ببين في مشكلة
+                        });
+
+                        try {
+                          final newUser =
+                              await _auth.createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+                          // Upload file to Firebase Storage
+                          final TaskSnapshot uploadTask = await FirebaseStorage
+                              .instance
+                              .ref('uploads/$fileName')
+                              .putData(fileBytes!);
+
+                          // Get download URL of the uploaded file
+                          imageUrl = await uploadTask.ref.getDownloadURL();
+
+                          // Add the download URL to Firestore
+                          if (newUser.user != null) {
+                            String? uid = newUser.user!
+                                .uid; // Access the UID from the created user
+                            UserDataBase newuser = UserDataBase(
+                              id: uid,
+                              email: _emailController.text,
+                              name: _commercialName.text,
+                              user_type_id: '3',
+                              phone: '',
+                              address: '',
+                              isActive: false,
+                              imageUrl: imageUrl,
+                            );
+                            await newuser.saveToDatabase();
+                          }
+
+                          setState(() {
+                            showSpinner = false;
+                            _emailController.clear();
+                            _passwordController.clear();
+                            fileBytes = null;
+                            QuickAlert.show(
+                                context: context,
+                                customAsset:
+                                    'assets/images/Completionanimation.gif',
+                                width: 300,
+                                title: 'تم إضافة $email',
+                                type: QuickAlertType.success,
+                                confirmBtnText: 'إغلاق');
+                          });
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                    ),
+                  ),
                   Container(
                     width: double.maxFinite,
                     child: ElevatedButton(
