@@ -121,13 +121,7 @@ class _VendorCardState extends State<VendorCard> {
             style: TextStyle(fontSize: 14, color: Colors.black),
             overflow: TextOverflow.ellipsis,
           ),
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'More Information...',
-              style: TextStyle(fontSize: 12, color: Colors.black),
-            ),
-          ),
+         
         ],
       ),
     );

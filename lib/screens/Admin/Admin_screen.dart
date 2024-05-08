@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/Side_menu.dart';
+
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
@@ -202,76 +202,117 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 ],
               ),
               Divider(),
-              BuildListTile(
-                title: 'أضافة مسؤول جديد',
-                icon: Icons.person_add_alt,
-                onPress: () {
+              buildListTile(
+                'أضافة مسؤول جديد',
+                Icons.person_add_alt,
+                () {
                   widget.changeMainSection(AddAdmin());
                 },
-                index: 1,
+                1,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'طلبات إنشاء حسابات الشركاء ',
-                icon: Icons.add_business_outlined,
-                onPress: () {
+              buildListTile(
+                'طلبات إنشاء حسابات الشركاء ',
+                Icons.add_business_outlined,
+                () {
                   widget.changeMainSection(ListReq());
                 },
-                index: 2,
+                2,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'تسجيل حدث أو مناسبة جديدة',
-                icon: Icons.post_add,
-                onPress: () {
+              buildListTile(
+                'تسجيل حدث أو مناسبة جديدة',
+                Icons.post_add,
+                () {
                   widget.changeMainSection(AddEvent());
                 },
-                index: 3,
+                3,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'الخدمات الخاصة بالمناسبات',
-                icon: Icons.room_service_outlined,
-                onPress: () {
+              buildListTile(
+                'الخدمات الخاصة بالمناسبات',
+                Icons.room_service_outlined,
+                () {
                   widget.changeMainSection(AddEvent());
                 },
-                index: 4,
+                4,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'إدارة حسابات الشركاء',
-                icon: Icons.account_circle_outlined,
-                onPress: () {
+              buildListTile(
+                'إدارة حسابات الشركاء',
+                Icons.account_circle_outlined,
+                () {
                   setState(() {
                     widget.changeMainSection(VendorList());
                   });
                   // widget.changeMainSection(VendorList());
                 },
-                index: 5,
+                5,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'إدارة الأصناف والخدمات ',
-                icon: Icons.add_task,
-                onPress: () {
+              buildListTile(
+                'إدارة الأصناف والخدمات ',
+                Icons.add_task,
+                () {
                   widget.changeMainSection(AllAdmin());
                 },
-                index: 6,
+                6,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
-              BuildListTile(
-                title: 'تسجيل الخروج',
-                icon: Icons.logout,
-                onPress: () {
+              buildListTile(
+                'تسجيل الخروج',
+                Icons.logout,
+                () {
                   _auth.signOut();
                   Navigator.pop(context);
                   //   widget.changeMainSection(VendorList());
                 },
-                index: 7,
+                7,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  int _selectedIndex =
+      -1; // Track the selected index, -1 means none is selected
+
+  Expanded buildListTile(
+      String title, IconData icon, Function() onPress, int index) {
+    return Expanded(
+      child: ListView(
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            leading: Icon(
+              icon,
+              size: 28,
+              color: Colors.black, // Color changes based on the selection
+              shadows: [BoxShadow(color: Colors.black, offset: Offset(0, 2))],
+            ),
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 18, color: Colors.black),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () {
+              setState(() {
+                _selectedIndex = index; // Update the selected index
+                onPress();
+              });
+            },
+            selected: _selectedIndex == index,
+            selectedTileColor: Colors.white,
+            hoverColor: Colors.white,
+          ),
+          // Add more ListTiles if needed
+        ],
       ),
     );
   }
