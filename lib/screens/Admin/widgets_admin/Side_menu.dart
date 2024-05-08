@@ -23,33 +23,40 @@ class _BuildListTileState extends State<BuildListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      leading: Icon(
-        widget.icon,
-        size: 28,
-        color: Colors.black,
-        shadows: [BoxShadow(color: Colors.black, offset: Offset(0, 2))],
-      ),
-      title: Text(
-        widget.title,
-        style: TextStyle(fontSize: 18, color: Colors.black),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: () {
-        setState(() {
-          _isSelected = !_isSelected; // Toggle the selected state
+    return Expanded(
+      child: ListView(
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            leading: Icon(
+              widget.icon,
+              size: 28,
+              color: Colors.black,
+              shadows: [BoxShadow(color: Colors.black, offset: Offset(0, 2))],
+            ),
+            title: Text(
+              widget.title,
+              style: TextStyle(fontSize: 18, color: Colors.black),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () {
+              setState(() {
+                _isSelected = !_isSelected; // Toggle the selected state
 
-          widget.onPress();
-        });
-      },
-      selected: _isSelected, // Set the selected state of the tile
-      selectedTileColor: Colors.white,
-      hoverColor: Colors.white,
+                widget.onPress();
+              });
+            },
+            selected: _isSelected, // Set the selected state of the tile
+            selectedTileColor: Colors.white,
+            hoverColor: Colors.white,
+          ),
+          // Add more ListTiles if needed
+        ],
+      ),
     );
   }
 }
