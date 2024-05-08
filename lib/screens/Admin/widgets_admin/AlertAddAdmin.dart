@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,8 +30,30 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
   final _auth = FirebaseAuth.instance;
   late String imageUrl;
   late String email;
-
   late String password;
+
+  Future<void> uploadFile() async {
+    setState(() {
+      showSpinner = true; // Show spinner before uploading file
+    });
+
+    try {
+      // Upload file to Firebase Storage
+      final TaskSnapshot uploadTask = await FirebaseStorage.instance
+          .ref('uploads/$fileName')
+          .putData(fileBytes!);
+
+      // Get download URL of the uploaded file
+      imageUrl = await uploadTask.ref.getDownloadURL();
+    } catch (error) {
+      print('Error uploading file: $error');
+      // Handle error
+    } finally {
+      setState(() {
+        showSpinner = false; // Hide spinner after upload completes
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,19 +70,9 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                   FilePickerResult? result =
                       await FilePicker.platform.pickFiles();
                   if (result != null) {
-                    setState(() async {
-                      showSpinner = true;
-                      try {
-                        fileBytes = result.files.first.bytes;
-                        fileName = result.files.first.name;
-                      } catch (error) {
-                        print('Error uploading file: $error');
-                        // Handle error
-                      } finally {
-                        setState(() {
-                          showSpinner = false;
-                        });
-                      }
+                    setState(() {
+                      fileBytes = result.files.first.bytes;
+                      fileName = result.files.first.name;
                     });
                   }
                 },
@@ -69,20 +80,20 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Tooltip(
-                      message: 'إضافة صورة', // Tooltip message
+                      message: 'إضافة صورة',
                       child: Icon(
                         Icons.add,
                         size: 34,
                         color: ColorPurple_100,
                       ),
                     ),
-                    SizedBox(
-                        width:
-                            8), // Adjust spacing between icon and text as needed
+                    SizedBox(width: 8),
                     Text(
                       fileName,
-                      style: StyleTextAdmin(18,
-                          fileBytes != null ? ColorPurple_100 : Colors.grey),
+                      style: StyleTextAdmin(
+                        18,
+                        fileBytes != null ? ColorPurple_100 : Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -125,68 +136,82 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              style: const ButtonStyle(
-                  animationDuration: Durations.long3,
-                  backgroundColor: MaterialStatePropertyAll(Colors.black)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('إنشاء حساب  ',
-                    style: StyleTextAdmin(17, Colors.white)),
-              ),
               onPressed: () async {
-                setState(() {
-                  showSpinner = true; //ما ببين في مشكلة
-                });
-
-                try {
-                  final newUser = await _auth.createUserWithEmailAndPassword(
-                    email: email,
-                    password: password,
+                if (ControllerName.text.isEmpty ||
+                    ControllerEmail.text.isEmpty ||
+                    ControllerPassword.text.isEmpty ||
+                    fileBytes == null) {
+                  // Show an alert if any required field is empty
+                  QuickAlert.show(
+                    context: context,
+                    title: 'خطأ',
+                    text: 'الرجاء إدخال كل البيانات المطلوبة',
+                    type: QuickAlertType.error,
+                    confirmBtnText: 'حسناً',
                   );
-                  // Upload file to Firebase Storage
-                  final TaskSnapshot uploadTask = await FirebaseStorage.instance
-                      .ref('uploads/$fileName')
-                      .putData(fileBytes!);
-
-                  // Get download URL of the uploaded file
-                  imageUrl = await uploadTask.ref.getDownloadURL();
-
-                  // Add the download URL to Firestore
-                  if (newUser.user != null) {
-                    String? uid = newUser
-                        .user!.uid; // Access the UID from the created user
-                    UserDataBase newuser = UserDataBase(
-                      id: uid,
-                      email: ControllerEmail.text,
-                      name: ControllerName.text,
-                      user_type_id: '1',
-                      phone: '',
-                      address: '',
-                      isActive: true,
-                      imageUrl: imageUrl,
-                    );
-                    await newuser.saveToDatabase();
-                  }
-
+                } else {
+                  await uploadFile(); // Upload file before creating user
                   setState(() {
-                    showSpinner = false;
-                    ControllerEmail.clear();
-                    ControllerPassword.clear();
-                    fileBytes = null;
-                    QuickAlert.show(
-                        context: context,
-                        customAsset: 'assets/images/Completionanimation.gif',
-                        width: 300,
-                        title: 'تم إضافة $email',
-                        type: QuickAlertType.success,
-                        confirmBtnText: 'إغلاق');
+                    showSpinner = true; // Show spinner while creating user
                   });
-                } catch (e) {
-                  print(e);
+
+                  try {
+                    final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
+
+                    if (newUser.user != null) {
+                      String? uid = newUser.user!.uid;
+                      UserDataBase newuser = UserDataBase(
+                        id: uid,
+                        email: ControllerEmail.text,
+                        name: ControllerName.text,
+                        user_type_id: '1',
+                        phone: '',
+                        address: '',
+                        isActive: true,
+                        imageUrl: imageUrl,
+                      );
+                      await newuser.saveToDatabase();
+                    }
+
+                    // Close only the current dialog
+                    Navigator.of(context).pop();
+
+                    // Show QuickAlert dialog after user creation
+                    QuickAlert.show(
+                      context: context,
+                      customAsset: 'assets/images/Completionanimation.gif',
+                      width: 300,
+                      title: 'تم إضافة $email',
+                      type: QuickAlertType.success,
+                      confirmBtnText: 'إغلاق',
+                    );
+                  } catch (e) {
+                    print(e);
+                  } finally {
+                    setState(() {
+                      showSpinner = false; // Hide spinner after user creation
+                    });
+                  }
                 }
               },
+              style: const ButtonStyle(
+                animationDuration: Durations.long3,
+                backgroundColor: MaterialStatePropertyAll(Colors.black),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'إنشاء حساب  ',
+                  style: StyleTextAdmin(17, Colors.white),
+                ),
+              ),
             ),
           ),
+          if (showSpinner)
+            CircularProgressIndicator(), // Show spinner when uploading file or creating user
         ],
       ),
     );
