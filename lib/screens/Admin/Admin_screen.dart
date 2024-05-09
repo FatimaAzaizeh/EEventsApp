@@ -161,14 +161,17 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                alignment: Alignment.topCenter,
-                padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
-                width: double.maxFinite,
-                child: Image(
-                  image: AssetImage('assets/images/Logo.png'),
-                  fit: BoxFit.cover,
+              Center(
+                child: Container(
+                  height: 90,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.circular(30),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/Logo.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
               ),
               Row(

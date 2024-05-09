@@ -68,13 +68,16 @@ class _SignInState extends State<SignIn> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          height: 100,
+                                          height: 200,
                                           width: 200,
                                           decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadiusDirectional
+                                                    .circular(30),
                                             image: DecorationImage(
                                               image: AssetImage(
                                                   'assets/images/Logo.png'),
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.fill,
                                             ),
                                           ),
                                         ),
