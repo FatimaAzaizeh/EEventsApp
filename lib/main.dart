@@ -10,6 +10,7 @@ import 'package:testtapp/firebase_options.dart';
 
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
         AllAdmin.screenRoute: (context) => AllAdmin(),
         SendEmail.screenRoute: (context) => SendEmail(),
         VendorList.screenRoute: (context) => VendorList(),
+        AddService.screenRoute: (context) => AddService(),
       },
       home: AdminLogin(),
     );

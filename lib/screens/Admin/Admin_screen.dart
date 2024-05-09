@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
@@ -233,7 +234,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'الخدمات الخاصة بالمناسبات',
                 Icons.room_service_outlined,
                 () {
-                  widget.changeMainSection(AddEvent());
+                  widget.changeMainSection(AddService());
                 },
                 4,
               ),
