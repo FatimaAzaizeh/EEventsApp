@@ -29,6 +29,7 @@ class AddService extends StatefulWidget {
 class _AddServiceState extends State<AddService> {
   late String imageUrl;
   Uint8List? fileBytes;
+  bool editButton = false;
   Future<void> uploadFile() async {
     setState(() {
       showSpinner = true; // Show spinner before uploading file
@@ -183,22 +184,26 @@ class _AddServiceState extends State<AddService> {
                   ),
                 ),
                 TextFieldDesign(
-                    Text: 'أسم الخدمة:',
-                    icon: Icons.title,
-                    ControllerTextField: ControllerName,
-                    onChanged: (value) {
-                      name = value; // Update the Name variable
-                      // Update the serviceType list
-                    },
-                    obscureTextField: false),
+                  Text: 'أسم الخدمة:',
+                  icon: Icons.title,
+                  ControllerTextField: ControllerName,
+                  onChanged: (value) {
+                    name = value; // Update the Name variable
+                    // Update the serviceType list
+                  },
+                  obscureTextField: false,
+                  enabled: true,
+                ),
                 TextFieldDesign(
-                    Text: 'رقم الخدمة',
-                    icon: Icons.room_service,
-                    ControllerTextField: ControllerId,
-                    onChanged: (value) {
-                      ControllerId.text = value;
-                    },
-                    obscureTextField: false),
+                  Text: 'رقم الخدمة',
+                  icon: Icons.room_service,
+                  ControllerTextField: ControllerId,
+                  onChanged: (value) {
+                    ControllerId.text = value;
+                  },
+                  obscureTextField: false,
+                  enabled: !editButton,
+                ),
                 Row(children: [
                   TextButton(
                     onPressed: () async {

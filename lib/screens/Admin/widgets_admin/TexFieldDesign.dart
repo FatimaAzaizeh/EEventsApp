@@ -7,14 +7,15 @@ class TextFieldDesign extends StatelessWidget {
   final TextEditingController ControllerTextField;
   final Function(String) onChanged;
   final bool obscureTextField;
-
+  bool enabled;
   TextFieldDesign(
       {super.key,
       required this.Text,
       required this.icon,
       required this.ControllerTextField,
       required this.onChanged,
-      required this.obscureTextField});
+      required this.obscureTextField,
+      required bool this.enabled});
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class TextFieldDesign extends StatelessWidget {
           controller: ControllerTextField,
           onChanged: onChanged,
           obscureText: obscureTextField,
+          enabled: this.enabled,
         ),
       ),
     );

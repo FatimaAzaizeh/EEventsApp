@@ -155,8 +155,10 @@ class _AddEventState extends State<AddEvent> {
                     name = value;
                   },
                   obscureTextField: false,
+                  enabled: true,
                 ),
                 TextFieldDesign(
+                  enabled: !editButton,
                   Text: 'رقم المناسبة',
                   icon: Icons.room_service,
                   ControllerTextField: controllerId,
@@ -281,6 +283,11 @@ class _AddEventState extends State<AddEvent> {
                 IconButton(
                   onPressed: editButton
                       ? () {
+                          EventType.updateEventTypeFirestore(
+                              controllerName.text,
+                              imageUrl,
+                              eventClassificationRef,
+                              controllerId.text);
                           setState(() {
                             showEditButton = false;
                           });
@@ -352,6 +359,7 @@ class _AddEventState extends State<AddEvent> {
       setState(() {
         controllerName.text = snapshot.get('name');
         controllerId.text = snapshot.get('id');
+        editButton = true;
       });
     }
   }

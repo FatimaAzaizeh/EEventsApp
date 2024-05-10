@@ -113,6 +113,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
               email = value;
             },
             obscureTextField: false,
+            enabled: true,
           ),
           TextFieldDesign(
             Text: 'إدخال البريد الإلكتروني',
@@ -122,6 +123,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
               email = value;
             },
             obscureTextField: false,
+            enabled: true,
           ),
           TextFieldDesign(
             Text: 'إدخال كلمة المرور',
@@ -131,6 +133,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
               password = value;
             },
             obscureTextField: true,
+            enabled: true,
           ),
           SizedBox(height: 8),
           Padding(
