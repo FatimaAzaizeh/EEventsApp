@@ -1,20 +1,16 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/ServiceType.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import 'package:testtapp/constants.dart';
-import 'package:testtapp/models/EventType.dart';
-import 'package:testtapp/models/ServiceType.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
-
-// Other import statements and code
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -29,92 +25,17 @@ class AddService extends StatefulWidget {
 class _AddServiceState extends State<AddService> {
   late String imageUrl;
   Uint8List? fileBytes;
-  bool editButton = false;
-  Future<void> uploadFile() async {
-    setState(() {
-      showSpinner = true; // Show spinner before uploading file
-    });
-
-    try {
-      // Upload file to Firebase Storage
-      final TaskSnapshot uploadTask = await FirebaseStorage.instance
-          .ref('uploads/$fileName')
-          .putData(fileBytes!);
-
-      // Get download URL of the uploaded file
-      imageUrl = await uploadTask.ref.getDownloadURL();
-      ControllerImage.text = imageUrl;
-    } catch (error) {
-      print('Error uploading file: $error');
-      // Handle error
-    } finally {
-      setState(() {
-        showSpinner = false; // Hide spinner after upload completes
-      });
-    }
-  }
-
   String fileName = "لم يتم اختيار صورة ";
-  var ControllerName = TextEditingController();
-  var ControllerImage = TextEditingController();
-  var ControllerId = TextEditingController();
+  TextEditingController ControllerName = TextEditingController();
+  TextEditingController ControllerImage = TextEditingController();
+  TextEditingController ControllerId = TextEditingController();
   bool showEditButton = false;
-  final _auth = FirebaseAuth.instance;
   late String name; // Name of the Event
 
   bool showSpinner = false;
-  late String dropdownValue;
+  String dropdownValue = '';
   List<String> classificationList = []; // Initialize classification list
   late String id;
-  bool isButtonEnabled = false;
-
-//edit
-  Future<void> getDataById(String documentId) async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('service_types')
-        .doc(documentId) // Use document ID directly
-        .get();
-
-    if (snapshot.exists) {
-      setState(() {
-        // Document with the provided ID exists
-        ControllerName.text = snapshot.get('name');
-        ControllerImage.text = snapshot.get('image_url');
-
-        showEditButton = true;
-        id = documentId;
-        isButtonEnabled = true;
-      });
-    } else {
-      // Document with the provided ID does not exist
-      print("Document not found for ID: $documentId");
-    }
-  }
-
-  void EditEvent(String documentId) {
-    setState(() {
-      var docRef =
-          FirebaseFirestore.instance.collection('EventType').doc(documentId);
-
-      docRef.update({
-        'name': ControllerName.text,
-        'id': ControllerId.text,
-        'image_url': ControllerImage.text,
-      }).then((_) {
-        print("Document updated successfully.");
-      }).catchError((error) {
-        print("Failed to update document: $error");
-      });
-      showEditButton = false;
-      ControllerName.clear();
-      ControllerId.clear();
-      ControllerImage.clear();
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.success,
-      );
-    });
-  }
 
   @override
   void initState() {
@@ -124,8 +45,7 @@ class _AddServiceState extends State<AddService> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment
-          .spaceAround, // Distributes space evenly between the children
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -149,36 +69,57 @@ class _AddServiceState extends State<AddService> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Text('الخدمات',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 28,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 60, 19, 60))),
+                        Text(
+                          'الخدمات',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 28,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 60, 19, 60)),
+                        ),
                         SizedBox(
                           width: 220,
                         ),
                         TextButton(
-                          onPressed: isButtonEnabled
-                              ? () {
-                                  EditEvent(id);
-                                  isButtonEnabled = false;
+                          onPressed: showEditButton
+                              ? () async {
+                                  if (fileName != 'لم يتم اختيار صورة ') {
+                                    await uploadFile();
+                                  }
+                                  ServiceType.updateServiceFirestore(
+                                      ControllerName.text,
+                                      imageUrl,
+                                      ControllerId.text);
+
+                                  setState(() {
+                                    showEditButton = false;
+                                  });
+                                  ControllerName.clear();
+                                  ControllerId.clear();
+
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.success,
+                                  );
+                                  setState(() {
+                                    showEditButton = false;
+                                  });
                                 }
                               : null,
                           child: Icon(Icons.edit),
                         ),
                         TextButton(
-                            onPressed: () {
-                              setState(() {
-                                ControllerName.clear();
-                                ControllerId.clear();
-                                ControllerImage.clear();
-                                isButtonEnabled = false;
-                              });
-                            },
-                            child: Icon(Icons.clear)),
+                          onPressed: () {
+                            setState(() {
+                              ControllerName.clear();
+                              ControllerId.clear();
+                              ControllerImage.clear();
+                            });
+                          },
+                          child: Icon(Icons.clear),
+                        ),
                       ],
                     ),
                   ),
@@ -199,79 +140,89 @@ class _AddServiceState extends State<AddService> {
                   icon: Icons.room_service,
                   ControllerTextField: ControllerId,
                   onChanged: (value) {
-                    ControllerId.text = value;
+                    value;
                   },
                   obscureTextField: false,
-                  enabled: !editButton,
+                  enabled: !showEditButton,
                 ),
-                Row(children: [
-                  TextButton(
-                    onPressed: () async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles();
-                      if (result != null) {
-                        setState(() {
-                          fileBytes = result.files.first.bytes;
-                          fileName = result.files.first.name;
-                        });
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Tooltip(
-                          message: 'إضافة صورة',
-                          child: Icon(
-                            Icons.add,
-                            size: 34,
-                            color: ColorPurple_100,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          fileName,
-                          style: StyleTextAdmin(
-                            18,
-                            fileBytes != null ? ColorPurple_100 : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ]),
-                Container(
-                    width: double.maxFinite,
-                    margin: EdgeInsets.only(bottom: 90),
-                    child: FloatingActionButton(
-                      backgroundColor: ColorPink_100,
-                      child: Text('إضافة خدمة',
-                          style: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 18,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.white)),
-                      onPressed: () {
-                        setState(() async {
-                          showSpinner = true;
-                          await uploadFile(); // Upload file before creating user
-                          ServiceType newservice = ServiceType(
-                              id: ControllerId.text,
-                              name: ControllerName.text,
-                              imageUrl: ControllerImage.text);
-
-                          newservice.saveToDatabase();
-
-                          ControllerName.clear();
-                          ControllerId.clear();
-                          ControllerImage.clear();
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.success,
-                          );
-                          showSpinner = false;
-                        });
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles();
+                        if (result != null) {
+                          setState(() async {
+                            fileBytes = result.files.first.bytes;
+                            fileName = result.files.first.name;
+                            await uploadFile();
+                          });
+                        }
                       },
-                    )),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Tooltip(
+                            message: 'إضافة صورة',
+                            child: Icon(
+                              Icons.add,
+                              size: 34,
+                              color: ColorPurple_100,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            fileName,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: fileBytes != null
+                                  ? ColorPurple_100
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  width: double.maxFinite,
+                  margin: EdgeInsets.only(bottom: 90),
+                  child: FloatingActionButton(
+                    backgroundColor: ColorPink_100,
+                    child: Text(
+                      'إضافة خدمة',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 18,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        showSpinner = true;
+                      });
+
+                      ServiceType newservice = ServiceType(
+                        id: ControllerId.text,
+                        name: ControllerName.text,
+                        imageUrl: imageUrl,
+                      );
+                      newservice.saveToDatabase();
+                      setState(() {
+                        showSpinner = false;
+                      });
+                      ControllerName.clear();
+                      ControllerId.clear();
+                      ControllerImage.clear();
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -290,6 +241,42 @@ class _AddServiceState extends State<AddService> {
         ),
       ],
     );
+  }
+
+  Future<void> uploadFile() async {
+    setState(() {
+      showSpinner = true;
+    });
+
+    try {
+      final TaskSnapshot uploadTask = await FirebaseStorage.instance
+          .ref('uploads/$fileName')
+          .putData(fileBytes!);
+
+      imageUrl = await uploadTask.ref.getDownloadURL();
+      ControllerImage.text = imageUrl;
+    } catch (error) {
+      print('Error uploading file: $error');
+    } finally {
+      setState(() {
+        showSpinner = false;
+      });
+    }
+  }
+
+  Future<void> getDataById(String documentId) async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("service_types")
+        .doc(documentId)
+        .get();
+
+    // Now you can update other UI elements outside setState
+    setState(() {
+      imageUrl = snapshot.get('image_url');
+      ControllerName.text = snapshot.get('name');
+      ControllerId.text = snapshot.get('id');
+      showEditButton = true;
+    });
   }
 
   SafeArea ServiceScreen() {
