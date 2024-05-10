@@ -59,6 +59,7 @@ class _AddEventState extends State<AddEvent> {
         classificationList.add(docSnapshot.get('description').toString());
       }
       setState(() {
+        event_classificaion_types = querySnapshot.docs[0].reference;
         dropdownValue = classificationList.first;
         showSpinner = false; // Hide spinner after fetching data
       });
