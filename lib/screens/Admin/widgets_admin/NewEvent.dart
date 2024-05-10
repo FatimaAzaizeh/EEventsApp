@@ -139,6 +139,7 @@ class _AddEventState extends State<AddEvent> {
                               controllerName.clear();
                               controllerId.clear();
                               controllerImage.clear();
+                              editButton = false;
                             });
                           },
                           child: Icon(Icons.clear),
@@ -172,9 +173,11 @@ class _AddEventState extends State<AddEvent> {
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles();
                         if (result != null) {
-                          setState(() {
+                          setState(() async {
                             fileBytes = result.files.first.bytes;
                             fileName = result.files.first.name;
+
+                            await uploadFile();
                           });
                         }
                       },
@@ -195,8 +198,8 @@ class _AddEventState extends State<AddEvent> {
                             style: TextStyle(
                               fontSize: 18,
                               color: fileBytes != null
-                                  ? ColorPurple_100
-                                  : Colors.grey,
+                                  ? ColorPurple_100 // Set color to ColorPurple_100 if fileBytes is not null
+                                  : Colors.grey, // Otherwise, set color to grey
                             ),
                           ),
                         ],
@@ -260,7 +263,7 @@ class _AddEventState extends State<AddEvent> {
                     onPressed: () async {
                       setState(() async {
                         showSpinner = true;
-                        await uploadFile();
+
                         EventType newEvent = EventType(
                             id: controllerId.text,
                             name: controllerName.text,
@@ -298,6 +301,7 @@ class _AddEventState extends State<AddEvent> {
                             context: context,
                             type: QuickAlertType.success,
                           );
+                          editButton = false;
                         }
                       : null, // Set onPressed to null when editButton is false
                   icon: Icon(Icons.edit),
@@ -357,6 +361,7 @@ class _AddEventState extends State<AddEvent> {
 
       // Now you can update other UI elements outside setState
       setState(() {
+        imageUrl = snapshot.get('image_url');
         controllerName.text = snapshot.get('name');
         controllerId.text = snapshot.get('id');
         editButton = true;
