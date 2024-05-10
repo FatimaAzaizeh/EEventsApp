@@ -26,14 +26,13 @@ class _AddEventState extends State<AddEvent> {
   late String fileName = "No image selected";
   var controllerName = TextEditingController();
   var controllerImage = TextEditingController();
-  late DocumentReference event_classificaion_types;
+  late DocumentReference eventClassificationRef;
   var controllerId = TextEditingController();
   bool showEditButton = false;
-
-  List<String> classificationList = []; // Initialize classification list
+  bool editButton = false;
+  List<String> classificationList = [];
   late String name;
   bool showSpinner = false;
-  bool isDropdownSelected = false;
   late String dropdownValue;
 
   @override
@@ -46,27 +45,27 @@ class _AddEventState extends State<AddEvent> {
     final _firestore = FirebaseFirestore.instance;
     try {
       setState(() {
-        showSpinner = true; // Show spinner when fetching data
+        showSpinner = true;
       });
       QuerySnapshot querySnapshot =
           await _firestore.collection("event_classificaion_types").get();
 
       setState(() {
-        classificationList.clear(); // Clear the list before adding new data
+        classificationList.clear();
       });
 
       for (var docSnapshot in querySnapshot.docs) {
         classificationList.add(docSnapshot.get('description').toString());
       }
       setState(() {
-        event_classificaion_types = querySnapshot.docs[0].reference;
+        eventClassificationRef = querySnapshot.docs[0].reference;
         dropdownValue = classificationList.first;
-        showSpinner = false; // Hide spinner after fetching data
+        showSpinner = false;
       });
     } catch (e) {
       print("Error fetching classifications: $e");
       setState(() {
-        showSpinner = false; // Hide spinner if there's an error
+        showSpinner = false;
       });
     }
   }
@@ -214,11 +213,8 @@ class _AddEventState extends State<AddEvent> {
                       color: Colors.deepPurpleAccent,
                     ),
                     onChanged: (String? value) {
-                      // This is called when the user selects an item.
                       setState(() async {
-                        //  classification = value!;
                         dropdownValue = value!;
-
                         QuerySnapshot querySnapshot = await FirebaseFirestore
                             .instance
                             .collection('event_classificaion_types')
@@ -228,7 +224,7 @@ class _AddEventState extends State<AddEvent> {
 // Check if any documents match the query
                         if (querySnapshot.docs.isNotEmpty) {
                           // Get the reference to the first document that matches the query
-                          event_classificaion_types =
+                          eventClassificationRef =
                               querySnapshot.docs[0].reference;
                           // Now you have a reference to the document that matches the condition
                         } else {
@@ -267,8 +263,7 @@ class _AddEventState extends State<AddEvent> {
                             id: controllerId.text,
                             name: controllerName.text,
                             imageUrl: imageUrl,
-                            event_classificaion_types:
-                                event_classificaion_types);
+                            event_classificaion_types: eventClassificationRef);
 
                         newEvent.addToFirestore();
                         controllerName.clear();
@@ -284,16 +279,20 @@ class _AddEventState extends State<AddEvent> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
-                    showEditButton = false;
-                    controllerName.clear();
-                    controllerId.clear();
-                    controllerImage.clear();
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                    );
-                  },
+                  onPressed: editButton
+                      ? () {
+                          setState(() {
+                            showEditButton = false;
+                          });
+                          controllerName.clear();
+                          controllerId.clear();
+                          controllerImage.clear();
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                          );
+                        }
+                      : null, // Set onPressed to null when editButton is false
                   icon: Icon(Icons.edit),
                 ),
               ],
@@ -314,6 +313,47 @@ class _AddEventState extends State<AddEvent> {
         ),
       ],
     );
+  }
+
+  Future<void> getDataById(String documentId) async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('event_types')
+        .doc(documentId)
+        .get();
+
+    if (snapshot.exists) {
+      // Retrieve the reference to 'event_classificaion_types'
+      DocumentReference? eventClassificationRef =
+          snapshot.get('event_classificaion_types');
+
+      // Check if the reference exists
+      if (eventClassificationRef != null) {
+        // Get the referenced document
+        DocumentSnapshot eventDocSnapshot = await eventClassificationRef.get();
+
+        // Check if the referenced document exists
+        if (eventDocSnapshot.exists) {
+          // Retrieve the data
+          Map<String, dynamic> eventData =
+              eventDocSnapshot.data() as Map<String, dynamic>;
+
+          // Now you can access the data using the field name
+          setState(() {
+            dropdownValue = eventData['description'].toString();
+          });
+        } else {
+          // Handle the case where the referenced document doesn't exist
+        }
+      } else {
+        // Handle the case where the reference is null
+      }
+
+      // Now you can update other UI elements outside setState
+      setState(() {
+        controllerName.text = snapshot.get('name');
+        controllerId.text = snapshot.get('id');
+      });
+    }
   }
 
 //display the event type exist
@@ -346,7 +386,7 @@ class _AddEventState extends State<AddEvent> {
                     imageUrl: doc['image_url'].toString(),
                     id: doc.id,
                     onTapFunction: () {
-                      //    getDataById(doc.id);
+                      getDataById(doc.id);
                     },
                   );
                 },
