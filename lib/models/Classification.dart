@@ -1,22 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:testtapp/widgets/Event_item.dart';
 
-final _firestore = FirebaseFirestore.instance;
-
-class EventType {
+class Classification {
   String id;
-  String name;
-  String imageUrl;
-  DocumentReference event_classificaion_types;
-  EventType(
-      {required this.id,
-      required this.name,
-      required this.imageUrl,
-      required this.event_classificaion_types});
+  String description;
+
+  Classification({
+    required this.id,
+    required this.description,
+  });
 
 //create new EventType_Req3.
-  Future<void> addToFirestore() async {
+  Future<void> addDocumentWithCustomId() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Specify the custom document ID
@@ -24,15 +18,12 @@ class EventType {
 
     // Reference to the collection where you want to add the document
     CollectionReference collectionReference =
-        firestore.collection('event_types');
+        firestore.collection('event_classificaion_types');
 
     try {
       // Add the document with the custom ID
       await collectionReference.doc(customId).set({
-        'id': this.id,
-        'name': this.name,
-        'event_classificaion_types': this.event_classificaion_types,
-        'image_url': this.imageUrl,
+        'name': this.description,
         // Add other fields as needed
       });
       print('Document added with custom ID: $customId');
@@ -42,12 +33,12 @@ class EventType {
   }
 
   //edit EventType_Req8
-  static Future<bool> updateEventTypeFirestore(String newName, String newImage,
-      DocumentReference newEventClassificationTypes, String id) async {
+  static Future<bool> updateClassificationFirestore(
+      String id, String description) async {
     try {
       // Get a reference to the document you want to update
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('event_types')
+          .collection('event_classificaion_types')
           .where('id', isEqualTo: id)
           .get();
 
@@ -60,9 +51,7 @@ class EventType {
 
         // Update the fields of the document
         await eventRef.update({
-          'name': newName,
-          'event_classificaion_types': newEventClassificationTypes,
-          'image_url': newImage,
+          'description': description,
         });
 
         print('Document updated successfully');

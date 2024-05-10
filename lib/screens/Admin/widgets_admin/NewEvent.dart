@@ -1,10 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/EventType.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/ClassificationDropDown.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 
@@ -19,45 +25,37 @@ class AddEvent extends StatefulWidget {
 }
 
 class _AddEventState extends State<AddEvent> {
+  late String imageUrl;
+  Uint8List? fileBytes;
+  late String fileName = "لم يتم اختيار صورة ";
   var ControllerName = TextEditingController();
   var ControllerImage = TextEditingController();
-  var ControllerSer = TextEditingController();
+  late DocumentReference Classification;
+  var ControllerId = TextEditingController();
   bool showEditButton = false;
   final _auth = FirebaseAuth.instance;
-  late String name; // Name of the Event
-  late String classification = ''; // Classification of the Event
-  late String ImageUrl;
+  late String name;
   bool showSpinner = false;
   late String dropdownValue;
   List<String> classificationList = [];
   late String id;
   bool isButtonEnabled = false;
 
-  void fetchClassificationsFromFirestore() async {
+  Future<void> uploadFile() async {
+    setState(() {
+      showSpinner = true;
+    });
+
     try {
-      setState(() {
-        showSpinner = true;
-      });
+      final TaskSnapshot uploadTask = await FirebaseStorage.instance
+          .ref('uploads/$fileName')
+          .putData(fileBytes!);
 
-      QuerySnapshot querySnapshot =
-          await _firestore.collection("event_classificaion_types").get();
-
-      setState(() {
-        classificationList.clear();
-      });
-
-      for (var docSnapshot in querySnapshot.docs) {
-        classificationList.add(docSnapshot.get('description').toString());
-      }
-
-      setState(() {
-        dropdownValue = (classificationList.isNotEmpty
-            ? classificationList.first.toString()
-            : null)!;
-        showSpinner = false;
-      });
-    } catch (e) {
-      print("Error fetching classifications: $e");
+      imageUrl = await uploadTask.ref.getDownloadURL();
+      ControllerImage.text = imageUrl;
+    } catch (error) {
+      print('Error uploading file: $error');
+    } finally {
       setState(() {
         showSpinner = false;
       });
@@ -73,7 +71,6 @@ class _AddEventState extends State<AddEvent> {
     if (snapshot.exists) {
       setState(() {
         ControllerName.text = snapshot.get('name');
-
         ControllerImage.text = snapshot.get('image_url');
         showEditButton = true;
         id = documentId;
@@ -84,181 +81,185 @@ class _AddEventState extends State<AddEvent> {
     }
   }
 
-  void EditEvent(String documentId) {
-    setState(() {
-      var docRef =
-          FirebaseFirestore.instance.collection('event_types').doc(documentId);
-
-      docRef.update({
-        'name': ControllerName.text,
-        'event_classificaion_types': ControllerSer,
-        'image_url': ControllerImage.text,
-      }).then((_) {
-        print("Document updated successfully.");
-      }).catchError((error) {
-        print("Failed to update document: $error");
-      });
-      showEditButton = false;
-      ControllerName.clear();
-      ControllerSer.clear();
-      ControllerImage.clear();
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.success,
-      );
-    });
-  }
-
-  void DelEvent(String documentId) {
-    setState(() {
-      QuickAlert.show(
-          context: context,
-          type: QuickAlertType.confirm,
-          text: 'Do you want to logout?',
-          confirmBtnText: 'Yes',
-          cancelBtnText: 'No',
-          confirmBtnColor: Colors.green,
-          onConfirmBtnTap: () {
-            var docRef = FirebaseFirestore.instance
-                .collection('event_types')
-                .doc(documentId)
-                .delete();
-            Navigator.of(context).pop();
-          },
-          onCancelBtnTap: () {
-            Navigator.of(context).pop();
-          });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    fetchClassificationsFromFirestore();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      // Wrap with SingleChildScrollView
-      scrollDirection: Axis.horizontal, // Allow horizontal scrolling
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Color.fromARGB(221, 255, 255, 255)),
-              width: 500,
-              height: double.maxFinite,
-              child: SingleChildScrollView(
-                // Wrap the Column with SingleChildScrollView
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.maxFinite,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(30))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'المناسبات',
-                            ),
-                            SizedBox(
-                              width: 220,
-                            ),
-                            // Edit, Delete, Clear buttons...
-                          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Color.fromARGB(221, 255, 255, 255)),
+            width: 500,
+            height: double.maxFinite,
+            child: Column(
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  height: 70,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Text('المناسبات',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 28,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 60, 19, 60))),
+                        SizedBox(
+                          width: 220,
                         ),
-                      ),
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                ControllerName.clear();
+                                ControllerId.clear();
+                                ControllerImage.clear();
+                                isButtonEnabled = false;
+                              });
+                            },
+                            child: Icon(Icons.clear)),
+                      ],
                     ),
-                    TextFieldDesign(
-                      Text: 'أسم المناسبة:',
-                      icon: Icons.title,
-                      ControllerTextField: ControllerName,
-                      onChanged: (value) {
-                        name = value;
-                      },
-                      obscureTextField: false,
-                    ),
-                    DropdownButton<String>(
-                      value: classificationList.isNotEmpty
-                          ? dropdownValue
-                          : 'no item',
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (String? value) {
+                  ),
+                ),
+                TextFieldDesign(
+                    Text: 'أسم الخدمة:',
+                    icon: Icons.title,
+                    ControllerTextField: ControllerName,
+                    onChanged: (value) {
+                      name = value;
+                    },
+                    obscureTextField: false),
+                TextFieldDesign(
+                    Text: 'رقم المناسبة',
+                    icon: Icons.room_service,
+                    ControllerTextField: ControllerId,
+                    onChanged: (value) {
+                      ControllerId.text = value;
+                    },
+                    obscureTextField: false),
+                Row(children: [
+                  TextButton(
+                    onPressed: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles();
+                      if (result != null) {
                         setState(() {
-                          classification = value!;
-                          dropdownValue = value;
+                          fileBytes = result.files.first.bytes;
+                          fileName = result.files.first.name;
+                        });
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Tooltip(
+                          message: 'إضافة صورة',
+                          child: Icon(
+                            Icons.add,
+                            size: 34,
+                            color: ColorPurple_100,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          fileName,
+                          style: StyleTextAdmin(
+                            18,
+                            fileBytes != null ? ColorPurple_100 : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+                Container(
+                  child: ClassificationDropdown(
+                    onClassificationSelected: (classification) {
+                      print('Selected classification: $classification');
+                    },
+                  ),
+                ),
+                Container(
+                    width: double.maxFinite,
+                    margin: EdgeInsets.only(bottom: 90),
+                    child: FloatingActionButton(
+                      backgroundColor: ColorPink_100,
+                      child: Text('إضافة مناسبة',
+                          style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 18,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.white)),
+                      onPressed: () {
+                        setState(() async {
+                          showSpinner = true;
+                          await uploadFile();
+                          EventType newEvent = EventType(
+                              id: ControllerId.text,
+                              name: ControllerName.text,
+                              imageUrl: ControllerImage.text,
+                              event_classificaion_types: Classification);
+                          newEvent.addToFirestore();
+                          ControllerName.clear();
+                          ControllerId.clear();
+                          ControllerImage.clear();
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                          );
+                          showSpinner = false;
                         });
                       },
-                      items: classificationList
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                    TextFieldDesign(
-                      Text: 'إضافة صورة:',
-                      icon: Icons.image,
-                      ControllerTextField: ControllerImage,
-                      onChanged: (value) {
-                        ImageUrl = value;
-                      },
-                      obscureTextField: false,
-                    ),
-                    Container(
-                      width: double.maxFinite,
-                      margin: EdgeInsets.only(bottom: 90),
-                      child: FloatingActionButton(
-                        backgroundColor: ColorPink_100,
-                        child: Text('إضافة مناسبة'),
-                        onPressed: () async {
-                          QuerySnapshot<Map<String, dynamic>> querySnapshot =
-                              await FirebaseFirestore.instance
-                                  .collection('event_classificaion_types')
-                                  .where('description',
-                                      isEqualTo: classification)
-                                  .get();
-                        },
-                      ),
-                    ),
-                  ],
+                    )),
+                IconButton(
+                  onPressed: () {
+                    EventType.updateEventTypeFirestore(ControllerName.text,
+                        ControllerImage.text, Classification, id);
+                    showEditButton = false;
+                    ControllerName.clear();
+                    ControllerId.clear();
+                    ControllerImage.clear();
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                    );
+                  },
+                  icon: Icon(Icons.edit),
                 ),
-              ),
+              ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              width: 400,
-              height: double.maxFinite,
-              child: EventScreen(),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
             ),
+            width: 400,
+            height: double.maxFinite,
+            child: EventScreen(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
