@@ -1,18 +1,16 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/EventType.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/ClassificationDropDown.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -25,21 +23,27 @@ class AddEvent extends StatefulWidget {
 }
 
 class _AddEventState extends State<AddEvent> {
+  late String classification = ''; // Classification of the Event
   late String imageUrl;
   Uint8List? fileBytes;
   late String fileName = "لم يتم اختيار صورة ";
-  var ControllerName = TextEditingController();
-  var ControllerImage = TextEditingController();
-  late DocumentReference Classification;
-  var ControllerId = TextEditingController();
+  var controllerName = TextEditingController();
+  var controllerImage = TextEditingController();
+  late DocumentReference classificationRef;
+  var controllerId = TextEditingController();
   bool showEditButton = false;
   final _auth = FirebaseAuth.instance;
   late String name;
   bool showSpinner = false;
-  late String dropdownValue;
-  List<String> classificationList = [];
-  late String id;
-  bool isButtonEnabled = false;
+  bool isDropdownSelected = false; // Flag to track if dropdown is selected
+
+  String _selectedItem = 'Option 1';
+  List<String> _dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> uploadFile() async {
     setState(() {
@@ -52,7 +56,7 @@ class _AddEventState extends State<AddEvent> {
           .putData(fileBytes!);
 
       imageUrl = await uploadTask.ref.getDownloadURL();
-      ControllerImage.text = imageUrl;
+      controllerImage.text = imageUrl;
     } catch (error) {
       print('Error uploading file: $error');
     } finally {
@@ -70,20 +74,13 @@ class _AddEventState extends State<AddEvent> {
 
     if (snapshot.exists) {
       setState(() {
-        ControllerName.text = snapshot.get('name');
-        ControllerImage.text = snapshot.get('image_url');
+        controllerName.text = snapshot.get('name');
+        controllerImage.text = snapshot.get('image_url');
         showEditButton = true;
-        id = documentId;
-        isButtonEnabled = true;
       });
     } else {
       print("Document not found for ID: $documentId");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -127,10 +124,9 @@ class _AddEventState extends State<AddEvent> {
                         TextButton(
                             onPressed: () {
                               setState(() {
-                                ControllerName.clear();
-                                ControllerId.clear();
-                                ControllerImage.clear();
-                                isButtonEnabled = false;
+                                controllerName.clear();
+                                controllerId.clear();
+                                controllerImage.clear();
                               });
                             },
                             child: Icon(Icons.clear)),
@@ -141,7 +137,7 @@ class _AddEventState extends State<AddEvent> {
                 TextFieldDesign(
                     Text: 'أسم الخدمة:',
                     icon: Icons.title,
-                    ControllerTextField: ControllerName,
+                    ControllerTextField: controllerName,
                     onChanged: (value) {
                       name = value;
                     },
@@ -149,9 +145,9 @@ class _AddEventState extends State<AddEvent> {
                 TextFieldDesign(
                     Text: 'رقم المناسبة',
                     icon: Icons.room_service,
-                    ControllerTextField: ControllerId,
+                    ControllerTextField: controllerId,
                     onChanged: (value) {
-                      ControllerId.text = value;
+                      controllerId.text = value;
                     },
                     obscureTextField: false),
                 Row(children: [
@@ -180,62 +176,79 @@ class _AddEventState extends State<AddEvent> {
                         SizedBox(width: 8),
                         Text(
                           fileName,
-                          style: StyleTextAdmin(
-                            18,
-                            fileBytes != null ? ColorPurple_100 : Colors.grey,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: fileBytes != null
+                                ? ColorPurple_100
+                                : Colors.grey,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ]),
-                Container(
-                  child: ClassificationDropdown(
-                    onClassificationSelected: (classification) {
-                      print('Selected classification: $classification');
+                Center(
+                  child: DropdownButton<String>(
+                    value: _selectedItem,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedItem = newValue!;
+                      });
                     },
+                    items: _dropdownItems.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
                   ),
                 ),
                 Container(
-                    width: double.maxFinite,
-                    margin: EdgeInsets.only(bottom: 90),
-                    child: FloatingActionButton(
-                      backgroundColor: ColorPink_100,
-                      child: Text('إضافة مناسبة',
-                          style: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 18,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.white)),
-                      onPressed: () {
-                        setState(() async {
-                          showSpinner = true;
-                          await uploadFile();
-                          EventType newEvent = EventType(
-                              id: ControllerId.text,
-                              name: ControllerName.text,
-                              imageUrl: ControllerImage.text,
-                              event_classificaion_types: Classification);
-                          newEvent.addToFirestore();
-                          ControllerName.clear();
-                          ControllerId.clear();
-                          ControllerImage.clear();
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.success,
-                          );
-                          showSpinner = false;
-                        });
-                      },
-                    )),
+                  width: double.maxFinite,
+                  margin: EdgeInsets.only(bottom: 90),
+                  child: FloatingActionButton(
+                    backgroundColor: ColorPink_100,
+                    child: Text('إضافة مناسبة',
+                        style: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white)),
+                    onPressed: () async {
+                      setState(() async {
+                        if (!isDropdownSelected) {
+                          // Check if dropdown is selected
+                          // Show error message or handle accordingly
+                          return;
+                        }
+                        showSpinner = true;
+                        await uploadFile();
+                        EventType newEvent = EventType(
+                            id: controllerId.text,
+                            name: controllerName.text,
+                            imageUrl: controllerImage.text,
+                            event_classificaion_types: classificationRef);
+                        newEvent.addToFirestore();
+                        controllerName.clear();
+                        controllerId.clear();
+                        controllerImage.clear();
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                        );
+                        showSpinner = false;
+                      });
+                    },
+                  ),
+                ),
                 IconButton(
                   onPressed: () {
-                    EventType.updateEventTypeFirestore(ControllerName.text,
-                        ControllerImage.text, Classification, id);
+                    EventType.updateEventTypeFirestore(controllerName.text,
+                        controllerImage.text, classificationRef, '');
                     showEditButton = false;
-                    ControllerName.clear();
-                    ControllerId.clear();
-                    ControllerImage.clear();
+                    controllerName.clear();
+                    controllerId.clear();
+                    controllerImage.clear();
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
@@ -293,7 +306,7 @@ class _AddEventState extends State<AddEvent> {
                     imageUrl: doc['image_url'].toString(),
                     id: doc.id,
                     onTapFunction: () {
-                      getDataById(doc.id);
+                      //    getDataById(doc.id);
                     },
                   );
                 },
