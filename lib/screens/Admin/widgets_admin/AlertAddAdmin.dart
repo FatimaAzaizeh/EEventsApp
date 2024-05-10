@@ -167,7 +167,9 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                         id: uid,
                         email: ControllerEmail.text,
                         name: ControllerName.text,
-                        user_type_id: '1',
+                        user_type_id: FirebaseFirestore.instance
+                            .collection('user_types')
+                            .doc('1'),
                         phone: '',
                         address: '',
                         isActive: true,

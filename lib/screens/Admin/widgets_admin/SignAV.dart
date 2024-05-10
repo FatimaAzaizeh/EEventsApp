@@ -2,19 +2,17 @@ import 'dart:html';
 import 'dart:io';
 import 'dart:js_util';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Admin/DraweVendor.dart';
 import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
-
 import 'package:testtapp/screens/user/home_page.dart';
-
 import 'package:testtapp/widgets/button_design.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
@@ -160,83 +158,61 @@ class _SignInState extends State<SignIn> {
                                                       setState(() {
                                                         showSpinner = true;
                                                       });
-
                                                       try {
                                                         final user = await _auth
                                                             .signInWithEmailAndPassword(
-                                                                email: email,
-                                                                password:
-                                                                    password);
-                                                        String? uid =
-                                                            FirebaseAuth
-                                                                .instance
-                                                                .currentUser
-                                                                ?.uid;
-                                                        //User
-                                                        if (user != null &&
-                                                            !admin) {
-                                                          Navigator.pushNamed(
-                                                              context,
-                                                              VendorScreen
-                                                                  .screenRoute);
-                                                        }
-                                                        //Admin
-                                                        else if (user != null &&
-                                                            admin) {
-                                                          Stream<
-                                                                  QuerySnapshot<
-                                                                      Map<String,
-                                                                          dynamic>>>
-                                                              collectionStream =
-                                                              FirebaseFirestore
+                                                          email: email,
+                                                          password: password,
+                                                        );
+
+                                                        if (user != null) {
+                                                          String? uid =
+                                                              FirebaseAuth
                                                                   .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .where('id',
-                                                                      isEqualTo:
-                                                                          uid)
-                                                                  .snapshots();
+                                                                  .currentUser
+                                                                  ?.uid;
 
-                                                          collectionStream.listen(
-                                                              (querySnapshot) {
-                                                            // Check if there are documents that match the query
-                                                            if (querySnapshot
-                                                                .docs
-                                                                .isNotEmpty) {
-                                                              // Iterate through the documents
-                                                              for (QueryDocumentSnapshot<
-                                                                      Map<String,
-                                                                          dynamic>> doc
-                                                                  in querySnapshot
-                                                                      .docs) {
-                                                                // Access the data of each document
-                                                                Map<String,
-                                                                        dynamic>
-                                                                    data =
-                                                                    doc.data();
+                                                          // Check if the user is not an admin
+                                                          if (!admin) {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                VendorScreen
+                                                                    .screenRoute);
+                                                            return; // Exit the function after navigating
+                                                          }
 
-                                                                // Check if the user is an admin
-                                                                if (data[
-                                                                        'user_type_id'] ==
-                                                                    '1') {
-                                                                  Navigator.pushNamed(
-                                                                      context,
-                                                                      AdminScreen
-                                                                          .screenRoute);
-                                                                  return; // Exit the function after navigating
-                                                                }
-                                                              }
-                                                            } else {
-                                                              // User with the specified email doesn't exist in the 'adminUser' collection
+                                                          // Check if the user is an admin
+                                                          if (admin) {
+                                                            String userId = uid ??
+                                                                ''; // Replace 'your_user_id_here' with the actual user ID
+                                                            DocumentReference
+                                                                userTypeRef =
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'user_type')
+                                                                    .doc('1');
+
+                                                            bool isValid =
+                                                                await UserDataBase
+                                                                    .isUserTypeReferenceValid(
+                                                                        userId,
+                                                                        userTypeRef);
+
+                                                            if (isValid) {
                                                               print(
-                                                                  'User is not an admin');
+                                                                  'The user type reference is valid.');
+                                                            } else {
+                                                              print(
+                                                                  'The user type reference is not valid.');
                                                             }
-                                                            // Handle the case when the user is not an admin }
-                                                            setState(() {
-                                                              showSpinner =
-                                                                  false;
-                                                            });
-                                                          });
+
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                AdminScreen
+                                                                    .screenRoute);
+                                                            return; // Exit the function after navigating
+                                                          }
                                                         }
                                                       } catch (e) {
                                                         print(e);

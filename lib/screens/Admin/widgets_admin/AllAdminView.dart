@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/User.dart';
 
-class AllAdminView extends StatelessWidget {
+class AllAdminView extends StatefulWidget {
   const AllAdminView({Key? key}) : super(key: key);
 
   @override
+  State<AllAdminView> createState() => _AllAdminViewState();
+}
+
+class _AllAdminViewState extends State<AllAdminView> {
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
+      stream: getUsersWithValidUserType(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -19,18 +25,18 @@ class AllAdminView extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         }
 
-        return SingleChildScrollView(
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              // Check user_type for each document
-              if (document['user_type_id'] == '1') {
+        final validUsers = snapshot.data?.docs ?? [];
+
+        return Container(
+          child: SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: validUsers.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = validUsers[index];
                 return Container(
                   width: 400,
-                  //  padding: EdgeInsets.all(10),
                   color: ColorPurple_20,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,14 +62,27 @@ class AllAdminView extends StatelessWidget {
                     ],
                   ),
                 );
-              } else {
-                // Return an empty container if user_type is not 1
-                return Container();
-              }
-            },
+              },
+            ),
           ),
         );
       },
     );
+  }
+
+  Stream<QuerySnapshot> getUsersWithValidUserType() {
+    // Assuming user_type is a variable defined elsewhere, let's replace it here
+    String user_type =
+        'admin'; // Change 'admin' to the actual user type you're filtering for
+
+    // Filter the snapshots to only include documents where the user type is valid
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where(
+          'user_type_id',
+          isEqualTo:
+              FirebaseFirestore.instance.collection('user_types').doc('1'),
+        )
+        .snapshots();
   }
 }

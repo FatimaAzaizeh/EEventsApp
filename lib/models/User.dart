@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserDataBase {
   final String id;
   final String email;
   final String name;
-  final String user_type_id;
+  final DocumentReference user_type_id;
   final String phone;
   final String address;
   final bool isActive;
@@ -42,6 +43,35 @@ class UserDataBase {
       print('User added to the database successfully!');
     } catch (error) {
       print('Error adding user to the database: $error');
+    }
+  }
+
+  //check user_type_id
+
+  static Future<bool> isUserTypeReferenceValid(
+      String userId, DocumentReference user_type) async {
+    try {
+      // Get a reference to the user document
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('id', isEqualTo: userId)
+          .get();
+
+      // Check if any documents match the query
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first document (assuming id is unique)
+        DocumentSnapshot userSnapshot = querySnapshot.docs.first;
+
+        // Check if the user_type_id reference matches the expected reference
+        return userSnapshot['user_type_id'] == user_type;
+      } else {
+        // User document does not exist
+        print('User document with ID $userId does not exist.');
+        return false;
+      }
+    } catch (error) {
+      print('Error checking user type reference validity: $error');
+      return false;
     }
   }
 }

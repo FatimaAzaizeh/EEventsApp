@@ -260,11 +260,13 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           if (newUser.user != null) {
                             String? uid = newUser.user!
                                 .uid; // Access the UID from the created user
+                            DocumentReference docRef3 =
+                                _firestore.collection('user_type').doc('3');
                             UserDataBase newuser = UserDataBase(
                               id: uid,
                               email: _emailController.text,
                               name: _commercialName.text,
-                              user_type_id: '3',
+                              user_type_id: docRef3,
                               phone: '',
                               address: '',
                               isActive: false,
