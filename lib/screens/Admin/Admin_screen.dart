@@ -225,7 +225,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
-                'تسجيل حدث أو مناسبة جديدة',
+                'ادارة المناسبات',
                 Icons.post_add,
                 () {
                   widget.changeMainSection(AddEvent());
@@ -234,8 +234,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
-                'الخدمات الخاصة بالمناسبات',
-                Icons.room_service_outlined,
+                'ادارة الخدمات',
+                Icons.widgets,
                 () {
                   widget.changeMainSection(AddService());
                 },
@@ -255,12 +255,30 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
-                'إدارة الأصناف والخدمات ',
-                Icons.add_task,
+                'إدارة التصنيفات  ',
+                Icons.category_outlined,
                 () {
                   widget.changeMainSection(AllAdmin());
                 },
                 6,
+              ),
+              SizedBox(height: 20), // Add SizedBox here for spacing
+              buildListTile(
+                'تنظيم مراحل المناسبات ',
+                Icons.onetwothree_rounded,
+                () {
+                  widget.changeMainSection(AllAdmin());
+                },
+                7,
+              ),
+              SizedBox(height: 20), // Add SizedBox here for spacing
+              buildListTile(
+                'الطلبات',
+                Icons.online_prediction_rounded,
+                () {
+                  widget.changeMainSection(AllAdmin());
+                },
+                8,
               ),
               SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
@@ -271,7 +289,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   Navigator.pop(context);
                   //   widget.changeMainSection(VendorList());
                 },
-                7,
+                9,
               ),
             ],
           ),
