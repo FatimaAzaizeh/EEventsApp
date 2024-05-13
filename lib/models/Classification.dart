@@ -9,30 +9,32 @@ class Classification {
     required this.description,
   });
 
-//create new EventType_Req3.
-  Future<void> addDocumentWithCustomId() async {
+  // Create new EventType_Req3.
+  Future<String> addDocumentWithCustomId() async {
+    if (await isClassificationExist()) {
+      return 'رقم التصنيف موجود الرجاء اختيار رقم اخر ';
+    }
+
+    if (await isClassificationDescExist()) {
+      return 'اسم التصنيف موجود الرجاء ادخال اسم اخر ';
+    }
+
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Specify the custom document ID
-    String customId = this.id;
-
-    // Reference to the collection where you want to add the document
-    CollectionReference collectionReference =
-        firestore.collection('event_classificaion_types');
 
     try {
       // Add the document with the custom ID
-      await collectionReference.doc(customId).set({
-        'description': this.description,
+      await firestore.collection('event_classificaion_types').doc(id).set({
+        'description': description,
+        'id': id,
         // Add other fields as needed
       });
-      print('Document added with custom ID: $customId');
+      return 'تم إضافة تصنيف جديد  $description';
     } catch (e) {
-      print('Error adding document: $e');
+      return 'Error adding document: $e';
     }
   }
 
-  //edit EventType_Req8
+  // Edit EventType_Req8
   static Future<bool> updateClassificationFirestore(
       String id, String description) async {
     try {
@@ -66,6 +68,43 @@ class Classification {
     }
   }
 
+  Future<bool> isClassificationExist() async {
+    try {
+      // Query Firestore to check if the document with given id exists
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('event_classificaion_types')
+          .where('id', isEqualTo: id)
+          .limit(1) // Limit the query to 1 document for efficiency
+          .get();
+
+      // If any documents match the query, it means the object exists
+      return querySnapshot.docs.isNotEmpty;
+    } catch (error) {
+      print('Error checking document existence: $error');
+      return false;
+    }
+  }
+
+  Future<bool> isClassificationDescExist() async {
+    try {
+      // Query Firestore to check if the document with given id exists
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('event_classificaion_types')
+          .where('description', isEqualTo: description)
+          .limit(1) // Limit the query to 1 document for efficiency
+          .get();
+
+      // If any documents match the query, it means the object exists
+      return querySnapshot.docs.isNotEmpty;
+    } catch (error) {
+      print('Error checking document existence: $error');
+      return false;
+    }
+  }
+}
+
+
+/*
   // Get the number of the last document ID in the Firestore collection
   static Future<int?> getLastDocumentIdNumber() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -93,4 +132,4 @@ class Classification {
     // Return null if no documents are found
     return null;
   }
-}
+*/

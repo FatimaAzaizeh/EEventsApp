@@ -274,6 +274,12 @@ class _DrawerVendorState extends State<DrawerVendor> {
                             );
                             await newuser.saveToDatabase();
                           }
+                          DocumentReference VendorStatus = FirebaseFirestore
+                              .instance
+                              .collection('vendor_status')
+                              .doc('1');
+
+                          //    Vendor newVendor = new Vendor(id: id, businessName: businessName, email: email, contactNumber: contactNumber, logoUrl: logoUrl, instagramUrl: instagramUrl, website: website, bio: bio, serviceTypesId: serviceTypesId, businessTypesId: businessTypesId, address: address, locationUrl: locationUrl, workingHourFrom: workingHourFrom, workingHourTo: workingHourTo, verificationCode:"", createdAt:, vendorStatusId: vendorStatusId)
 
                           setState(() {
                             showSpinner = false;

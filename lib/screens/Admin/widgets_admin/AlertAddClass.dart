@@ -25,7 +25,7 @@ class _AddClassificationState extends State<AddClassification> {
   final ControllerName = TextEditingController();
   late String Name = '';
   late String Id = '';
-
+  late String status;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -48,20 +48,7 @@ class _AddClassificationState extends State<AddClassification> {
             obscureTextField: false,
             enabled: true,
           ),
-          FutureBuilder(
-            future: LastId(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator(); // Show loading indicator while waiting for the result
-              } else {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return snapshot.data;
-                }
-              }
-            },
-          ),
+
           TextFieldDesign(
             Text: 'إدخال رقم التصنيف',
             icon: Icons.account_circle,
@@ -97,7 +84,7 @@ class _AddClassificationState extends State<AddClassification> {
                       id: ControllerId.text,
                       description: ControllerName.text,
                     );
-                    await newClass.addDocumentWithCustomId();
+                    status = await newClass.addDocumentWithCustomId();
                   } catch (e) {
                     print(e);
                   } finally {
@@ -109,10 +96,8 @@ class _AddClassificationState extends State<AddClassification> {
                     // Show QuickAlert dialog after user creation
                     QuickAlert.show(
                       context: context,
-                      customAsset: 'assets/images/Completionanimation.gif',
-                      width: 300,
-                      title: ' تم إضافة تصنيف جديد $Name',
-                      type: QuickAlertType.success,
+                      type: QuickAlertType.info,
+                      title: '  $status',
                       confirmBtnText: 'إغلاق',
                     );
                   }
@@ -136,11 +121,4 @@ class _AddClassificationState extends State<AddClassification> {
       ),
     );
   }
-}
-
-Future<Text> LastId() async {
-  return Text(
-    'الرجاء ادخال رقم تصنيف اعلى: ${Classification.getLastDocumentIdNumber() ?? ""}',
-    style: TextStyle(fontSize: 18),
-  );
 }

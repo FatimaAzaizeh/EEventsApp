@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Classification.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AlertAddClass.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 
@@ -84,6 +85,15 @@ class _EventClassificationState extends State<EventClassification> {
                     ? () {
                         Classification.updateClassificationFirestore(
                             Id, ControllerDescription.text);
+                        setState(() {
+                          editButton = false;
+                          ControllerDescription.clear();
+                          Id = '';
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                          );
+                        });
                       }
                     : null,
                 icon: Icon(Icons.edit))
