@@ -78,25 +78,28 @@ class _EventClassificationState extends State<EventClassification> {
               onChanged: (value) {},
               obscureTextField: false,
             ),
-            IconButton(
-                disabledColor: Colors.grey,
-                color: ColorPink_100,
-                onPressed: editButton
-                    ? () {
-                        Classification.updateClassificationFirestore(
-                            Id, ControllerDescription.text);
-                        setState(() {
-                          editButton = false;
-                          ControllerDescription.clear();
-                          Id = '';
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.success,
-                          );
-                        });
-                      }
-                    : null,
-                icon: Icon(Icons.edit))
+            Tooltip(
+              message: 'تعديل اسم التصنيف',
+              child: IconButton(
+                  disabledColor: Colors.grey,
+                  color: ColorPink_100,
+                  onPressed: editButton
+                      ? () {
+                          Classification.updateClassificationFirestore(
+                              Id, ControllerDescription.text);
+                          setState(() {
+                            editButton = false;
+                            ControllerDescription.clear();
+                            Id = '';
+                            QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.success,
+                            );
+                          });
+                        }
+                      : null,
+                  icon: Icon(Icons.edit)),
+            )
           ],
         ),
         ClassificationTypes(changeMainSection: _changeMainSection),
