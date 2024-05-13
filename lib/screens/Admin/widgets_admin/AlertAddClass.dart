@@ -23,15 +23,14 @@ class _AddClassificationState extends State<AddClassification> {
   bool showSpinner = false;
   final ControllerId = TextEditingController();
   final ControllerName = TextEditingController();
-
-  late String Name;
-  late String Id;
+  late String Name = '';
+  late String Id = '';
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'إنشاء تصنيف جديد',
+        ' إنشاء تصنيف جديد',
         style: StyleTextAdmin(22, Colors.black),
       ),
       content: Column(
@@ -42,17 +41,35 @@ class _AddClassificationState extends State<AddClassification> {
             icon: Icons.info_rounded,
             ControllerTextField: ControllerName,
             onChanged: (value) {
-              Name = value;
+              setState(() {
+                Name = value;
+              });
             },
             obscureTextField: false,
             enabled: true,
+          ),
+          FutureBuilder(
+            future: LastId(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // Show loading indicator while waiting for the result
+              } else {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return snapshot.data;
+                }
+              }
+            },
           ),
           TextFieldDesign(
             Text: 'إدخال رقم التصنيف',
             icon: Icons.account_circle,
             ControllerTextField: ControllerId,
             onChanged: (value) {
-              Id = value;
+              setState(() {
+                Id = value;
+              });
             },
             obscureTextField: false,
             enabled: true,
@@ -76,11 +93,11 @@ class _AddClassificationState extends State<AddClassification> {
                     showSpinner = true; // Show spinner while creating user
                   });
                   try {
-                    Classification newClass = new Classification(
+                    Classification newClass = Classification(
                       id: ControllerId.text,
                       description: ControllerName.text,
                     );
-                    newClass.addDocumentWithCustomId();
+                    await newClass.addDocumentWithCustomId();
                   } catch (e) {
                     print(e);
                   } finally {
@@ -119,4 +136,11 @@ class _AddClassificationState extends State<AddClassification> {
       ),
     );
   }
+}
+
+Future<Text> LastId() async {
+  return Text(
+    'الرجاء ادخال رقم تصنيف اعلى: ${Classification.getLastDocumentIdNumber() ?? ""}',
+    style: TextStyle(fontSize: 18),
+  );
 }

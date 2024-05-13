@@ -67,7 +67,7 @@ class Classification {
   }
 
   // Get the number of the last document ID in the Firestore collection
-  Future<int?> getLastDocumentIdNumber() async {
+  static Future<int?> getLastDocumentIdNumber() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Reference to the collection
