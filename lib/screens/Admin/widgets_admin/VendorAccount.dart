@@ -121,8 +121,8 @@ class _VendorCardState extends State<VendorCard> {
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: widget.vendorData['vendor_status_id'] == VendorStatusRef
-              ? Colors.grey
-              : Colors.white,
+              ? Colors.white.withOpacity(0.8)
+              : Colors.grey,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(

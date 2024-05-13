@@ -74,7 +74,7 @@ class _SignInState extends State<SignIn> {
                                                     .circular(30),
                                             image: DecorationImage(
                                               image: AssetImage(
-                                                  'assets/images/Logo.png'),
+                                                  'assets/images/logo2.png'),
                                               fit: BoxFit.fill,
                                             ),
                                           ),

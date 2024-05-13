@@ -46,7 +46,7 @@ class Vendor {
         FirebaseFirestore.instance.collection('vendor');
     // Use the generated document ID to set the document in Firestore
     await vendor.add({
-      'id': id,
+      'UID': id,
       'business_name': businessName,
       'email': email,
       'contact_number': contactNumber,

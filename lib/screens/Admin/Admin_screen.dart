@@ -12,6 +12,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
 
 import 'package:testtapp/widgets/VendorPanelScreen.dart';
 
@@ -164,12 +165,12 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
             children: [
               Center(
                 child: Container(
-                  height: 90,
-                  width: 90,
+                  height: 150,
+                  width: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadiusDirectional.circular(30),
                     image: DecorationImage(
-                      image: AssetImage('assets/images/Logo.png'),
+                      image: AssetImage('assets/images/logo2.png'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -263,7 +264,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'تنظيم مراحل المناسبات ',
                 Icons.onetwothree_rounded,
                 () {
-                  widget.changeMainSection(AllAdmin());
+                  widget.changeMainSection(Wizard());
                 },
                 7,
               ),
