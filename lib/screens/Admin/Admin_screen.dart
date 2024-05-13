@@ -215,7 +215,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 1,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
+              Divider(),
               buildListTile(
                 'طلبات إنشاء حسابات الشركاء ',
                 Icons.add_business_outlined,
@@ -224,25 +224,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 2,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
-              buildListTile(
-                'ادارة المناسبات',
-                Icons.post_add,
-                () {
-                  widget.changeMainSection(AddEvent());
-                },
-                3,
-              ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
-              buildListTile(
-                'ادارة الخدمات',
-                Icons.widgets,
-                () {
-                  widget.changeMainSection(AddService());
-                },
-                4,
-              ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
                 'إدارة حسابات الشركاء',
                 Icons.account_circle_outlined,
@@ -250,11 +231,26 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   setState(() {
                     widget.changeMainSection(VendorList());
                   });
-                  // widget.changeMainSection(VendorList());
+                },
+                3,
+              ),
+              Divider(),
+              buildListTile(
+                'ادارة المناسبات',
+                Icons.post_add,
+                () {
+                  widget.changeMainSection(AddEvent());
+                },
+                4,
+              ),
+              buildListTile(
+                'ادارة الخدمات',
+                Icons.widgets,
+                () {
+                  widget.changeMainSection(AddService());
                 },
                 5,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
                 'إدارة التصنيفات  ',
                 Icons.category_outlined,
@@ -263,7 +259,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 6,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
                 'تنظيم مراحل المناسبات ',
                 Icons.onetwothree_rounded,
@@ -272,7 +267,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 7,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
               buildListTile(
                 'الطلبات',
                 Icons.online_prediction_rounded,
@@ -281,14 +275,13 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 8,
               ),
-              SizedBox(height: 20), // Add SizedBox here for spacing
+              Divider(),
               buildListTile(
                 'تسجيل الخروج',
                 Icons.logout,
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
-                  //   widget.changeMainSection(VendorList());
                 },
                 9,
               ),
