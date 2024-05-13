@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/Vendor.dart';
 
 void main() {
   runApp(MyApp());
@@ -47,15 +48,19 @@ class VendorList extends StatefulWidget {
   State<VendorList> createState() => _VendorListState();
 }
 
+DocumentReference VendorStatusRef =
+    FirebaseFirestore.instance.collection('vendor_status').doc('2');
+DocumentReference VendorDeactive =
+    FirebaseFirestore.instance.collection('vendor_status').doc('3');
+
 class _VendorListState extends State<VendorList> {
   @override
   Widget build(BuildContext context) {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('vendor')
-            .where('vendor_status_id', isEqualTo: '2')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('vendor').where(
+            'vendor_status_id',
+            whereIn: [VendorStatusRef, VendorDeactive]).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -115,7 +120,7 @@ class _VendorCardState extends State<VendorCard> {
         height: double.infinity,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: widget.vendorData['vendor_status_id'] == '3'
+          color: widget.vendorData['vendor_status_id'] == VendorStatusRef
               ? Colors.grey
               : Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -141,18 +146,19 @@ class _VendorCardState extends State<VendorCard> {
                   backgroundColor: Colors.pink[100],
                 ),
                 Switch(
-                  value: widget.vendorData['vendor_status_id'] == '3',
+                  value:
+                      widget.vendorData['vendor_status_id'] == VendorStatusRef,
                   onChanged: (value) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text(
-                              widget.vendorData['vendor_status_id'] == '3'
-                                  ? 'تفعيل الحساب'
-                                  : 'تعطيل الحساب'),
+                          title: Text(widget.vendorData['vendor_status_id'] ==
+                                  VendorDeactive
+                              ? 'تفعيل الحساب'
+                              : 'تعطيل الحساب'),
                           content: Text(widget.vendorData['vendor_status_id'] ==
-                                  '3'
+                                  VendorDeactive
                               ? 'هل أنت متأكد من رغبتك في تفعيل هذا الحساب؟'
                               : 'هل أنت متأكد من رغبتك في تعطيل هذا الحساب؟'),
                           actions: [
@@ -165,11 +171,16 @@ class _VendorCardState extends State<VendorCard> {
                             TextButton(
                               onPressed: () {
                                 setState(() {
-                                  widget.vendorData['vendor_status_id'] =
-                                      widget.vendorData['vendor_status_id'] ==
-                                              '3'
-                                          ? '2' // Activate account
-                                          : '3'; // Deactivate account
+                                  if (widget.vendorData['vendor_status_id'] ==
+                                      VendorStatusRef) {
+                                    Vendor.updateStatusIdInFirestore(
+                                        VendorDeactive,
+                                        widget.vendorData['UID']);
+                                  } else {
+                                    Vendor.updateStatusIdInFirestore(
+                                        VendorStatusRef,
+                                        widget.vendorData['UID']);
+                                  }
                                 });
                                 Navigator.of(context).pop();
                               },

@@ -7,6 +7,7 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
@@ -258,7 +259,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'إدارة التصنيفات  ',
                 Icons.category_outlined,
                 () {
-                  widget.changeMainSection(AllAdmin());
+                  widget.changeMainSection(EventClassification());
                 },
                 6,
               ),

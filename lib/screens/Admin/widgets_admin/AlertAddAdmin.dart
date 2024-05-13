@@ -167,7 +167,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     if (newUser.user != null) {
                       String? uid = newUser.user!.uid;
                       UserDataBase newuser = UserDataBase(
-                        id: uid,
+                        UID: uid,
                         email: ControllerEmail.text,
                         name: ControllerName.text,
                         user_type_id: FirebaseFirestore.instance

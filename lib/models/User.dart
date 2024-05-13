@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UserDataBase {
-  final String id;
+  final String UID;
   final String email;
   final String name;
   final DocumentReference user_type_id;
@@ -12,7 +12,7 @@ class UserDataBase {
   final String imageUrl;
 
   UserDataBase({
-    required this.id,
+    required this.UID,
     required this.email,
     required this.name,
     required this.user_type_id,
@@ -30,7 +30,7 @@ class UserDataBase {
 
       // Add the user to the 'users' collection
       await users.add({
-        'id': id,
+        'UID': UID,
         'email': email,
         'name': name,
         'user_type_id': user_type_id,
@@ -54,7 +54,7 @@ class UserDataBase {
       // Get a reference to the user document
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('id', isEqualTo: userId)
+          .where('UID', isEqualTo: userId)
           .get();
 
       // Check if any documents match the query

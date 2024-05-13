@@ -263,7 +263,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                             DocumentReference docRef3 =
                                 _firestore.collection('user_type').doc('3');
                             UserDataBase newuser = UserDataBase(
-                              id: uid,
+                              UID: uid,
                               email: _emailController.text,
                               name: _commercialName.text,
                               user_type_id: docRef3,

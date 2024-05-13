@@ -125,8 +125,11 @@ class _ListReqState extends State<ListReq> {
     });
   }
 
+  DocumentReference VendorStatusRef =
+      FirebaseFirestore.instance.collection('vendor_status').doc('1');
+
   ToggleListItem buildToggleListItem(Map<String, dynamic> data) {
-    if (data['vendor_status_id'] == '1') {
+    if (data['vendor_status_id'] == VendorStatusRef) {
       String logo = data['logo_url'].toString();
       return ToggleListItem(
         leading: Padding(
@@ -194,10 +197,14 @@ class _ListReqState extends State<ListReq> {
                       onPressed: () {
                         // Implement accept logic
                         //رمز التحقق
+                        DocumentReference VendorStatusRef = FirebaseFirestore
+                            .instance
+                            .collection('vendor_status')
+                            .doc('2');
 
                         setState(() {
                           Vendor.updateStatusIdInFirestore(
-                              '2', data['UID'].toString());
+                              VendorStatusRef, data['UID'].toString());
 
                           //sendEmail(data['email']);
                         });
