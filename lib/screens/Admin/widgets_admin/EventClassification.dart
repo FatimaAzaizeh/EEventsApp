@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/Classification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AlertAddClass.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 
 import 'package:testtapp/widgets/Event_item.dart';
 
@@ -12,6 +14,10 @@ class EventClassification extends StatefulWidget {
   @override
   State<EventClassification> createState() => _EventClassificationState();
 }
+
+bool editButton = false;
+String Id = "";
+TextEditingController ControllerDescription = TextEditingController();
 
 class _EventClassificationState extends State<EventClassification> {
   late DocumentReference eventTypeRef;
@@ -61,6 +67,28 @@ class _EventClassificationState extends State<EventClassification> {
               'إضافة تصنيف جديد',
               style: StyleTextAdmin(18, Colors.white),
             )),
+        Row(
+          children: [
+            TextFieldDesign(
+              enabled: editButton,
+              Text: ControllerDescription.text,
+              icon: Icons.category,
+              ControllerTextField: ControllerDescription,
+              onChanged: (value) {},
+              obscureTextField: false,
+            ),
+            IconButton(
+                disabledColor: Colors.grey,
+                color: ColorPink_100,
+                onPressed: editButton
+                    ? () {
+                        Classification.updateClassificationFirestore(
+                            Id, ControllerDescription.text);
+                      }
+                    : null,
+                icon: Icon(Icons.edit))
+          ],
+        ),
         ClassificationTypes(changeMainSection: _changeMainSection),
         Expanded(
           flex: 2,
@@ -128,15 +156,35 @@ class _ClassificationTypesState extends State<ClassificationTypes> {
                                                 isEqualTo: classificationData[
                                                     'description'])
                                             .get();
+                                    setState(() {
+                                      if (querySnapshot.docChanges.isNotEmpty) {
+                                        // Access the first document change
+                                        var firstChange =
+                                            querySnapshot.docChanges.first;
+
+                                        // Access the document snapshot associated with the change
+                                        var docSnapshot = firstChange.doc;
+
+                                        // Access the value of a specific field in the document
+                                        var fieldValue = docSnapshot[
+                                            'description']; // Replace 'fieldName' with the name of the field you want to retrieve
+
+                                        // Set the value to your ControllerDescription.text
+                                        ControllerDescription.text = fieldValue;
+                                      }
+                                      editButton = true;
+                                    });
 
                                     for (QueryDocumentSnapshot document
                                         in querySnapshot.docs) {
                                       String documentId = document.id;
+                                      Id = documentId;
                                       DocumentReference eventTypeRef =
                                           FirebaseFirestore.instance
                                               .collection(
                                                   'event_classificaion_types')
                                               .doc(documentId);
+
                                       print('Document ID: $documentId');
                                       print(eventTypeRef);
                                       widget.changeMainSection(eventTypeRef);
