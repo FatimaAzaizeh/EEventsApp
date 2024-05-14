@@ -20,15 +20,11 @@ import 'package:testtapp/screens/Admin/widgets_admin/email_acceptance.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/email_send.dart';
 
 import 'package:testtapp/screens/Event_screen.dart';
-import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
+import 'package:testtapp/screens/Vendor/VendorHome.dart';
 
 import 'package:testtapp/screens/loginAdmin.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
-import 'package:testtapp/vendors/dashboard_screen.dart';
-import 'package:testtapp/vendors/home.dart';
-import 'package:testtapp/vendors/manage_category.dart';
-import 'package:testtapp/vendors/manage_item.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -72,20 +68,14 @@ class MyApp extends StatelessWidget {
         AddAdmin.screenRoute: (context) => AddAdmin(),
         EventScreen.screenRoute: (context) => EventScreen(),
         ListReq.screenRoute: (context) => ListReq(),
-        VendorScreen.screenRoute: (context) => VendorScreen(),
         AllAdmin.screenRoute: (context) => AllAdmin(),
         SendEmail.screenRoute: (context) => SendEmail(),
         VendorList.screenRoute: (context) => VendorList(),
         AddService.screenRoute: (context) => AddService(),
         EventClassification.screenRoute: (context) => EventClassification(),
-        HomeScreen.id:(context) => HomeScreen(),
-        DashboardScreen.id:(context) => DashboardScreen(),
-        ManageCategories.id:(context) => ManageCategories(),
-        ManageItemScreen.id:(context) => ManageItemScreen(),
-          
-
+        VendorHome.screenRoute: (context) => VendorHome(),
       },
-      home: HomeScreen(),
+      home: AdminLogin(),
     );
   }
 }

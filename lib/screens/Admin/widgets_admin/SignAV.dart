@@ -1,18 +1,10 @@
-import 'dart:html';
-import 'dart:io';
-import 'dart:js_util';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
-import 'package:testtapp/screens/Admin/DraweVendor.dart';
-import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
-import 'package:testtapp/screens/user/home_page.dart';
+import 'package:testtapp/screens/Vendor/VendorHome.dart';
 import 'package:testtapp/widgets/button_design.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
@@ -176,8 +168,9 @@ class _SignInState extends State<SignIn> {
                                                           if (!admin) {
                                                             Navigator.pushNamed(
                                                                 context,
-                                                                VendorScreen
+                                                                VendorHome
                                                                     .screenRoute);
+
                                                             return; // Exit the function after navigating
                                                           }
 

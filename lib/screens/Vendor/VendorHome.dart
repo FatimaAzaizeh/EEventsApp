@@ -20,12 +20,12 @@ String userEmail = "email";
 String userImage = "";
 final TextEditingController ControllerSearch = TextEditingController();
 
-class AdminScreen extends StatefulWidget {
-  static const String screenRoute = 'Admin_screen';
-  const AdminScreen({Key? key});
+class VendorHome extends StatefulWidget {
+  static const String screenRoute = 'VendorHome';
+  const VendorHome({Key? key});
 
   @override
-  State<AdminScreen> createState() => _AdminScreenState();
+  State<VendorHome> createState() => _VendorHomeState();
 }
 
 Future<void> getCurrentUserInfo() async {
@@ -48,7 +48,7 @@ Future<void> getCurrentUserInfo() async {
   }
 }
 
-class _AdminScreenState extends State<AdminScreen> {
+class _VendorHomeState extends State<VendorHome> {
   @override
   void initState() {
     super.initState();
