@@ -25,6 +25,10 @@ import 'package:testtapp/screens/Vendor/Vendo_screen.dart';
 import 'package:testtapp/screens/loginAdmin.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/vendors/dashboard_screen.dart';
+import 'package:testtapp/vendors/home.dart';
+import 'package:testtapp/vendors/manage_category.dart';
+import 'package:testtapp/vendors/manage_item.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -74,8 +78,14 @@ class MyApp extends StatelessWidget {
         VendorList.screenRoute: (context) => VendorList(),
         AddService.screenRoute: (context) => AddService(),
         EventClassification.screenRoute: (context) => EventClassification(),
+        HomeScreen.id:(context) => HomeScreen(),
+        DashboardScreen.id:(context) => DashboardScreen(),
+        ManageCategories.id:(context) => ManageCategories(),
+        ManageItemScreen.id:(context) => ManageItemScreen(),
+          
+
       },
-      home: AdminLogin(),
+      home: HomeScreen(),
     );
   }
 }
