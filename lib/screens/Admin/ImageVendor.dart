@@ -1,5 +1,9 @@
+<<<<<<< Updated upstream
 /*
 import 'package:flutter/material.dart';
+=======
+/*import 'package:flutter/material.dart';
+>>>>>>> Stashed changes
 
 class ImageScroll extends StatefulWidget {
   @override
@@ -27,9 +31,16 @@ class _ImageScrollState extends State<ImageScroll> {
     try {
       //Reference storageRef = _storage.ref();
       // ListResult result = await storageRef.listAll();
+<<<<<<< Updated upstream
   List<String> urls = await Future.wait(
           //result.items.map((item) => item.getDownloadURL()),
           );      return urls;
+=======
+      List<String> urls = await Future.wait(
+          result.items.map((item) => item.getDownloadURL()),
+          );
+      return urls;
+>>>>>>> Stashed changes
     } catch (e) {
       print('Error loading images: $e');
       return []; // Return empty list in case of error

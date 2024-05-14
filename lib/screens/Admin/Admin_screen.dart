@@ -12,9 +12,15 @@ import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
+<<<<<<< Updated upstream
 import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
 
 import 'package:testtapp/widgets/VendorPanelScreen.dart';
+=======
+import 'package:testtapp/screens/Admin/widgets_admin/mainSectionAdmin.dart';
+import 'package:testtapp/screens/MyStepperPage.dart';
+
+>>>>>>> Stashed changes
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -146,6 +152,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
+<<<<<<< Updated upstream
       child: Container(
         decoration: BoxDecoration(
           color: kColorBack,
@@ -155,6 +162,58 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               spreadRadius: 8,
               blurRadius: 7,
               offset: Offset(3, 3),
+=======
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, bottom: 15),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Drawer(
+            // Set the background color of the Drawer to transparent
+            backgroundColor: AdminColor,
+
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 50),
+              child: Column(children: [
+                Container(
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.fromLTRB(15, 30, 15, 50),
+                  width: 200,
+                  child: Image(image: AssetImage('assets/images/name.png')),
+                ),
+                Column(children: [
+                  buildListTile('أضافة مسؤول جديد', Icons.person_add_alt, () {
+                    widget.changeMainSection(AddAdmin());
+                  }, 0, 1),
+                  buildListTile('طلبات إنشاء حسابات الشركاء ',
+                      Icons.add_business_outlined, () {
+                    widget.changeMainSection(ListReq());
+                  }, notificationCount, 2),
+                  buildListTile('تسجيل حدث أو مناسبة جديدة', Icons.post_add,
+                      () {
+                    widget.changeMainSection(AddEvent());
+                  }, 0, 3),
+                  buildListTile(
+                      'الخدمات الخاصة بالمناسبات', Icons.room_service_outlined,
+                      () {
+                  
+                  }, 0, 4),
+                  buildListTile(
+                      'إدارة حسابات الشركاء', Icons.account_circle_outlined,
+                      () {
+                    widget.changeMainSection(VendorList());
+                  }, 0, 5),
+                  buildListTile('إدارة الأصناف والخدمات ', Icons.add_task, () {
+                    widget.changeMainSection(MyStepperPage());
+                  }, 0, 6),
+                  /*buildListTile('تسجيل الخروج', Icons.logout, () {
+                      _auth.signOut();
+                      Navigator.pop(context);
+                    }, 0, 7),*/
+                ])
+              ]),
+>>>>>>> Stashed changes
             ),
           ],
         ),
