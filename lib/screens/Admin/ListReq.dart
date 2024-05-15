@@ -206,7 +206,7 @@ class _ListReqState extends State<ListReq> {
                           Vendor.updateStatusIdInFirestore(
                               VendorStatusRef, data['UID'].toString());
 //لازم تغيري الحالة بجدول الuser كمان
-                          //sendEmail(data['email']);
+                          // sendEmail(data['email']);
                         });
                       },
                       child: Column(

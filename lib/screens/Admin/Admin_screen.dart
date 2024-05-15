@@ -12,7 +12,8 @@ import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardScreen.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -261,8 +262,18 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               buildListTile(
                 'تنظيم مراحل المناسبات ',
                 Icons.onetwothree_rounded,
-                () {
-                  widget.changeMainSection(Wizard());
+                () async {
+                  String? selectedEvent = await showDialog<String>(
+                    context: context,
+                    builder: (context) => CreateNewEventWizard(),
+                  );
+                  if (selectedEvent != null) {
+                    // Do something with the selected event
+                    print('Selected Event: $selectedEvent');
+                    widget.changeMainSection(Wizard(
+                      EventName: selectedEvent,
+                    ));
+                  }
                 },
                 7,
               ),
