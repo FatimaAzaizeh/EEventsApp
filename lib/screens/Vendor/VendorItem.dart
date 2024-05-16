@@ -1,136 +1,193 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:testtapp/models/item.dart';
+import 'package:testtapp/screens/Vendor/Alert_Edit.dart';
+import 'package:testtapp/screens/Vendor/Alert_Item.dart';
 
-class VendorItem extends StatefulWidget {
+class VendorItem extends StatelessWidget {
   @override
-  State<VendorItem> createState() => _VendorItemState();
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Items')),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (userSnapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Items')),
+            body: Center(child: Text('Error: ${userSnapshot.error}')),
+          );
+        }
+
+        final currentUser = userSnapshot.data;
+
+        if (currentUser == null) {
+          // User not logged in
+          return Scaffold(
+            appBar: AppBar(title: Text('Items')),
+            body: Center(child: Text('User not logged in.')),
+          );
+        }
+
+        return VendorItemContent(currentUser: currentUser);
+      },
+    );
+  }
 }
 
-class _VendorItemState extends State<VendorItem> {
-  late List<Item> _items;
-  late bool _loading;
-  late String _vendorId;
+class VendorItemContent extends StatelessWidget {
+  final User currentUser;
+
+  const VendorItemContent({Key? key, required this.currentUser})
+      : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _loading = true;
-    _items = [];
-    _vendorId = '';
-    initialize();
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('item')
+          .where('vendor_id',
+              isEqualTo: FirebaseFirestore.instance
+                  .collection('vendor')
+                  .doc(currentUser.uid))
+          .where('item_status_id',
+              isEqualTo:
+                  FirebaseFirestore.instance.collection('item_status').doc('1'))
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Items')),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Items')),
+            body: Center(child: Text('Error: ${snapshot.error}')),
+          );
+        }
+
+        final items = snapshot.data!.docs.map((doc) {
+          final data = doc.data();
+          return ItemDisplay(
+            id: doc.id,
+            name: data['name'] ?? '',
+            capacity: data['capacity'] ?? 0,
+            createdAt: (data['created_at'] as Timestamp).toDate(),
+            description: data['description'] ?? '',
+          );
+        }).toList();
+
+        return VendorItemList(items: items, currentUser: currentUser);
+      },
+    );
   }
+}
 
-  Future<void> initialize() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      await getCurrentVendorId(currentUser);
-      await getItems();
-    } else {
-      // Handle the case when the user is not logged in
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
+class VendorItemList extends StatelessWidget {
+  final List<ItemDisplay> items;
+  final User currentUser;
 
-  Future<void> getCurrentVendorId(User user) async {
-    final userSnapshot = await FirebaseFirestore.instance
-        .collection('vendor')
-        .where('UID', isEqualTo: user.uid)
-        .get();
-
-    if (userSnapshot.docs.isNotEmpty) {
-      setState(() {
-        _vendorId = userSnapshot.docs.first.id;
-      });
-    }
-  }
-
-  Future<void> getItems() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('items')
-        .where('vendor_id', isEqualTo: _vendorId)
-        .get();
-
-    setState(() {
-      _items = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Item(
-          id: doc.id,
-          name: data['name'] ?? '',
-          capacity: data['capacity'] ?? 0,
-          createdAt: (data['created_at'] as Timestamp).toDate(),
-          description: data['description'] ?? '',
-          // Add other properties as needed
-        );
-      }).toList();
-      _loading = false;
-    });
-  }
+  const VendorItemList(
+      {Key? key, required this.items, required this.currentUser})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Items for Vendor $_vendorId'),
-      ),
-      body: _loading
-          ? Center(child: CircularProgressIndicator())
-          : _items.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('You have no items.'),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Open dialog to add new item
-                          _showAddItemDialog(context);
-                        },
-                        child: Text('Add New Item'),
-                      ),
-                    ],
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: _items.length,
-                  itemBuilder: (context, index) {
-                    final item = _items[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(item.name),
-                        subtitle: Text('Capacity: ${item.capacity}'),
-                        trailing:
-                            Text('Created At: ${item.createdAt.toString()}'),
-                        // Display other item information as needed
-                      ),
-                    );
-                  },
+        title: Text('Items for Vendor ${currentUser.uid}'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertItem(
+                  vendor_id: currentUser.uid,
                 ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Open dialog to add new item
-          _showAddItemDialog(context);
-        },
-        child: Icon(Icons.add),
+              );
+            },
+          ),
+        ],
       ),
+      body: items.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('You have no items.'),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertItem(
+                          vendor_id: currentUser.uid,
+                        ),
+                      );
+                    },
+                    child: Text('Add New Item'),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(item.name),
+                    subtitle: Text('Capacity: ${item.capacity}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertEditItem(
+                                vendor_id: currentUser.uid,
+                                item_code: item.id,
+                              ),
+                            );
+                            // Implement editing functionality
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            // Implement deletion functionality
+                            Item.deactiveItemInFirestore(item.id);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
-  }
-
-  Future<void> _showAddItemDialog(BuildContext context) async {
-    // Implement dialog to add new item here
   }
 }
 
-class Item {
+class ItemDisplay {
   final String id;
   final String name;
   final int capacity;
   final DateTime createdAt;
   final String description;
 
-  Item({
+  ItemDisplay({
     required this.id,
     required this.name,
     required this.capacity,

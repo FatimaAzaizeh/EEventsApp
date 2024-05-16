@@ -13,6 +13,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Vendor/VendorItem.dart';
+import 'package:testtapp/screens/Vendor/WorkHour.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -238,7 +239,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'ادارة مواعيد العمل',
                 Icons.timelapse,
                 () {
-                  widget.changeMainSection(AddEvent());
+                  widget.changeMainSection(OpeningHoursPage());
                 },
                 4,
               ),

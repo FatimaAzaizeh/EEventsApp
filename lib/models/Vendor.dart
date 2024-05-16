@@ -16,7 +16,6 @@ class Vendor {
   String locationUrl;
   String workingHourFrom;
   String workingHourTo;
-  String verificationCode;
   Timestamp createdAt;
   DocumentReference vendorStatusId;
 
@@ -35,17 +34,21 @@ class Vendor {
     required this.locationUrl,
     required this.workingHourFrom,
     required this.workingHourTo,
-    required this.verificationCode,
     required this.createdAt,
     required this.vendorStatusId,
   });
 
   Future<void> addToFirestore() async {
-    // Generate a new document ID (automatically provided by Firestore)
-    CollectionReference vendor =
-        FirebaseFirestore.instance.collection('vendor');
-    // Use the generated document ID to set the document in Firestore
-    await vendor.add({
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Specify the custom document ID
+    String customId = this.id;
+
+    // Reference to the collection where you want to add the document
+    CollectionReference collectionReference = firestore.collection('vendor');
+
+    // Add the document with the custom ID
+    await collectionReference.doc(customId).set({
       'UID': id,
       'business_name': businessName,
       'email': email,
@@ -60,7 +63,6 @@ class Vendor {
       'location_url': locationUrl,
       'working_hour_from': workingHourFrom,
       'working_hour_to': workingHourTo,
-      'verification_code': verificationCode,
       'created_at': createdAt,
       'vendor_status_id': vendorStatusId,
     });

@@ -268,7 +268,6 @@ class _DrawerVendorState extends State<DrawerVendor> {
                                 locationUrl: '',
                                 workingHourFrom: '',
                                 workingHourTo: '',
-                                verificationCode: '',
                                 createdAt: myTimestamp,
                                 vendorStatusId: VendorStatus);
                             newVendor.addToFirestore();
