@@ -168,7 +168,23 @@ class _SignInState extends State<SignIn> {
                                                                 ?.uid;
 
                                                         // Check if the user is not an admin
-                                                        if (!admin) {
+                                                        if (!admin &&
+                                                            isVendorSelected) {
+                                                          String userId = uid ??
+                                                              ''; // Replace 'your_user_id_here' with the actual user ID
+                                                          DocumentReference
+                                                              userTypeRef =
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'user_type')
+                                                                  .doc('3');
+
+                                                          bool isValid =
+                                                              await UserDataBase
+                                                                  .isUserTypeReferenceValid(
+                                                                      userId,
+                                                                      userTypeRef);
                                                           Navigator.pushNamed(
                                                               context,
                                                               VendorHome

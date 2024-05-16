@@ -12,6 +12,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
+import 'package:testtapp/screens/Vendor/VendorItem.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -32,7 +33,7 @@ Future<void> getCurrentUserInfo() async {
 
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
       .collection('users')
-      .where('id', isEqualTo: uid)
+      .where('UID', isEqualTo: uid)
       .get()
       .then((querySnapshot) => querySnapshot.docs.first);
 
@@ -206,25 +207,25 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               Divider(),
               buildListTile(
-                'أضافة مسؤول جديد',
-                Icons.person_add_alt,
+                ' المنتحات',
+                Icons.sell,
                 () {
-                  widget.changeMainSection(AddAdmin());
+                  widget.changeMainSection(VendorItem());
                 },
                 1,
               ),
               Divider(),
               buildListTile(
-                'طلبات إنشاء حسابات الشركاء ',
-                Icons.add_business_outlined,
+                'الطلبات',
+                Icons.online_prediction_rounded,
                 () {
                   widget.changeMainSection(ListReq());
                 },
                 2,
               ),
               buildListTile(
-                'إدارة حسابات الشركاء',
-                Icons.account_circle_outlined,
+                'إدارة الحساب',
+                Icons.manage_accounts,
                 () {
                   setState(() {
                     widget.changeMainSection(VendorList());
@@ -234,8 +235,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               Divider(),
               buildListTile(
-                'ادارة المناسبات',
-                Icons.post_add,
+                'ادارة مواعيد العمل',
+                Icons.timelapse,
                 () {
                   widget.changeMainSection(AddEvent());
                 },

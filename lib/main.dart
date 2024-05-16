@@ -76,9 +76,7 @@ class MyApp extends StatelessWidget {
         VendorHome.screenRoute: (context) => VendorHome(),
         CreateNewEventWizard.screenRoute: (context) => CreateNewEventWizard(),
       },
-      initialRoute: _auth.currentUser != null
-          ? AdminScreen.screenRoute
-          : AdminLogin.screenRoute,
+      home: AdminLogin(),
     );
   }
 }

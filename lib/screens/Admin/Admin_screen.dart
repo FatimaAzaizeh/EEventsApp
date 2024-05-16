@@ -34,7 +34,7 @@ Future<void> getCurrentUserInfo() async {
 
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
       .collection('users')
-      .where('id', isEqualTo: uid)
+      .where('UID', isEqualTo: uid)
       .get()
       .then((querySnapshot) => querySnapshot.docs.first);
 
