@@ -12,6 +12,8 @@ import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
+import 'package:testtapp/screens/Vendor/AllOrders.dart';
+import 'package:testtapp/screens/Vendor/Orders.dart';
 import 'package:testtapp/screens/Vendor/VendorItem.dart';
 import 'package:testtapp/screens/Vendor/WorkHour.dart';
 
@@ -220,7 +222,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'الطلبات',
                 Icons.online_prediction_rounded,
                 () {
-                  widget.changeMainSection(ListReq());
+                  widget.changeMainSection(VendorOrders(
+                    currentUserUID: _auth.currentUser!.uid.toString(),
+                  ));
                 },
                 2,
               ),
@@ -244,7 +248,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 4,
               ),
               buildListTile(
-                'ادارة الخدمات',
+                'التقيمات',
                 Icons.widgets,
                 () {
                   widget.changeMainSection(AddService());
@@ -259,22 +263,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 6,
               ),
-              buildListTile(
-                'تنظيم مراحل المناسبات ',
-                Icons.onetwothree_rounded,
-                () {
-                  //  widget.changeMainSection(Wizard());
-                },
-                7,
-              ),
-              buildListTile(
-                'الطلبات',
-                Icons.online_prediction_rounded,
-                () {
-                  widget.changeMainSection(AllAdmin());
-                },
-                8,
-              ),
               Divider(),
               buildListTile(
                 'تسجيل الخروج',
@@ -283,7 +271,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   _auth.signOut();
                   Navigator.pop(context);
                 },
-                9,
+                7,
               ),
             ],
           ),

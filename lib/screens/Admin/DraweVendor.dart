@@ -254,22 +254,22 @@ class _DrawerVendorState extends State<DrawerVendor> {
                                 imageUrl: imageUrls);
                             newVendorUser.saveToDatabase();
                             Vendor newVendor = Vendor(
-                                id: uid,
-                                businessName: _commercialNameController.text,
-                                email: _emailController.text,
-                                contactNumber: '',
-                                logoUrl: imageUrls,
-                                instagramUrl: _socialMediaController.text,
-                                website: '',
-                                bio: _descriptionController.text,
-                                serviceTypesId: ServiceId,
-                                businessTypesId: '',
-                                address: '',
-                                locationUrl: '',
-                                workingHourFrom: '',
-                                workingHourTo: '',
-                                createdAt: myTimestamp,
-                                vendorStatusId: VendorStatus);
+                              id: uid,
+                              businessName: _commercialNameController.text,
+                              email: _emailController.text,
+                              contactNumber: '',
+                              logoUrl: imageUrls,
+                              instagramUrl: _socialMediaController.text,
+                              website: '',
+                              bio: _descriptionController.text,
+                              serviceTypesId: ServiceId,
+                              businessTypesId: '',
+                              address: '',
+                              locationUrl: '',
+                              workingHour: {},
+                              createdAt: myTimestamp,
+                              vendorStatusId: VendorStatus,
+                            );
                             newVendor.addToFirestore();
                             // Your authentication and Firestore logic here
 

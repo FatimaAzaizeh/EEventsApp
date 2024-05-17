@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,8 +16,7 @@ class Vendor {
   String businessTypesId;
   String address;
   String locationUrl;
-  String workingHourFrom;
-  String workingHourTo;
+  Map<String, Map<String, dynamic>> workingHour;
   Timestamp createdAt;
   DocumentReference vendorStatusId;
 
@@ -32,8 +33,7 @@ class Vendor {
     required this.businessTypesId,
     required this.address,
     required this.locationUrl,
-    required this.workingHourFrom,
-    required this.workingHourTo,
+    required this.workingHour,
     required this.createdAt,
     required this.vendorStatusId,
   });
@@ -61,8 +61,7 @@ class Vendor {
       'business_types_id': businessTypesId,
       'address': address,
       'location_url': locationUrl,
-      'working_hour_from': workingHourFrom,
-      'working_hour_to': workingHourTo,
+      'working_hour': workingHour,
       'created_at': createdAt,
       'vendor_status_id': vendorStatusId,
     });
