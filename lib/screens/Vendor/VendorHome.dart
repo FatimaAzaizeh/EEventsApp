@@ -14,7 +14,9 @@ import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Vendor/AllOrders.dart';
 import 'package:testtapp/screens/Vendor/Orders.dart';
+import 'package:testtapp/screens/Vendor/StoreStatus.dart';
 import 'package:testtapp/screens/Vendor/VendorItem.dart';
+import 'package:testtapp/screens/Vendor/VendorProfile.dart';
 import 'package:testtapp/screens/Vendor/WorkHour.dart';
 
 final _auth = FirebaseAuth.instance;
@@ -233,7 +235,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 Icons.manage_accounts,
                 () {
                   setState(() {
-                    widget.changeMainSection(VendorList());
+                    widget.changeMainSection(ProfileVendor());
                   });
                 },
                 3,
@@ -256,10 +258,10 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 5,
               ),
               buildListTile(
-                'إدارة التصنيفات  ',
+                'حاله المحل  ',
                 Icons.category_outlined,
                 () {
-                  widget.changeMainSection(EventClassification());
+                  widget.changeMainSection(StoreStatus());
                 },
                 6,
               ),

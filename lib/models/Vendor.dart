@@ -125,4 +125,42 @@ class Vendor {
       return false;
     }
   }
+
+  static Future<void> edit({
+    required String UID,
+    String? businessName,
+    String? contactNumber,
+    String? logoUrl,
+    String? instagramUrl,
+    String? website,
+    String? bio,
+    DocumentReference? serviceTypesId,
+    DocumentReference? businessTypesId,
+    String? address,
+    String? locationUrl,
+  }) async {
+    try {
+      // Get a reference to the document you want to edit
+      DocumentReference vendorRef =
+          FirebaseFirestore.instance.collection('vendor').doc(UID);
+
+      // Update the document with the new data
+      await vendorRef.update({
+        if (businessName != null) 'business_name': businessName,
+        if (contactNumber != null) 'contact_number': contactNumber,
+        if (logoUrl != null) 'logo_url': logoUrl,
+        if (instagramUrl != null) 'instagram_url': instagramUrl,
+        if (website != null) 'website': website,
+        if (bio != null) 'bio': bio,
+        if (serviceTypesId != null) 'service_types_id': serviceTypesId,
+        if (businessTypesId != null) 'business_types_id': businessTypesId,
+        if (address != null) 'address': address,
+        if (locationUrl != null) 'location_url': locationUrl,
+      });
+
+      print('Vendor data updated successfully');
+    } catch (error) {
+      print('Error updating vendor data: $error');
+    }
+  }
 }
