@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/models/Wizard.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardSteps.dart';
+
+String id = '';
 
 class Wizard extends StatefulWidget {
   static const String screenRoute = 'WizardScreen';
@@ -77,7 +81,9 @@ class _WizardState extends State<Wizard> {
                   Text(widget.EventName),
                   ElevatedButton(
                     onPressed: () {
-                      readData('3');
+                      if (id != '') {
+                        readData(id);
+                      }
                     },
                     child: Text('Load Data'),
                   ),
@@ -216,15 +222,24 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                       .get();
 
                   String event_type_id = snapshot.docs[0].get('id');
+                  id = event_type_id;
                   EventWizard event = EventWizard(
                     services: services,
                     event_type_id: event_type_id,
                   );
 
-                  event.uploadToFirebase();
+                  String message = event.uploadToFirebase().toString();
+
+                  QuickAlert.show(
+                      context: context,
+                      customAsset: 'assets/images/Completionanimation.gif',
+                      width: 300,
+                      title: '$message',
+                      type: QuickAlertType.success,
+                      confirmBtnText: 'إغلاق');
                 });
               },
-              child: Text('انشئ مراجل المناسبة'),
+              child: Text('انشئ مراحل المناسبة'),
             ),
           ],
         ),

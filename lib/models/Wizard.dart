@@ -7,7 +7,7 @@ class EventWizard {
   EventWizard({required this.event_type_id, required this.services});
 
   // Method to upload EventWizard to Firebase Firestore
-  Future<void> uploadToFirebase() async {
+  Future<String> uploadToFirebase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Specify the custom document ID
@@ -32,9 +32,9 @@ class EventWizard {
           );
         }),
       });
-      print('EventWizard uploaded to Firebase successfully!');
+      return 'EventWizard uploaded to Firebase successfully!';
     } catch (e) {
-      print('Error uploading EventWizard to Firebase: $e');
+      return 'Error uploading EventWizard to Firebase: $e';
     }
   }
 }
