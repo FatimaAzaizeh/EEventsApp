@@ -13,7 +13,6 @@ import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Vendor/AllOrders.dart';
-import 'package:testtapp/screens/Vendor/Orders.dart';
 import 'package:testtapp/screens/Vendor/StoreStatus.dart';
 import 'package:testtapp/screens/Vendor/VendorItem.dart';
 import 'package:testtapp/screens/Vendor/VendorProfile.dart';
