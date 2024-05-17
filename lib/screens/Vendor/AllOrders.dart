@@ -143,87 +143,71 @@ class _VendorOrdersState extends State<VendorOrders> {
                       DataCell(Text(
                           _parseTimestamp(vendorData['deliver_at']) ?? 'N/A')),
                       DataCell(
-                        FutureBuilder<QuerySnapshot>(
-                          future: FirebaseFirestore.instance
-                              .collection('order_status')
-                              .get(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
+                        FutureBuilder<DocumentSnapshot>(
+                          future: vendorData['order_status_id'].get(),
+                          builder: (context, statusSnapshot) {
+                            if (statusSnapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
+                            } else if (statusSnapshot.hasError) {
                               return Text('Error fetching data');
                             } else {
-                              var documents = snapshot.data!.docs;
-                              List<String> orderStatusList =
-                                  documents.map((doc) {
-                                var orderStatusData =
-                                    doc.data() as Map<String, dynamic>;
-                                return orderStatusData['description'] as String;
-                              }).toList();
+                              var orderStatusData = statusSnapshot.data!.data()
+                                  as Map<String, dynamic>;
+                              var orderStatusValue =
+                                  orderStatusData['description'];
 
-                              // Fetch the initial value for DropDownValue asynchronously
-                              void fetchInitialDropDownValue() async {
-                                try {
-                                  // Fetch the vendor's order status ID from the document reference
-                                  var orderStatusIdRef = vendorData['vendor']
-                                          ['order_status_id']
-                                      .toString();
+                              return FutureBuilder<QuerySnapshot>(
+                                future: FirebaseFirestore.instance
+                                    .collection('order_status')
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error fetching data');
+                                  } else {
+                                    var documents = snapshot.data!.docs;
+                                    List<String> orderStatusList =
+                                        documents.map((doc) {
+                                      var orderStatusData =
+                                          doc.data() as Map<String, dynamic>;
+                                      return orderStatusData['description']
+                                          as String;
+                                    }).toList();
 
-                                  // Fetch the specific document using the order status ID
-                                  DocumentSnapshot docSnapshot =
-                                      await FirebaseFirestore.instance
-                                          .collection('order_status')
-                                          .doc(orderStatusIdRef)
-                                          .get();
-
-                                  // Extract the data from the fetched document
-                                  var orderStatusData = docSnapshot.data()
-                                      as Map<String, dynamic>;
-                                  var initialDropDownValue =
-                                      orderStatusData['description'] ??
-                                          'Unknown';
-
-                                  // Update the state with the initial dropdown value
-                                  setState(() {
-                                    dropDownValues = initialDropDownValue;
-                                  });
-                                } catch (error) {
-                                  print('Error fetching order status: $error');
-                                }
-                              }
-
-                              // Fetch initial value if not already set
-                              if (dropDownValues[index] == null) {
-                                fetchInitialDropDownValue();
-                              }
-
-                              return DropdownButton<String>(
-                                value: dropDownValues[index],
-                                items: orderStatusList.map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) async {
-                                  if (newValue != null) {
-                                    int newStatusId =
-                                        orderStatusList.indexOf(newValue) + 1;
-                                    DocumentReference newStatusIdRef =
-                                        FirebaseFirestore.instance
-                                            .collection('order_status')
-                                            .doc(newStatusId.toString());
-                                    setState(() {
-                                      dropDownValues[index] = newValue;
-                                    });
-                                    await FirebaseFirestore.instance
-                                        .collection('orders')
-                                        .doc(doc.id)
-                                        .update({
-                                      'vendors.${vendorEntry.key}.order_status_id':
-                                          newStatusIdRef,
-                                    });
+                                    return DropdownButton<String>(
+                                      value: orderStatusValue,
+                                      items:
+                                          orderStatusList.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) async {
+                                        if (newValue != null) {
+                                          int newStatusId = orderStatusList
+                                                  .indexOf(newValue) +
+                                              1;
+                                          DocumentReference newStatusIdRef =
+                                              FirebaseFirestore.instance
+                                                  .collection('order_status')
+                                                  .doc(newStatusId.toString());
+                                          setState(() {
+                                            dropDownValues[index] = newValue;
+                                          });
+                                          await FirebaseFirestore.instance
+                                              .collection('orders')
+                                              .doc(doc.id)
+                                              .update({
+                                            'vendors.${vendorEntry.key}.order_status_id':
+                                                newStatusIdRef,
+                                          });
+                                        }
+                                      },
+                                    );
                                   }
                                 },
                               );
