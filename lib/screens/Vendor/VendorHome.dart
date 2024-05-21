@@ -248,22 +248,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 4,
               ),
-              buildListTile(
-                'التقيمات',
-                Icons.widgets,
-                () {
-                  widget.changeMainSection(AddService());
-                },
-                5,
-              ),
-              buildListTile(
-                'حاله المحل  ',
-                Icons.category_outlined,
-                () {
-                  widget.changeMainSection(StoreStatus());
-                },
-                6,
-              ),
               Divider(),
               buildListTile(
                 'تسجيل الخروج',
@@ -272,7 +256,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   _auth.signOut();
                   Navigator.pop(context);
                 },
-                7,
+                5,
               ),
             ],
           ),

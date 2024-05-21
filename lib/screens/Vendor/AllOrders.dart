@@ -25,56 +25,7 @@ class _VendorOrdersState extends State<VendorOrders> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text('Order Table'),
-            TextButton(
-              onPressed: () {
-                Orders order = Orders(
-                  orderId: '123456', // Replace with your order ID
-                  userId: 'user123', // Replace with your user ID
-                  vendors: {
-                    1: {
-                      'created_at': DateTime.now(),
-                      'deliver_at': DateTime.now().add(Duration(days: 7)),
-                      'order_status_id': 1,
-                      'price': 50.0,
-                      'vendor_id_items': {
-                        'item1': {
-                          'amount': 2,
-                          'item_code': 'ABC123',
-                          'item_name': 'Item 1',
-                        },
-                        'item2': {
-                          'amount': 1,
-                          'item_code': 'DEF456',
-                          'item_name': 'Item 2',
-                        },
-                      },
-                    },
-                    2: {
-                      'created_at': DateTime.now(),
-                      'deliver_at': DateTime.now().add(Duration(days: 5)),
-                      'order_status_id': 1,
-                      'price': 70.0,
-                      'vendor_id_items': {
-                        'item3': {
-                          'amount': 3,
-                          'item_code': 'GHI789',
-                          'item_name': 'Item 3',
-                        },
-                      },
-                    },
-                  },
-                );
-
-                // Save the order to Firebase Firestore
-                order.uploadToFirebase();
-              },
-              child: Text('اضافه طلب'),
-            ),
-          ],
-        ),
+        title: Text('Order Table'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').snapshots(),
