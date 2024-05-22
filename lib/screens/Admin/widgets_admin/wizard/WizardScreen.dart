@@ -84,9 +84,9 @@ class _WizardState extends State<Wizard> {
                 children: [
                   Text(widget.EventName),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (id != '') {
-                        readData(id);
+                        await readData(id);
                       }
                     },
                     child: Text('Load Data'),
@@ -94,7 +94,7 @@ class _WizardState extends State<Wizard> {
                   if (isLoading)
                     CircularProgressIndicator() // Show spinner while loading
                   else if (serviceNames.isNotEmpty && serviceImages.isNotEmpty)
-                    WizardStepsContainer(
+                    WizardSteps(
                       activeStep: activeStep,
                       imagePaths: serviceImages,
                       titles: serviceNames,

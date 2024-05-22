@@ -20,16 +20,20 @@ class WizardStepsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      width: double.maxFinite,
-      child: WizardSteps(
-        activeStep: activeStep,
-        imagePaths: imagePaths,
-        titles: titles,
-        pages: pages,
-        onStepTapped: onStepTapped,
-      ),
+    return Column(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          width: double.maxFinite,
+          child: WizardSteps(
+            activeStep: activeStep,
+            imagePaths: imagePaths,
+            titles: titles,
+            pages: pages,
+            onStepTapped: onStepTapped,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -65,62 +69,67 @@ class _WizardStepsState extends State<WizardSteps> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              EasyStepper(
-                activeStepTextColor: Colors.black87,
-                internalPadding: 0,
-                showStepBorder: false,
-                activeStep: activeStep,
-                stepShape: StepShape.rRectangle,
-                stepBorderRadius: 15,
-                borderThickness: 2,
-                stepRadius: 28,
-                finishedStepBorderColor: Colors.deepOrange,
-                finishedStepTextColor: Colors.deepOrange,
-                finishedStepBackgroundColor: Colors.deepOrange,
-                activeStepIconColor: Colors.deepOrange,
-                showLoadingAnimation: false,
-                steps: List.generate(widget.imagePaths.length, (index) {
-                  return EasyStep(
-                    customStep: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Opacity(
-                        opacity: activeStep >= index ? 1 : 0.3,
-                        child: Image.network(widget.imagePaths[index]),
-                      ),
-                    ),
-                    customTitle: Builder(
-                      builder: (BuildContext context) {
-                        return Column(
-                          children: [
-                            Text(widget.titles[index]),
+    return Expanded(
+      child: SingleChildScrollView(
+        child: EasyStepper(
+          activeStepTextColor: Colors.black87,
+          internalPadding: 0,
+          showStepBorder: false,
+          activeStep: activeStep,
+          stepShape: StepShape.rRectangle,
+          stepBorderRadius: 15,
+          borderThickness: 2,
+          stepRadius: 28,
+          finishedStepBorderColor: Colors.deepOrange,
+          finishedStepTextColor: Colors.deepOrange,
+          finishedStepBackgroundColor: Colors.deepOrange,
+          activeStepIconColor: Colors.deepOrange,
+          showLoadingAnimation: false,
+          steps: List.generate(widget.imagePaths.length, (index) {
+            return EasyStep(
+              customStep: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Opacity(
+                  opacity: activeStep >= index ? 1 : 0.3,
+                  child: Image.network(widget.imagePaths[index]),
+                ),
+              ),
+              customTitle: Builder(
+                builder: (BuildContext context) {
+                  return Container(
+                    width: double.maxFinite,
+                    height: double.maxFinite,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(widget.titles[index]),
+                          // إظهار الصفحة المرتبطة بالخطوة النشطة فقط
+                          if (activeStep == index)
                             Container(
                               width: double.maxFinite,
                               height: double.maxFinite,
                               child: DisplayService(
-                                  idService: widget.pages[index]),
+                                idService: widget.pages[index],
+                              ),
                             ),
-                          ],
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   );
-                }),
-                onStepReached: (index) {
-                  setState(() {
-                    activeStep = index;
-                    widget.onStepTapped(index);
-                  });
                 },
               ),
-            ],
-          ),
+            );
+          }),
+          onStepReached: (index) {
+            setState(() {
+              activeStep = index;
+              widget.onStepTapped(index);
+            });
+          },
         ),
       ),
     );
   }
 }
+ // Display the page associated with the active step
+      
