@@ -64,7 +64,8 @@ class _AlertItemState extends State<AlertItem> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Column(
+        content: SingleChildScrollView(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Dialog(
@@ -177,6 +178,13 @@ class _AlertItemState extends State<AlertItem> {
                         obscureTextField: false,
                         enabled: true,
                       ),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'capacity',
+                          hintText: '',
+                        ),
+                        controller: ControllerCapacity,
+                      ),
                       FirestoreDropdown(
                         dropdownLabel: 'نوع الحدث',
                         collectionName: 'event_types',
@@ -282,7 +290,8 @@ class _AlertItemState extends State<AlertItem> {
                               imageUrl: imageUrl,
                               description: ControllerDescription.text,
                               price: price,
-                              capacity: capacity,
+                              capacity:
+                                  int.tryParse(ControllerCapacity.text) ?? 0,
                               eventTypeId: eventTypeId,
                               serviceTypeId: serviceTypeId,
                               itemStatusId: itemStatusId,
@@ -327,6 +336,6 @@ class _AlertItemState extends State<AlertItem> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
