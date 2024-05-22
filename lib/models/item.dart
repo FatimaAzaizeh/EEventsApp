@@ -10,7 +10,7 @@ class Item {
   int capacity;
   DocumentReference eventTypeId;
   DocumentReference serviceTypeId;
-  DocumentReference eventClassificationTypeId;
+
   DocumentReference itemStatusId;
   Timestamp createdAt;
 
@@ -24,7 +24,6 @@ class Item {
     required this.capacity,
     required this.eventTypeId,
     required this.serviceTypeId,
-    required this.eventClassificationTypeId,
     required this.itemStatusId,
     required this.createdAt,
   });
@@ -48,7 +47,6 @@ class Item {
         'capacity': capacity,
         'event_type_id': eventTypeId,
         'service_type_id': serviceTypeId,
-        'event_classification_type_id': eventClassificationTypeId,
         'item_status_id': itemStatusId,
         'created_at': createdAt,
       });

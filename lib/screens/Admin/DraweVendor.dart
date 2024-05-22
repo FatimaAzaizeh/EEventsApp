@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
+import 'package:testtapp/screens/Vendor/DropdownList.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -26,7 +27,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
       TextEditingController();
   final TextEditingController _socialMediaController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
+  late DocumentReference serviceTypeId;
   String email = '';
   String socialMedia = '';
   String commercialName = '';
@@ -215,6 +216,37 @@ class _DrawerVendorState extends State<DrawerVendor> {
                       ),
                     ),
                     SizedBox(height: 10),
+                    FirestoreDropdown(
+                      collectionName: 'service_types',
+                      dropdownLabel: 'نوع الخدمة',
+                      onChanged: (value) {
+                        if (value != null) {
+                          FirebaseFirestore.instance
+                              .collection('service_types')
+                              .where('name', isEqualTo: value.toString())
+                              .limit(
+                                  1) // Limiting to one document as 'where' query might return multiple documents
+                              .get()
+                              .then((QuerySnapshot querySnapshot) {
+                            if (querySnapshot.docs.isNotEmpty) {
+                              // If document(s) found, assign the reference
+                              DocumentSnapshot docSnapshot =
+                                  querySnapshot.docs.first;
+                              DocumentReference ServiceRef =
+                                  docSnapshot.reference;
+                              serviceTypeId = ServiceRef;
+                              // Now you can use itemStatusRef as needed
+                              // For example, you can store it in a state variable or perform other operations with it
+                              setState(() {
+                                // Store the DocumentReference in a state variable or use it as needed
+                              });
+                            } else {
+                              // If no document found, handle the case accordingly
+                            }
+                          });
+                        }
+                      },
+                    ),
                     ElevatedButton(
                       onPressed: () async {
                         setState(() {
@@ -226,10 +258,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                               .instance
                               .collection('vendor_status')
                               .doc('1');
-                          DocumentReference ServiceId = FirebaseFirestore
-                              .instance
-                              .collection('service_types')
-                              .doc('99');
+
                           final _auth = FirebaseAuth.instance;
                           final newUser =
                               await _auth.createUserWithEmailAndPassword(
@@ -262,7 +291,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                               instagramUrl: _socialMediaController.text,
                               website: '',
                               bio: _descriptionController.text,
-                              serviceTypesId: ServiceId,
+                              serviceTypesId: serviceTypeId,
                               businessTypesId: '',
                               address: '',
                               locationUrl: '',

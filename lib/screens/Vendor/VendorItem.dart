@@ -112,7 +112,7 @@ class VendorItemList extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertItem(
-                  vendor_id: currentUser.uid,
+                  vendorId: currentUser.uid,
                 ),
               );
             },
@@ -130,7 +130,7 @@ class VendorItemList extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => AlertItem(
-                          vendor_id: currentUser.uid,
+                          vendorId: currentUser.uid,
                         ),
                       );
                     },
