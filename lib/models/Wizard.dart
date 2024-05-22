@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventWizard {
-  String event_type_id;
-  Map<int, Map<String, dynamic>> services;
+  final String event_type_id;
+  final Map<int, Map<String, dynamic>> services;
 
   EventWizard({required this.event_type_id, required this.services});
 
@@ -28,6 +28,7 @@ class EventWizard {
               'order_number': key,
               'servicename': value['servicename'],
               'serviceimage': value['serviceimage'],
+              'serviceId': value['serviceId'], // Store DocumentReference
             },
           );
         }),

@@ -1,44 +1,45 @@
-import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_stepper/easy_stepper.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Service/DisplayService.dart';
 
 class WizardStepsContainer extends StatelessWidget {
-  int activeStep;
+  final int activeStep;
   final List<String> imagePaths;
   final List<String> titles;
-  final List<Widget> pages;
+  final List<DocumentReference> pages;
+  final ValueChanged<int> onStepTapped;
 
   WizardStepsContainer({
     required this.activeStep,
     required this.imagePaths,
     required this.titles,
     required this.pages,
+    required this.onStepTapped,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height:
-          MediaQuery.of(context).size.height * 0.8, // Adjust height as needed
+      height: MediaQuery.of(context).size.height * 0.8,
+      width: double.maxFinite,
       child: WizardSteps(
         activeStep: activeStep,
         imagePaths: imagePaths,
         titles: titles,
         pages: pages,
-        onStepTapped: (index) {
-          // Handle step tap
-          // You can update the active step here if needed
-        },
+        onStepTapped: onStepTapped,
       ),
     );
   }
 }
 
 class WizardSteps extends StatefulWidget {
-  int activeStep;
+  final int activeStep;
   final List<String> imagePaths;
   final List<String> titles;
-  final List<Widget> pages;
-  final Function(int) onStepTapped;
+  final List<DocumentReference> pages;
+  final ValueChanged<int> onStepTapped;
 
   WizardSteps({
     Key? key,
@@ -54,6 +55,14 @@ class WizardSteps extends StatefulWidget {
 }
 
 class _WizardStepsState extends State<WizardSteps> {
+  late int activeStep;
+
+  @override
+  void initState() {
+    super.initState();
+    activeStep = widget.activeStep;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +74,7 @@ class _WizardStepsState extends State<WizardSteps> {
                 activeStepTextColor: Colors.black87,
                 internalPadding: 0,
                 showStepBorder: false,
-                activeStep: widget.activeStep,
+                activeStep: activeStep,
                 stepShape: StepShape.rRectangle,
                 stepBorderRadius: 15,
                 borderThickness: 2,
@@ -77,20 +86,36 @@ class _WizardStepsState extends State<WizardSteps> {
                 showLoadingAnimation: false,
                 steps: List.generate(widget.imagePaths.length, (index) {
                   return EasyStep(
-                      customStep: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Opacity(
-                          opacity: widget.activeStep >= index ? 1 : 0.3,
-                          child: Image.network(widget.imagePaths[index]),
-                        ),
+                    customStep: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Opacity(
+                        opacity: activeStep >= index ? 1 : 0.3,
+                        child: Image.network(widget.imagePaths[index]),
                       ),
-                      customTitle: widget.pages[widget.activeStep]);
+                    ),
+                    customTitle: Builder(
+                      builder: (BuildContext context) {
+                        return Column(
+                          children: [
+                            Text(widget.titles[index]),
+                            Container(
+                              width: double.maxFinite,
+                              height: double.maxFinite,
+                              child: DisplayService(
+                                  idService: widget.pages[index]),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
                 }),
-                onStepReached: (index) => setState(() {
-                  widget.activeStep = index;
-                  widget.pages[index];
-                  widget.onStepTapped(index);
-                }),
+                onStepReached: (index) {
+                  setState(() {
+                    activeStep = index;
+                    widget.onStepTapped(index);
+                  });
+                },
               ),
             ],
           ),
