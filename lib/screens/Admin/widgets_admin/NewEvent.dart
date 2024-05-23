@@ -265,19 +265,30 @@ class _AddEventState extends State<AddEvent> {
                         showSpinner = true;
 
                         EventType newEvent = EventType(
-                            id: controllerId.text,
-                            name: controllerName.text,
-                            imageUrl: imageUrl,
-                            event_classificaion_types: eventClassificationRef);
+                          id: controllerId.text,
+                          name: controllerName.text,
+                          imageUrl: imageUrl,
+                          event_classificaion_types: eventClassificationRef,
+                        );
 
-                        newEvent.addToFirestore();
+                        // Add the event to Firestore and wait for the result
+                        String result = await newEvent.addToFirestore();
+
+                        // Clear text controllers regardless of the result
                         controllerName.clear();
                         controllerId.clear();
                         controllerImage.clear();
+
+                        // Update UI based on the result
+
+                        // If addition was successful, show success message
                         QuickAlert.show(
                           context: context,
-                          type: QuickAlertType.success,
+                          text: result,
+                          type: QuickAlertType.info,
                         );
+
+                        // Set spinner to false after processing is done
                         showSpinner = false;
                       });
                     },
