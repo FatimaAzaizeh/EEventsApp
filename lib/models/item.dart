@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Item {
   DocumentReference vendorId;
@@ -29,15 +30,18 @@ class Item {
   });
 
   // Method to add an item to Firestore
-  Future<void> addItemToFirestore() async {
+  Future<String> addItemToFirestore() async {
     try {
-      final docRef =
-          FirebaseFirestore.instance.collection('item').doc(itemCode);
-      final docSnapshot = await docRef.get();
-      if (docSnapshot.exists) {
-        throw Exception('Item with ID $itemCode already exists.');
+      final collectionRef = FirebaseFirestore.instance.collection('item');
+      final querySnapshot = await collectionRef
+          .where('item_code', isEqualTo: itemCode)
+          .where('vendor_id', isEqualTo: vendorId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return 'Item with ID $itemCode already exists for vendor $vendorId.';
       }
-      await docRef.set({
+      await collectionRef.add({
         'vendor_id': vendorId,
         'name': name,
         'item_code': itemCode,
@@ -50,13 +54,13 @@ class Item {
         'item_status_id': itemStatusId,
         'created_at': createdAt,
       });
+      return 'Item with ID $itemCode added successfully for vendor $vendorId.';
     } catch (error) {
       throw Exception('Failed to add item: $error');
     }
   }
 
-  // Method to edit an item in Firestore
-  static Future<void> editItemInFirestore(
+  static Future<String> editItemInFirestore(
       String name,
       String itemCode,
       String imageUrl,
@@ -65,20 +69,32 @@ class Item {
       int capacity,
       DocumentReference itemStatusId) async {
     try {
-      final docRef =
-          FirebaseFirestore.instance.collection('item').doc(itemCode);
-      final docSnapshot = await docRef.get();
-      if (!docSnapshot.exists) {
-        throw Exception('Item with ID $itemCode does not exist.');
+      final collectionRef = FirebaseFirestore.instance.collection('item');
+      DocumentReference vendorid = FirebaseFirestore.instance
+          .collection('vendor')
+          .doc(FirebaseAuth.instance.currentUser!.uid);
+      final querySnapshot = await collectionRef
+          .where('item_code', isEqualTo: itemCode)
+          .where('vendor_id', isEqualTo: vendorid)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return 'Item with ID $itemCode does not exist for vendor .';
       }
-      await docRef.update({
-        'name': name,
-        'image_url': imageUrl,
-        'description': description,
-        'price': price,
-        'capacity': capacity,
-        'item_status_id': itemStatusId,
-      });
+
+      // Update each document found with the provided data
+      for (final docSnapshot in querySnapshot.docs) {
+        await docSnapshot.reference.update({
+          'name': name,
+          'image_url': imageUrl,
+          'description': description,
+          'price': price,
+          'capacity': capacity,
+          'item_status_id': itemStatusId,
+        });
+      }
+
+      return 'Item with ID $itemCode updated successfully for vendor';
     } catch (error) {
       throw Exception('Failed to edit item: $error');
     }

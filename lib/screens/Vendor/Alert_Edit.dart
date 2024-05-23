@@ -228,7 +228,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
                       .collection('vendor')
                       .doc(widget.vendor_id);
 
-                  Item.editItemInFirestore(
+                  String result = await Item.editItemInFirestore(
                       ControllerName.text,
                       ControllerItemCode.text,
                       imageUrl,
@@ -250,10 +250,8 @@ class _AlertEditItemState extends State<AlertEditItem> {
 
                     QuickAlert.show(
                       context: context,
-                      customAsset: 'assets/images/Completionanimation.gif',
-                      width: 300,
-                      type: QuickAlertType.success,
-                      confirmBtnText: 'إغلاق',
+                      text: result,
+                      type: QuickAlertType.info,
                     );
 
                     setState(() {

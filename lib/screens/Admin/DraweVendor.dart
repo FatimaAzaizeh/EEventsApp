@@ -288,7 +288,8 @@ class _DrawerVendorState extends State<DrawerVendor> {
                             String result =
                                 await newVendorUser.saveToDatabase();
 
-                            if (result == 'success') {
+                            if (result ==
+                                'User added to the database successfully!') {
                               Vendor newVendor = Vendor(
                                 id: uid,
                                 businessName: _commercialNameController.text,

@@ -297,7 +297,7 @@ class _AlertItemState extends State<AlertItem> {
                               itemStatusId: itemStatusId,
                               createdAt: myTimestamp,
                             );
-                            newitem.addItemToFirestore();
+                            String result = await newitem.addItemToFirestore();
 
                             // إعادة ضبط قيمة showSpinner بعد الانتهاء من العمليات
                             setState(() {
@@ -308,11 +308,8 @@ class _AlertItemState extends State<AlertItem> {
                             Navigator.of(context).pop();
                             QuickAlert.show(
                               context: context,
-                              customAsset:
-                                  'assets/images/Completionanimation.gif',
-                              width: 300,
-                              type: QuickAlertType.success,
-                              confirmBtnText: 'إغلاق',
+                              text: result,
+                              type: QuickAlertType.info,
                             );
                           }
                         },
