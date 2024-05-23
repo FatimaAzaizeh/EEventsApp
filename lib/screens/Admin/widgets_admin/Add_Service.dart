@@ -93,21 +93,28 @@ class _AddServiceState extends State<AddService> {
                                       if (fileName != 'لم يتم اختيار صورة ') {
                                         await uploadFile();
                                       }
-                                      ServiceType.updateServiceFirestore(
-                                          ControllerName.text,
-                                          imageUrl,
-                                          ControllerId.text);
+                                      bool result = await ServiceType
+                                          .updateServiceFirestore(
+                                              ControllerName.text,
+                                              imageUrl,
+                                              ControllerId.text);
 
                                       setState(() {
                                         showEditButton = false;
                                       });
                                       ControllerName.clear();
                                       ControllerId.clear();
-
-                                      QuickAlert.show(
-                                        context: context,
-                                        type: QuickAlertType.success,
-                                      );
+                                      if (result) {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.success,
+                                        );
+                                      } else {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.error,
+                                        );
+                                      }
                                       setState(() {
                                         showEditButton = false;
                                       });
@@ -215,16 +222,18 @@ class _AddServiceState extends State<AddService> {
                             name: ControllerName.text,
                             imageUrl: imageUrl,
                           );
-                          newservice.saveToDatabase();
+                          String result = await newservice.saveToDatabase();
                           setState(() {
                             showSpinner = false;
                           });
                           ControllerName.clear();
                           ControllerId.clear();
                           ControllerImage.clear();
+
                           QuickAlert.show(
                             context: context,
-                            type: QuickAlertType.success,
+                            text: result,
+                            type: QuickAlertType.info,
                           );
                         },
                       ),

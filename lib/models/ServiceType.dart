@@ -7,27 +7,42 @@ class ServiceType {
 
   ServiceType({required this.id, required this.name, required this.imageUrl});
 
-  Future<void> saveToDatabase() async {
+  Future<String> saveToDatabase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Specify the custom document ID
-    String customId = this.id;
 
     // Reference to the collection where you want to add the document
     CollectionReference collectionReference =
         firestore.collection('service_types');
 
     try {
-      // Add the document with the custom ID
-      await collectionReference.doc(customId).set({
-        'id': id,
-        'name': name,
-        'image_url': imageUrl,
+      // Check if an entry with the same name already exists
+      QuerySnapshot nameQuerySnapshot =
+          await collectionReference.where('name', isEqualTo: this.name).get();
+
+      if (nameQuerySnapshot.docs.isNotEmpty) {
+        return 'An entry with the name "${this.name}" already exists';
+      }
+
+      // Check if the document already exists by ID
+      DocumentSnapshot idDocumentSnapshot =
+          await collectionReference.doc(this.id).get();
+
+      if (idDocumentSnapshot.exists) {
+        return 'Document with ID ${this.id} already exists';
+      }
+
+      // Add the document
+      await collectionReference.doc(this.id).set({
+        'id': this.id,
+        'name': this.name,
+        'image_url': this.imageUrl,
       });
 
-      print('User added to the database successfully!');
-    } catch (error) {
-      print('Error adding user to the database: $error');
+      print('Document added with ID: ${this.id}');
+      return 'success';
+    } catch (e) {
+      print('Error adding document: $e');
+      return 'Error adding document: $e';
     }
   }
 
