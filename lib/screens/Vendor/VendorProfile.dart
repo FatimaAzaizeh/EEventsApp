@@ -8,6 +8,7 @@ import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Vendor/DropdownList.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
+String serviceName = '';
 Image? pickedImage;
 String fileName = '';
 String commercialName = '';
@@ -47,6 +48,10 @@ class _ProfileVendorState extends State<ProfileVendor> {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     DocumentSnapshot vendorSnapshot =
         await FirebaseFirestore.instance.collection('vendor').doc(uid).get();
+    DocumentReference serviceTypesRef = vendorSnapshot['service_types_id'];
+
+    // Fetch the referenced service_types document
+    DocumentSnapshot serviceTypesSnapshot = await serviceTypesRef.get();
     setState(() {
       _commercialNameController.text = vendorSnapshot['business_name'];
       _contactController.text = vendorSnapshot['contact_number'];
@@ -56,6 +61,8 @@ class _ProfileVendorState extends State<ProfileVendor> {
       _adressController.text = vendorSnapshot['address'];
       _locatinController.text = vendorSnapshot['location_url'];
       imageUrls = vendorSnapshot['logo_url'];
+      serviceName = serviceTypesSnapshot['name'];
+      // Check if the service_types document exists
     });
   }
 
@@ -160,37 +167,7 @@ class _ProfileVendorState extends State<ProfileVendor> {
                     TextController: _descriptionController,
                   ),
                   SizedBox(height: 10),
-                  FirestoreDropdown(
-                    collectionName: 'service_types',
-                    dropdownLabel: 'نوع الخدمة',
-                    onChanged: (value) {
-                      if (value != null) {
-                        FirebaseFirestore.instance
-                            .collection('service_types')
-                            .where('name', isEqualTo: value.toString())
-                            .limit(
-                                1) // Limiting to one document as 'where' query might return multiple documents
-                            .get()
-                            .then((QuerySnapshot querySnapshot) {
-                          if (querySnapshot.docs.isNotEmpty) {
-                            // If document(s) found, assign the reference
-                            DocumentSnapshot docSnapshot =
-                                querySnapshot.docs.first;
-                            DocumentReference ServiceRef =
-                                docSnapshot.reference;
-                            serviceTypeId = ServiceRef;
-                            // Now you can use itemStatusRef as needed
-                            // For example, you can store it in a state variable or perform other operations with it
-                            setState(() {
-                              // Store the DocumentReference in a state variable or use it as needed
-                            });
-                          } else {
-                            // If no document found, handle the case accordingly
-                          }
-                        });
-                      }
-                    },
-                  ),
+                  Text('Service Name: $serviceName'),
                   FirestoreDropdown(
                     collectionName: 'business_types',
                     dropdownLabel: 'نوع المتجر',
@@ -283,7 +260,6 @@ class _ProfileVendorState extends State<ProfileVendor> {
                           instagramUrl: _instegramController.text,
                           website: _websiteController.text,
                           bio: _descriptionController.text,
-                          serviceTypesId: serviceTypeId,
                           businessTypesId: bussnessTypeId,
                           address: _adressController.text,
                           locationUrl: _locatinController.text,
