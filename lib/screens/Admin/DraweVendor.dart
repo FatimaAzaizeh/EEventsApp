@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Vendor/DropdownList.dart';
@@ -254,7 +256,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
 
                         try {
-                          DocumentReference VendorStatus = FirebaseFirestore
+                          DocumentReference vendorStatusRef = FirebaseFirestore
                               .instance
                               .collection('vendor_status')
                               .doc('1');
@@ -267,40 +269,61 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           );
 
                           if (newUser.user != null) {
-                            String? uid = newUser.user!.uid;
+                            String uid = newUser.user!.uid;
                             // Initialize with current time
                             Timestamp myTimestamp = Timestamp.now();
-                            UserDataBase newVendorUser = new UserDataBase(
-                                UID: uid,
-                                email: _emailController.text,
-                                name: _commercialNameController.text,
-                                user_type_id: FirebaseFirestore.instance
-                                    .collection('user_types')
-                                    .doc('3'),
-                                phone: '',
-                                address: '',
-                                isActive: false,
-                                imageUrl: imageUrls);
-                            newVendorUser.saveToDatabase();
-                            Vendor newVendor = Vendor(
-                              id: uid,
-                              businessName: _commercialNameController.text,
+                            UserDataBase newVendorUser = UserDataBase(
+                              UID: uid,
                               email: _emailController.text,
-                              contactNumber: '',
-                              logoUrl: imageUrls,
-                              instagramUrl: _socialMediaController.text,
-                              website: '',
-                              bio: _descriptionController.text,
-                              serviceTypesId: serviceTypeId,
-                              businessTypesId: '',
+                              name: _commercialNameController.text,
+                              user_type_id: FirebaseFirestore.instance
+                                  .collection('user_types')
+                                  .doc('3'),
+                              phone: '',
                               address: '',
-                              locationUrl: '',
-                              workingHour: {},
-                              createdAt: myTimestamp,
-                              vendorStatusId: VendorStatus,
+                              isActive: false,
+                              imageUrl: imageUrls,
                             );
-                            newVendor.addToFirestore();
-                            // Your authentication and Firestore logic here
+
+                            String result =
+                                await newVendorUser.saveToDatabase();
+
+                            if (result == 'success') {
+                              Vendor newVendor = Vendor(
+                                id: uid,
+                                businessName: _commercialNameController.text,
+                                email: _emailController.text,
+                                contactNumber: '',
+                                logoUrl: imageUrls,
+                                instagramUrl: _socialMediaController.text,
+                                website: '',
+                                bio: _descriptionController.text,
+                                serviceTypesId: serviceTypeId,
+                                businessTypesId: '',
+                                address: '',
+                                locationUrl: '',
+                                workingHour: {},
+                                createdAt: myTimestamp,
+                                vendorStatusId: vendorStatusRef,
+                              );
+
+                              await newVendor.addToFirestore();
+                              setState(() {
+                                QuickAlert.show(
+                                  context: context,
+                                  text: 'User and vendor added successfully!',
+                                  type: QuickAlertType.success,
+                                );
+                              });
+                            } else {
+                              setState(() {
+                                QuickAlert.show(
+                                  context: context,
+                                  text: 'Error: $result',
+                                  type: QuickAlertType.error,
+                                );
+                              });
+                            }
 
                             setState(() {
                               showSpinner = false;
@@ -310,7 +333,6 @@ class _DrawerVendorState extends State<DrawerVendor> {
                               _passwordController.clear();
                               _socialMediaController.clear();
                               _descriptionController.clear();
-
                               pickedImage = null; // Reset picked image
                             });
                           }
@@ -321,7 +343,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           });
                         }
                       },
-                      child: Text('تقديم الطلب'),
+                      child: Text('Submit'),
                     ),
                   ],
                 ),
