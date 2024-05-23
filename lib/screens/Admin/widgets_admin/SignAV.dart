@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
@@ -177,7 +179,7 @@ class _SignInState extends State<SignIn> {
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
-                                                                      'user_type')
+                                                                      'user_types')
                                                                   .doc('3');
 
                                                           bool isValid =
@@ -185,12 +187,31 @@ class _SignInState extends State<SignIn> {
                                                                   .isUserTypeReferenceValid(
                                                                       userId,
                                                                       userTypeRef);
-                                                          Navigator.pushNamed(
-                                                              context,
-                                                              VendorHome
-                                                                  .screenRoute);
+                                                          if (isValid) {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                VendorHome
+                                                                    .screenRoute);
 
-                                                          return; // Exit the function after navigating
+                                                            return;
+                                                          } else {
+                                                            setState(() {
+                                                              showSpinner =
+                                                                  false;
+                                                            });
+                                                            return QuickAlert
+                                                                .show(
+                                                              context: context,
+                                                              title: 'خطأ',
+                                                              text:
+                                                                  'الحساب الذي تحاول الدخول بة ليس حساب بائع',
+                                                              type:
+                                                                  QuickAlertType
+                                                                      .error,
+                                                              confirmBtnText:
+                                                                  'إغلاق',
+                                                            );
+                                                          } // Exit the function after navigating
                                                         }
 
                                                         // Check if the user is an admin
@@ -202,7 +223,7 @@ class _SignInState extends State<SignIn> {
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
-                                                                      'user_type')
+                                                                      'user_types')
                                                                   .doc('1');
 
                                                           bool isValid =
@@ -212,17 +233,29 @@ class _SignInState extends State<SignIn> {
                                                                       userTypeRef);
 
                                                           if (isValid) {
-                                                            print(
-                                                                'The user type reference is valid.');
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                AdminScreen
+                                                                    .screenRoute);
                                                           } else {
-                                                            print(
-                                                                'The user type reference is not valid.');
+                                                            setState(() {
+                                                              showSpinner =
+                                                                  false;
+                                                            });
+                                                            return QuickAlert
+                                                                .show(
+                                                              context: context,
+                                                              title: 'خطأ',
+                                                              text:
+                                                                  'الحساب الذي تحاول الدخول بة ليس حساب مسؤول',
+                                                              type:
+                                                                  QuickAlertType
+                                                                      .error,
+                                                              confirmBtnText:
+                                                                  'إغلاق',
+                                                            );
                                                           }
 
-                                                          Navigator.pushNamed(
-                                                              context,
-                                                              AdminScreen
-                                                                  .screenRoute);
                                                           return; // Exit the function after navigating
                                                         }
                                                       }
