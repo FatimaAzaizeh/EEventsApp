@@ -20,10 +20,9 @@ class Wizard extends StatefulWidget {
 class _WizardState extends State<Wizard> {
   List<String> serviceNames = [];
   List<String> serviceImages = [];
-  List<DocumentReference> serviceIds = []; // Store DocumentReferences
+  List<DocumentReference> serviceIds = [];
   bool isLoading = false;
   int activeStep = 0;
-  double progress = 0.2;
 
   Future<void> readData(String id) async {
     try {
@@ -61,7 +60,6 @@ class _WizardState extends State<Wizard> {
       });
     } catch (e) {
       print("Error reading data: $e");
-      // Handle error state or show an error message
     }
   }
 
@@ -89,17 +87,23 @@ class _WizardState extends State<Wizard> {
                         await readData(id);
                       }
                     },
-                    child: Text('Load Data'),
+                    child: Text(' تحميل البينات'),
                   ),
                   if (isLoading)
-                    CircularProgressIndicator() // Show spinner while loading
+                    CircularProgressIndicator()
                   else if (serviceNames.isNotEmpty && serviceImages.isNotEmpty)
-                    WizardSteps(
-                      activeStep: activeStep,
-                      imagePaths: serviceImages,
-                      titles: serviceNames,
-                      pages: serviceIds,
-                      onStepTapped: (int value) {},
+                    Expanded(
+                      child: WizardStepsContainer(
+                        activeStep: activeStep,
+                        imagePaths: serviceImages,
+                        titles: serviceNames,
+                        pages: serviceIds,
+                        onStepTapped: (int value) {
+                          setState(() {
+                            activeStep = value;
+                          });
+                        },
+                      ),
                     ),
                 ],
               ),
@@ -183,7 +187,6 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                                     .get();
 
                                 if (snapshot.docs.isNotEmpty) {
-                                  // Assuming only one document with the same name exists
                                   DocumentReference serviceId =
                                       snapshot.docs[0].reference;
                                   String serviceImage =
@@ -192,8 +195,7 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                                   services[int.parse(value)] = {
                                     'servicename': serviceName,
                                     'serviceimage': serviceImage,
-                                    'serviceId':
-                                        serviceId, // Storing the DocumentReference
+                                    'serviceId': serviceId,
                                   };
                                 }
                               },
@@ -231,7 +233,6 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                     confirmBtnText: 'إغلاق',
                   );
                 } else {
-                  // Handle the case where no matching event type is found
                   QuickAlert.show(
                     context: context,
                     title: 'Event not found',
@@ -254,5 +255,20 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
     return querySnapshot.docs
         .map((doc) => {'name': doc['name'] ?? '', 'checked': false})
         .toList();
+  }
+}
+
+class EventWizard {
+  final Map<int, Map<String, dynamic>> services;
+  final String event_type_id;
+
+  EventWizard({required this.services, required this.event_type_id});
+
+  Future<String> uploadToFirebase() async {
+    // Implement your logic to upload event wizard data to Firebase
+    // You can use the services and event_type_id to upload the data
+    await Future.delayed(Duration(seconds: 2)); // Simulating upload process
+
+    return 'Event wizard data uploaded successfully!';
   }
 }
