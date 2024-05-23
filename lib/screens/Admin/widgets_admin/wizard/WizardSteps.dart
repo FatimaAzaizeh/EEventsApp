@@ -20,20 +20,34 @@ class WizardStepsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          width: double.maxFinite,
-          child: WizardSteps(
-            activeStep: activeStep,
-            imagePaths: imagePaths,
-            titles: titles,
-            pages: pages,
-            onStepTapped: onStepTapped,
+    return Center(
+      child: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: WizardSteps(
+                        activeStep: activeStep,
+                        imagePaths: imagePaths,
+                        titles: titles,
+                        pages: pages,
+                        onStepTapped: onStepTapped,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: Text('تحميل الشكل '),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -69,67 +83,70 @@ class _WizardStepsState extends State<WizardSteps> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: EasyStepper(
-          activeStepTextColor: Colors.black87,
-          internalPadding: 0,
-          showStepBorder: false,
-          activeStep: activeStep,
-          stepShape: StepShape.rRectangle,
-          stepBorderRadius: 15,
-          borderThickness: 2,
-          stepRadius: 28,
-          finishedStepBorderColor: Colors.deepOrange,
-          finishedStepTextColor: Colors.deepOrange,
-          finishedStepBackgroundColor: Colors.deepOrange,
-          activeStepIconColor: Colors.deepOrange,
-          showLoadingAnimation: false,
-          steps: List.generate(widget.imagePaths.length, (index) {
-            return EasyStep(
-              customStep: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Opacity(
-                  opacity: activeStep >= index ? 1 : 0.3,
-                  child: Image.network(widget.imagePaths[index]),
-                ),
-              ),
-              customTitle: Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                    width: double.maxFinite,
-                    height: double.maxFinite,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Text(widget.titles[index]),
-                          // إظهار الصفحة المرتبطة بالخطوة النشطة فقط
-                          if (activeStep == index)
-                            Container(
-                              width: double.maxFinite,
-                              height: double.maxFinite,
-                              child: DisplayService(
-                                idService: widget.pages[index],
-                              ),
-                            ),
-                        ],
+    double squareSize = 420.0;
+
+    return Column(
+      children: [
+        // EasyStepper for navigation at the top
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: EasyStepper(
+            activeStepTextColor: Colors.black87,
+            internalPadding: 0,
+            showStepBorder: false,
+            activeStep: activeStep,
+            stepShape: StepShape.rRectangle,
+            stepBorderRadius: 15,
+            borderThickness: 2,
+            stepRadius: 28,
+            finishedStepBorderColor: const Color.fromARGB(255, 248, 241, 239),
+            finishedStepTextColor: Color.fromARGB(255, 209, 205, 203),
+            finishedStepBackgroundColor:
+                const Color.fromARGB(255, 244, 232, 228),
+            showLoadingAnimation: false,
+            steps: List.generate(widget.imagePaths.length, (index) {
+              return EasyStep(
+                customStep: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Opacity(
+                        opacity: activeStep >= index ? 1 : 0.3,
+                        child: Image.network(widget.imagePaths[index]),
                       ),
                     ),
-                  );
-                },
-              ),
-            );
-          }),
-          onStepReached: (index) {
-            setState(() {
-              activeStep = index;
-              widget.onStepTapped(index);
-            });
-          },
+                    if (activeStep >= index)
+                      Positioned.fill(
+                        child: Icon(
+                          Icons.check_circle,
+                          color: Color.fromARGB(196, 196, 179,
+                              225), // You can customize the color here
+                          size: 36,
+                        ),
+                      ),
+                  ],
+                ),
+                customTitle: Text(widget.titles[index]),
+              );
+            }),
+            onStepReached: (index) {
+              setState(() {
+                activeStep = index;
+                widget.onStepTapped(index);
+              });
+            },
+          ),
         ),
-      ),
+        // Central container to display the DisplayService in a small square shape
+        Container(
+          width: squareSize,
+          height: squareSize,
+          padding: EdgeInsets.all(16.0),
+          child: DisplayService(
+            idService: widget.pages[activeStep],
+          ),
+        ),
+      ],
     );
   }
 }
- // Display the page associated with the active step
-      
