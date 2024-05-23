@@ -13,7 +13,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Table'),
+        title: const Text('جدول الطلبات'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').snapshots(),
@@ -26,13 +26,13 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
 
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text('خطأ: ${snapshot.error}'),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('No orders found.'),
+              child: Text('لا توجد طلبات.'),
             );
           }
 
@@ -42,14 +42,14 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: const [
-                  DataColumn(label: Text('Order ID')),
-                  DataColumn(label: Text('User ID')),
-                  DataColumn(label: Text('Order Details')),
+                  DataColumn(label: Text('معرف الطلب')),
+                  DataColumn(label: Text('معرف المستخدم')),
+                  DataColumn(label: Text('تفاصيل الطلب')),
                 ],
                 rows: snapshot.data!.docs.map<DataRow>((doc) {
                   final data = doc.data() as Map<String, dynamic>;
-                  final orderId = data['order_id'] ?? 'N/A';
-                  final userId = data['user_id'] ?? 'N/A';
+                  final orderId = data['order_id'] ?? 'غير متاح';
+                  final userId = data['user_id'] ?? 'غير متاح';
                   final vendors = data['vendors'] as Map<String, dynamic>?;
 
                   return DataRow(
@@ -59,7 +59,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
                       DataCell(ElevatedButton(
                         onPressed: () =>
                             _showOrderDialog(context, orderId, userId, vendors),
-                        child: const Text('View Details'),
+                        child: const Text('عرض التفاصيل'),
                       )),
                     ],
                   );
@@ -75,26 +75,26 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   Future<void> _showOrderDialog(BuildContext context, String orderId,
       String userId, Map<String, dynamic>? vendors) async {
     List<Widget> content = [
-      Text('Order ID: $orderId'),
-      Text('User ID: $userId'),
+      Text('معرف الطلب: $orderId'),
+      Text('معرف المستخدم: $userId'),
     ];
 
     if (vendors == null || vendors.isEmpty) {
-      content.add(const Text('No vendors associated with this order.'));
+      content.add(const Text('لا توجد موردين مرتبطين بهذا الطلب.'));
     } else {
       try {
         content.add(await _buildVendorDetails(vendors));
       } catch (e) {
-        content.add(Text('Error loading vendor details: $e'));
+        content.add(Text('حدث خطأ أثناء تحميل تفاصيل المورد: $e'));
       }
     }
 
-    _showDialog(context, 'Order Details', content);
+    _showDialog(context, 'تفاصيل الطلب', content);
   }
 
   Widget _buildVendorDetails(Map<String, dynamic>? vendors) {
     if (vendors == null || vendors.isEmpty) {
-      return const Text('No vendors associated with this order.');
+      return const Text('لا توجد موردين مرتبطين بهذا الطلب.');
     }
 
     List<Widget> vendorWidgets = [];
@@ -102,28 +102,28 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       vendorWidgets.add(
         DataTable(
           columns: const [
-            DataColumn(label: Text('Field')),
-            DataColumn(label: Text('Value')),
+            DataColumn(label: Text('الحقل')),
+            DataColumn(label: Text('القيمة')),
           ],
           rows: [
             DataRow(cells: [
-              DataCell(Text('Vendor ID')),
+              DataCell(Text('معرف المورد')),
               DataCell(Text(value['vendor_id'].toString())),
             ]),
             DataRow(cells: [
-              DataCell(Text('Price')),
+              DataCell(Text('السعر')),
               DataCell(Text(value['price'].toString())),
             ]),
             DataRow(cells: [
-              DataCell(Text('Order Status')),
+              DataCell(Text('حالة الطلب')),
               DataCell(Text(value['order_status_id'].toString())),
             ]),
             DataRow(cells: [
-              DataCell(Text('Created At')),
+              DataCell(Text('تاريخ الإنشاء')),
               DataCell(Text(_parseTimestamp(value['created_at']))),
             ]),
             DataRow(cells: [
-              DataCell(Text('Deliver At')),
+              DataCell(Text('تاريخ التسليم')),
               DataCell(Text(_parseTimestamp(value['deliver_at']))),
             ]),
           ],
@@ -131,7 +131,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       );
 
       if (value['vendor_id_items'] != null) {
-        vendorWidgets.add(const Text('Vendor Items:'));
+        vendorWidgets.add(const Text('عناصر المورد:'));
         vendorWidgets.add(_buildVendorItems(value['vendor_id_items']));
       }
     });
@@ -156,9 +156,9 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
 
     return DataTable(
       columns: const [
-        DataColumn(label: Text('Item Code')),
-        DataColumn(label: Text('Item Name')),
-        DataColumn(label: Text('Amount')),
+        DataColumn(label: Text('رمز العنصر')),
+        DataColumn(label: Text('اسم العنصر')),
+        DataColumn(label: Text('الكمية')),
       ],
       rows: itemRows,
     );
@@ -166,7 +166,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
 
   String _parseTimestamp(Timestamp? timestamp) {
     if (timestamp == null) {
-      return 'N/A';
+      return 'غير متاح';
     }
     final date = timestamp.toDate();
     return '${date.day}-${date.month}-${date.year}';
@@ -187,7 +187,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
+              child: const Text('إغلاق'),
             ),
           ],
         );
