@@ -83,7 +83,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       content.add(const Text('No vendors associated with this order.'));
     } else {
       try {
-        content.addAll(await _buildVendorDetails(vendors));
+        content.add(await _buildVendorDetails(vendors));
       } catch (e) {
         content.add(Text('Error loading vendor details: $e'));
       }
@@ -92,44 +92,82 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
     _showDialog(context, 'Order Details', content);
   }
 
-  Future<List<Widget>> _buildVendorDetails(Map<String, dynamic> vendors) async {
-    List<Widget> details = [];
-    for (var vendorId in vendors.keys) {
-      var vendorData = vendors[vendorId] as Map<String, dynamic>;
-      var VendorId = vendorData['vendor_id'].toString();
-      details.add(Text('Vendor ID: $VendorId'));
-      var price = vendorData['price'].toString();
-      details.add(Text('Price: $price'));
-      if (vendorData['vendor_id_items'] != null) {
-        details.add(const Text('Vendor Items:'));
-        for (var item in (vendorData['vendor_id_items'] as Map).values) {
-          details.add(Text('  Item Code: ${item['item_code']}'));
-          details.add(Text('  Item Name: ${item['item_name']}'));
-          details.add(Text('  Amount: ${item['amount']}'));
-        }
-      }
-
-      if (vendorData['order_status_id'] != null) {
-        try {
-          var statusSnapshot = await vendorData['order_status_id'].get();
-          var orderStatusData = statusSnapshot.data() as Map<String, dynamic>;
-          var orderStatusValue = orderStatusData['description'].toString();
-          details.add(Text('Order Status: $orderStatusValue'));
-        } catch (e) {
-          details.add(Text('Error loading order status: $e'));
-        }
-      }
-
-      details.add(
-          Text('Created At: ${_parseTimestamp(vendorData['created_at'])}'));
-      details.add(
-          Text('Deliver At: ${_parseTimestamp(vendorData['deliver_at'])}'));
+  Widget _buildVendorDetails(Map<String, dynamic>? vendors) {
+    if (vendors == null || vendors.isEmpty) {
+      return const Text('No vendors associated with this order.');
     }
-    return details;
+
+    List<Widget> vendorWidgets = [];
+    vendors.forEach((key, value) {
+      vendorWidgets.add(
+        DataTable(
+          columns: const [
+            DataColumn(label: Text('Field')),
+            DataColumn(label: Text('Value')),
+          ],
+          rows: [
+            DataRow(cells: [
+              DataCell(Text('Vendor ID')),
+              DataCell(Text(value['vendor_id'].toString())),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Price')),
+              DataCell(Text(value['price'].toString())),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Order Status')),
+              DataCell(Text(value['order_status_id'].toString())),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Created At')),
+              DataCell(Text(_parseTimestamp(value['created_at']))),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Deliver At')),
+              DataCell(Text(_parseTimestamp(value['deliver_at']))),
+            ]),
+          ],
+        ),
+      );
+
+      if (value['vendor_id_items'] != null) {
+        vendorWidgets.add(const Text('Vendor Items:'));
+        vendorWidgets.add(_buildVendorItems(value['vendor_id_items']));
+      }
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: vendorWidgets,
+    );
+  }
+
+  Widget _buildVendorItems(Map<String, dynamic> vendorItems) {
+    List<DataRow> itemRows = [];
+    vendorItems.forEach((key, value) {
+      itemRows.add(
+        DataRow(cells: [
+          DataCell(Text(value['item_code'].toString())),
+          DataCell(Text(value['item_name'].toString())),
+          DataCell(Text(value['amount'].toString())),
+        ]),
+      );
+    });
+
+    return DataTable(
+      columns: const [
+        DataColumn(label: Text('Item Code')),
+        DataColumn(label: Text('Item Name')),
+        DataColumn(label: Text('Amount')),
+      ],
+      rows: itemRows,
+    );
   }
 
   String _parseTimestamp(Timestamp? timestamp) {
-    if (timestamp == null) return 'N/A';
+    if (timestamp == null) {
+      return 'N/A';
+    }
     final date = timestamp.toDate();
     return '${date.day}-${date.month}-${date.year}';
   }
