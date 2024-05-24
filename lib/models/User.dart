@@ -19,7 +19,7 @@ class UserDataBase {
     required this.phone,
     required this.address,
     required this.isActive,
-    required this.imageUrl,
+    required this.imageUrl, required String description, required double price,
   });
 
   Future<void> saveToDatabase() async {

@@ -13,6 +13,7 @@ import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
+import 'package:testtapp/screens/Vendor/addItem.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -207,10 +208,10 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               Divider(),
               buildListTile(
-                'أضافة مسؤول جديد',
+                'أضافة تنظيم جديد',
                 Icons.person_add_alt,
                 () {
-                  widget.changeMainSection(AddAdmin());
+                  widget.changeMainSection(AddItem());
                 },
                 1,
               ),
