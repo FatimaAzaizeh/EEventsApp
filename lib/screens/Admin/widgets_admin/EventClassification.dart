@@ -5,8 +5,8 @@ import 'package:testtapp/models/Classification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AlertAddClass.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
-
 import 'package:testtapp/widgets/Event_item.dart';
+import 'package:testtapp/widgets/textfield_design.dart';
 
 class EventClassification extends StatefulWidget {
   static const String screenRoute = 'EventClassification';
@@ -23,6 +23,7 @@ TextEditingController ControllerDescription = TextEditingController();
 class _EventClassificationState extends State<EventClassification> {
   late DocumentReference eventTypeRef;
   late Widget _currentMainSection;
+  bool showAllEvents = true; // Show all events by default
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _EventClassificationState extends State<EventClassification> {
         .doc('2');
     _currentMainSection = MainSectionContainer(
       typeEvent: eventTypeRef,
+      showAllEvents: showAllEvents,
     );
   }
 
@@ -40,6 +42,17 @@ class _EventClassificationState extends State<EventClassification> {
       eventTypeRef = newTypeEvent;
       _currentMainSection = MainSectionContainer(
         typeEvent: eventTypeRef,
+        showAllEvents: showAllEvents,
+      );
+    });
+  }
+
+  void toggleShowAllEvents() {
+    setState(() {
+      showAllEvents = !showAllEvents;
+      _currentMainSection = MainSectionContainer(
+        typeEvent: eventTypeRef,
+        showAllEvents: showAllEvents,
       );
     });
   }
@@ -50,24 +63,25 @@ class _EventClassificationState extends State<EventClassification> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: ColorPink_100, // Text color of the button
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8), // Rounded corners
-              ),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: ColorPink_100,
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AddClassification(),
-              );
-            },
-            child: Text(
-              'إضافة تصنيف جديد',
-              style: StyleTextAdmin(18, Colors.white),
-            )),
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AddClassification(),
+            );
+          },
+          child: Text(
+            'إضافة تصنيف جديد',
+            style: StyleTextAdmin(18, Colors.white),
+          ),
+        ),
         Row(
           children: [
             TextFieldDesign(
@@ -81,28 +95,29 @@ class _EventClassificationState extends State<EventClassification> {
             Tooltip(
               message: 'تعديل اسم التصنيف',
               child: IconButton(
-                  disabledColor: Colors.grey,
-                  color: ColorPink_100,
-                  onPressed: editButton
-                      ? () {
-                          Classification.updateClassificationFirestore(
-                              Id, ControllerDescription.text);
-                          setState(() {
-                            editButton = false;
-                            ControllerDescription.clear();
-                            Id = '';
-                            QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.success,
-                            );
-                          });
-                        }
-                      : null,
-                  icon: Icon(Icons.edit)),
+                disabledColor: Colors.grey,
+                color: ColorPink_100,
+                onPressed: editButton
+                    ? () {
+                        Classification.updateClassificationFirestore(
+                            Id, ControllerDescription.text);
+                        setState(() {
+                          editButton = false;
+                          ControllerDescription.clear();
+                          Id = '';
+                        });
+                      }
+                    : null,
+                icon: Icon(Icons.edit),
+              ),
             )
           ],
         ),
         ClassificationTypes(changeMainSection: _changeMainSection),
+        ElevatedButton(
+          onPressed: toggleShowAllEvents,
+          child: Text(showAllEvents ? 'عرض التصنيفات' : 'عرض الكل'),
+        ),
         Expanded(
           flex: 2,
           child: _currentMainSection,
@@ -146,7 +161,6 @@ class _ClassificationTypesState extends State<ClassificationTypes> {
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: classificationTypes.map((classificationData) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -171,18 +185,11 @@ class _ClassificationTypesState extends State<ClassificationTypes> {
                                             .get();
                                     setState(() {
                                       if (querySnapshot.docChanges.isNotEmpty) {
-                                        // Access the first document change
                                         var firstChange =
                                             querySnapshot.docChanges.first;
-
-                                        // Access the document snapshot associated with the change
                                         var docSnapshot = firstChange.doc;
-
-                                        // Access the value of a specific field in the document
-                                        var fieldValue = docSnapshot[
-                                            'description']; // Replace 'fieldName' with the name of the field you want to retrieve
-
-                                        // Set the value to your ControllerDescription.text
+                                        var fieldValue =
+                                            docSnapshot['description'];
                                         ControllerDescription.text = fieldValue;
                                       }
                                       editButton = true;
@@ -198,8 +205,6 @@ class _ClassificationTypesState extends State<ClassificationTypes> {
                                                   'event_classificaion_types')
                                               .doc(documentId);
 
-                                      print('Document ID: $documentId');
-                                      print(eventTypeRef);
                                       widget.changeMainSection(eventTypeRef);
                                     }
                                   },
@@ -225,10 +230,12 @@ class _ClassificationTypesState extends State<ClassificationTypes> {
 
 class MainSectionContainer extends StatelessWidget {
   final DocumentReference typeEvent;
+  final bool showAllEvents;
 
   const MainSectionContainer({
     Key? key,
     required this.typeEvent,
+    required this.showAllEvents,
   }) : super(key: key);
 
   @override
@@ -243,29 +250,32 @@ class MainSectionContainer extends StatelessWidget {
         } else {
           final eventDocs = snapshot.data!.docs;
 
+          // Filter events based on the selected classification type if not showing all events
+          final filteredEvents = showAllEvents
+              ? eventDocs
+              : eventDocs
+                  .where((doc) => doc['event_classificaion_types'] == typeEvent)
+                  .toList();
+
           return GridView.builder(
             padding: EdgeInsets.all(10),
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 7 / 8,
+              maxCrossAxisExtent: 150, // Adjust box size as needed
+              childAspectRatio: 1, // Square aspect ratio
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
             ),
-            itemCount: eventDocs.length,
+            itemCount: filteredEvents.length,
             itemBuilder: (context, index) {
-              final doc = eventDocs[index];
-              if (doc['event_classificaion_types'] == typeEvent) {
-                return EventItemDisplay(
-                  title: doc['name'].toString(),
-                  imageUrl: doc['image_url'].toString(),
-                  id: doc.id,
-                  onTapFunction: () {
-                    // Add your onTap logic here
-                  },
-                );
-              } else {
-                return Center(child: Text("لا يوجد مناسبات داخل هذا التصنيف "));
-              }
+              final doc = filteredEvents[index];
+              return EventItemDisplay(
+                title: doc['name'].toString(),
+                imageUrl: doc['image_url'].toString(),
+                id: doc.id,
+                onTapFunction: () {
+                  // Add your onTap logic here
+                },
+              );
             },
           );
         }

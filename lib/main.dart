@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:testtapp/constants.dart';
 
 import 'package:testtapp/firebase_options.dart';
 
@@ -18,6 +16,8 @@ import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/email_acceptance.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/email_send.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardScreen.dart';
 
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Vendor/VendorHome.dart';
@@ -74,6 +74,7 @@ class MyApp extends StatelessWidget {
         AddService.screenRoute: (context) => AddService(),
         EventClassification.screenRoute: (context) => EventClassification(),
         VendorHome.screenRoute: (context) => VendorHome(),
+        CreateNewEventWizard.screenRoute: (context) => CreateNewEventWizard(),
       },
       home: AdminLogin(),
     );

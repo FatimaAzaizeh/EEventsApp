@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class UserDataBase {
   final String UID;
@@ -22,14 +21,21 @@ class UserDataBase {
     required this.imageUrl, required String description, required double price,
   });
 
-  Future<void> saveToDatabase() async {
+  Future<String> saveToDatabase() async {
     try {
-      // Reference to the Firestore collection
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
 
-      // Add the user to the 'users' collection
-      await users.add({
+      // Check if the user already exists
+      QuerySnapshot querySnapshot =
+          await users.where('UID', isEqualTo: UID).limit(1).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return 'User with ID $UID already exists.';
+      }
+
+      // Add the new user to the database
+      await users.doc(UID).set({
         'UID': UID,
         'email': email,
         'name': name,
@@ -40,33 +46,52 @@ class UserDataBase {
         'Image_url': imageUrl,
       });
 
-      print('User added to the database successfully!');
+      return 'User added to the database successfully!';
     } catch (error) {
-      print('Error adding user to the database: $error');
+      return 'Error adding user to the database: $error';
     }
   }
 
-  //check user_type_id
+  static Future<String> editUser({
+    required String UID,
+    String? phone,
+    String? address,
+  }) async {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+
+      DocumentSnapshot userDoc = await users.doc(UID).get();
+
+      if (!userDoc.exists) {
+        return 'User with ID $UID does not exist.';
+      }
+
+      Map<String, dynamic> updatedData = {};
+
+      if (phone != null) updatedData['phone'] = phone;
+      if (address != null) updatedData['address'] = address;
+
+      await users.doc(UID).update(updatedData);
+
+      return 'User information updated successfully!';
+    } catch (error) {
+      return 'Error updating user information: $error';
+    }
+  }
 
   static Future<bool> isUserTypeReferenceValid(
       String userId, DocumentReference user_type) async {
     try {
-      // Get a reference to the user document
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('UID', isEqualTo: userId)
           .get();
 
-      // Check if any documents match the query
       if (querySnapshot.docs.isNotEmpty) {
-        // Get the first document (assuming id is unique)
         DocumentSnapshot userSnapshot = querySnapshot.docs.first;
-
-        // Check if the user_type_id reference matches the expected reference
         return userSnapshot['user_type_id'] == user_type;
       } else {
-        // User document does not exist
-        print('User document with ID $userId does not exist.');
         return false;
       }
     } catch (error) {

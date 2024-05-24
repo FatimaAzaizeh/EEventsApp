@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Vendor/VendorHome.dart';
@@ -45,7 +48,8 @@ class _SignInState extends State<SignIn> {
                           width: 1000,
                           height: 700,
                           decoration: const BoxDecoration(
-                              color: Color.fromARGB(158, 251, 248, 248),
+                              color: Colors.white,
+                              //Color.fromARGB(158, 251, 248, 248),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15))),
                           child: ModalProgressHUD(
@@ -58,8 +62,8 @@ class _SignInState extends State<SignIn> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          height: 200,
-                                          width: 200,
+                                          height: 250,
+                                          width: 250,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadiusDirectional
@@ -136,86 +140,135 @@ class _SignInState extends State<SignIn> {
                                           ]),
                                         ]),
                                         SizedBox(height: 15),
-                                        Center(
-                                            child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 150),
-                                                child: Row(children: [
-                                                  ButtonDesign(
-                                                    color: Color.fromARGB(
-                                                        245, 242, 194, 164),
-                                                    title: 'تسجيل الدخول ',
-                                                    onPressed: () async {
-                                                      setState(() {
-                                                        showSpinner = true;
-                                                      });
-                                                      try {
-                                                        final user = await _auth
-                                                            .signInWithEmailAndPassword(
-                                                          email: email,
-                                                          password: password,
-                                                        );
+                                        Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: ButtonDesign(
+                                                  color: ColorPink_100,
+                                                  // Color.fromARGB(
+                                                  //  245, 242, 194, 164),
+                                                  title: 'تسجيل الدخول ',
 
-                                                        if (user != null) {
-                                                          String? uid =
-                                                              FirebaseAuth
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      showSpinner = true;
+                                                    });
+                                                    try {
+                                                      final user = await _auth
+                                                          .signInWithEmailAndPassword(
+                                                        email: email,
+                                                        password: password,
+                                                      );
+
+                                                      if (user != null) {
+                                                        String? uid =
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                ?.uid;
+
+                                                        // Check if the user is not an admin
+                                                        if (!admin &&
+                                                            isVendorSelected) {
+                                                          String userId = uid ??
+                                                              ''; // Replace 'your_user_id_here' with the actual user ID
+                                                          DocumentReference
+                                                              userTypeRef =
+                                                              FirebaseFirestore
                                                                   .instance
-                                                                  .currentUser
-                                                                  ?.uid;
+                                                                  .collection(
+                                                                      'user_types')
+                                                                  .doc('3');
 
-                                                          // Check if the user is not an admin
-                                                          if (!admin) {
+                                                          bool isValid =
+                                                              await UserDataBase
+                                                                  .isUserTypeReferenceValid(
+                                                                      userId,
+                                                                      userTypeRef);
+                                                          if (isValid) {
                                                             Navigator.pushNamed(
                                                                 context,
                                                                 VendorHome
                                                                     .screenRoute);
 
-                                                            return; // Exit the function after navigating
-                                                          }
+                                                            return;
+                                                          } else {
+                                                            setState(() {
+                                                              showSpinner =
+                                                                  false;
+                                                            });
+                                                            return QuickAlert
+                                                                .show(
+                                                              context: context,
+                                                              title: 'خطأ',
+                                                              text:
+                                                                  'الحساب الذي تحاول الدخول بة ليس حساب بائع',
+                                                              type:
+                                                                  QuickAlertType
+                                                                      .error,
+                                                              confirmBtnText:
+                                                                  'إغلاق',
+                                                            );
+                                                          } // Exit the function after navigating
+                                                        }
 
-                                                          // Check if the user is an admin
-                                                          if (admin) {
-                                                            String userId = uid ??
-                                                                ''; // Replace 'your_user_id_here' with the actual user ID
-                                                            DocumentReference
-                                                                userTypeRef =
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'user_type')
-                                                                    .doc('1');
+                                                        // Check if the user is an admin
+                                                        if (admin) {
+                                                          String userId = uid ??
+                                                              ''; // Replace 'your_user_id_here' with the actual user ID
+                                                          DocumentReference
+                                                              userTypeRef =
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'user_types')
+                                                                  .doc('1');
 
-                                                            bool isValid =
-                                                                await UserDataBase
-                                                                    .isUserTypeReferenceValid(
-                                                                        userId,
-                                                                        userTypeRef);
+                                                          bool isValid =
+                                                              await UserDataBase
+                                                                  .isUserTypeReferenceValid(
+                                                                      userId,
+                                                                      userTypeRef);
 
-                                                            if (isValid) {
-                                                              print(
-                                                                  'The user type reference is valid.');
-                                                            } else {
-                                                              print(
-                                                                  'The user type reference is not valid.');
-                                                            }
-
+                                                          if (isValid) {
                                                             Navigator.pushNamed(
                                                                 context,
                                                                 AdminScreen
                                                                     .screenRoute);
-                                                            return; // Exit the function after navigating
+                                                          } else {
+                                                            setState(() {
+                                                              showSpinner =
+                                                                  false;
+                                                            });
+                                                            return QuickAlert
+                                                                .show(
+                                                              context: context,
+                                                              title: 'خطأ',
+                                                              text:
+                                                                  'الحساب الذي تحاول الدخول بة ليس حساب مسؤول',
+                                                              type:
+                                                                  QuickAlertType
+                                                                      .error,
+                                                              confirmBtnText:
+                                                                  'إغلاق',
+                                                            );
                                                           }
+
+                                                          return; // Exit the function after navigating
                                                         }
-                                                      } catch (e) {
-                                                        print(e);
                                                       }
-                                                    },
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                ])))
+                                                    } catch (e) {
+                                                      print(e);
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                            ])
                                       ])))))))
         ]));
   }

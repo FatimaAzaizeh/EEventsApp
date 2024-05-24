@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,9 +16,7 @@ class Vendor {
   String businessTypesId;
   String address;
   String locationUrl;
-  String workingHourFrom;
-  String workingHourTo;
-  String verificationCode;
+  Map<String, Map<String, dynamic>> workingHour;
   Timestamp createdAt;
   DocumentReference vendorStatusId;
 
@@ -33,19 +33,22 @@ class Vendor {
     required this.businessTypesId,
     required this.address,
     required this.locationUrl,
-    required this.workingHourFrom,
-    required this.workingHourTo,
-    required this.verificationCode,
+    required this.workingHour,
     required this.createdAt,
     required this.vendorStatusId,
   });
 
   Future<void> addToFirestore() async {
-    // Generate a new document ID (automatically provided by Firestore)
-    CollectionReference vendor =
-        FirebaseFirestore.instance.collection('vendor');
-    // Use the generated document ID to set the document in Firestore
-    await vendor.add({
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Specify the custom document ID
+    String customId = this.id;
+
+    // Reference to the collection where you want to add the document
+    CollectionReference collectionReference = firestore.collection('vendor');
+
+    // Add the document with the custom ID
+    await collectionReference.doc(customId).set({
       'UID': id,
       'business_name': businessName,
       'email': email,
@@ -58,9 +61,7 @@ class Vendor {
       'business_types_id': businessTypesId,
       'address': address,
       'location_url': locationUrl,
-      'working_hour_from': workingHourFrom,
-      'working_hour_to': workingHourTo,
-      'verification_code': verificationCode,
+      'working_hour': workingHour,
       'created_at': createdAt,
       'vendor_status_id': vendorStatusId,
     });
@@ -122,6 +123,42 @@ class Vendor {
     } catch (error) {
       print('Error checking user type reference validity: $error');
       return false;
+    }
+  }
+
+  static Future<void> edit({
+    required String UID,
+    String? businessName,
+    String? contactNumber,
+    String? logoUrl,
+    String? instagramUrl,
+    String? website,
+    String? bio,
+    DocumentReference? businessTypesId,
+    String? address,
+    String? locationUrl,
+  }) async {
+    try {
+      // Get a reference to the document you want to edit
+      DocumentReference vendorRef =
+          FirebaseFirestore.instance.collection('vendor').doc(UID);
+
+      // Update the document with the new data
+      await vendorRef.update({
+        if (businessName != null) 'business_name': businessName,
+        if (contactNumber != null) 'contact_number': contactNumber,
+        if (logoUrl != null) 'logo_url': logoUrl,
+        if (instagramUrl != null) 'instagram_url': instagramUrl,
+        if (website != null) 'website': website,
+        if (bio != null) 'bio': bio,
+        if (businessTypesId != null) 'business_types_id': businessTypesId,
+        if (address != null) 'address': address,
+        if (locationUrl != null) 'location_url': locationUrl,
+      });
+
+      print('Vendor data updated successfully');
+    } catch (error) {
+      print('Error updating vendor data: $error');
     }
   }
 }

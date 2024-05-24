@@ -7,12 +7,15 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/DisplayAllOrders.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardScreen.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -33,7 +36,7 @@ Future<void> getCurrentUserInfo() async {
 
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
       .collection('users')
-      .where('id', isEqualTo: uid)
+      .where('UID', isEqualTo: uid)
       .get()
       .then((querySnapshot) => querySnapshot.docs.first);
 
@@ -261,8 +264,18 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               buildListTile(
                 'تنظيم مراحل المناسبات ',
                 Icons.onetwothree_rounded,
-                () {
-                  widget.changeMainSection(Wizard());
+                () async {
+                  String? selectedEvent = await showDialog<String>(
+                    context: context,
+                    builder: (context) => CreateNewEventWizard(),
+                  );
+                  if (selectedEvent != null) {
+                    // Do something with the selected event
+                    print('Selected Event: $selectedEvent');
+                    widget.changeMainSection(Wizard(
+                      EventName: selectedEvent,
+                    ));
+                  }
                 },
                 7,
               ),
@@ -270,7 +283,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 'الطلبات',
                 Icons.online_prediction_rounded,
                 () {
-                  widget.changeMainSection(AllAdmin());
+                  widget.changeMainSection(DisplayAllOrders());
                 },
                 8,
               ),
@@ -281,6 +294,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, SignIn.screenRoute);
                 },
                 9,
               ),

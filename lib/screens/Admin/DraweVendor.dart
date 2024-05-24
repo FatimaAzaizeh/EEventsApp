@@ -6,8 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
+import 'package:testtapp/screens/Vendor/DropdownList.dart';
 import 'package:testtapp/widgets/textfield_design.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -26,7 +29,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
       TextEditingController();
   final TextEditingController _socialMediaController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
+  late DocumentReference serviceTypeId;
   String email = '';
   String socialMedia = '';
   String commercialName = '';
@@ -215,6 +218,37 @@ class _DrawerVendorState extends State<DrawerVendor> {
                       ),
                     ),
                     SizedBox(height: 10),
+                    FirestoreDropdown(
+                      collectionName: 'service_types',
+                      dropdownLabel: 'نوع الخدمة',
+                      onChanged: (value) {
+                        if (value != null) {
+                          FirebaseFirestore.instance
+                              .collection('service_types')
+                              .where('name', isEqualTo: value.toString())
+                              .limit(
+                                  1) // Limiting to one document as 'where' query might return multiple documents
+                              .get()
+                              .then((QuerySnapshot querySnapshot) {
+                            if (querySnapshot.docs.isNotEmpty) {
+                              // If document(s) found, assign the reference
+                              DocumentSnapshot docSnapshot =
+                                  querySnapshot.docs.first;
+                              DocumentReference ServiceRef =
+                                  docSnapshot.reference;
+                              serviceTypeId = ServiceRef;
+                              // Now you can use itemStatusRef as needed
+                              // For example, you can store it in a state variable or perform other operations with it
+                              setState(() {
+                                // Store the DocumentReference in a state variable or use it as needed
+                              });
+                            } else {
+                              // If no document found, handle the case accordingly
+                            }
+                          });
+                        }
+                      },
+                    ),
                     ElevatedButton(
                       onPressed: () async {
                         setState(() {
@@ -222,14 +256,11 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
 
                         try {
-                          DocumentReference VendorStatus = FirebaseFirestore
+                          DocumentReference vendorStatusRef = FirebaseFirestore
                               .instance
                               .collection('vendor_status')
                               .doc('1');
-                          DocumentReference ServiceId = FirebaseFirestore
-                              .instance
-                              .collection('service_types')
-                              .doc('99');
+
                           final _auth = FirebaseAuth.instance;
                           final newUser =
                               await _auth.createUserWithEmailAndPassword(
@@ -238,22 +269,28 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           );
 
                           if (newUser.user != null) {
-                            String? uid = newUser.user!.uid;
+                            String uid = newUser.user!.uid;
                             // Initialize with current time
                             Timestamp myTimestamp = Timestamp.now();
-                            UserDataBase newVendorUser = new UserDataBase(
-                                UID: uid,
-                                email: _emailController.text,
-                                name: _commercialNameController.text,
-                                user_type_id: FirebaseFirestore.instance
-                                    .collection('user_types')
-                                    .doc('3'),
-                                phone: '',
-                                address: '',
-                                isActive: false,
-                                imageUrl: imageUrls);
-                            newVendorUser.saveToDatabase();
-                            Vendor newVendor = Vendor(
+                            UserDataBase newVendorUser = UserDataBase(
+                              UID: uid,
+                              email: _emailController.text,
+                              name: _commercialNameController.text,
+                              user_type_id: FirebaseFirestore.instance
+                                  .collection('user_types')
+                                  .doc('3'),
+                              phone: '',
+                              address: '',
+                              isActive: false,
+                              imageUrl: imageUrls,
+                            );
+
+                            String result =
+                                await newVendorUser.saveToDatabase();
+
+                            if (result ==
+                                'User added to the database successfully!') {
+                              Vendor newVendor = Vendor(
                                 id: uid,
                                 businessName: _commercialNameController.text,
                                 email: _emailController.text,
@@ -262,17 +299,32 @@ class _DrawerVendorState extends State<DrawerVendor> {
                                 instagramUrl: _socialMediaController.text,
                                 website: '',
                                 bio: _descriptionController.text,
-                                serviceTypesId: ServiceId,
+                                serviceTypesId: serviceTypeId,
                                 businessTypesId: '',
                                 address: '',
                                 locationUrl: '',
-                                workingHourFrom: '',
-                                workingHourTo: '',
-                                verificationCode: '',
+                                workingHour: {},
                                 createdAt: myTimestamp,
-                                vendorStatusId: VendorStatus);
-                            newVendor.addToFirestore();
-                            // Your authentication and Firestore logic here
+                                vendorStatusId: vendorStatusRef,
+                              );
+
+                              await newVendor.addToFirestore();
+                              setState(() {
+                                QuickAlert.show(
+                                  context: context,
+                                  text: 'User and vendor added successfully!',
+                                  type: QuickAlertType.success,
+                                );
+                              });
+                            } else {
+                              setState(() {
+                                QuickAlert.show(
+                                  context: context,
+                                  text: 'Error: $result',
+                                  type: QuickAlertType.error,
+                                );
+                              });
+                            }
 
                             setState(() {
                               showSpinner = false;
@@ -282,7 +334,6 @@ class _DrawerVendorState extends State<DrawerVendor> {
                               _passwordController.clear();
                               _socialMediaController.clear();
                               _descriptionController.clear();
-
                               pickedImage = null; // Reset picked image
                             });
                           }
@@ -293,7 +344,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                           });
                         }
                       },
-                      child: Text('تقديم الطلب'),
+                      child: Text('Submit'),
                     ),
                   ],
                 ),

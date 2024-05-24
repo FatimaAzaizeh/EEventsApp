@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 // Your imports
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/ServiceType.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/serviceItem.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -90,21 +93,28 @@ class _AddServiceState extends State<AddService> {
                                       if (fileName != 'لم يتم اختيار صورة ') {
                                         await uploadFile();
                                       }
-                                      ServiceType.updateServiceFirestore(
-                                          ControllerName.text,
-                                          imageUrl,
-                                          ControllerId.text);
+                                      bool result = await ServiceType
+                                          .updateServiceFirestore(
+                                              ControllerName.text,
+                                              imageUrl,
+                                              ControllerId.text);
 
                                       setState(() {
                                         showEditButton = false;
                                       });
                                       ControllerName.clear();
                                       ControllerId.clear();
-
-                                      QuickAlert.show(
-                                        context: context,
-                                        type: QuickAlertType.success,
-                                      );
+                                      if (result) {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.success,
+                                        );
+                                      } else {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.error,
+                                        );
+                                      }
                                       setState(() {
                                         showEditButton = false;
                                       });
@@ -212,16 +222,18 @@ class _AddServiceState extends State<AddService> {
                             name: ControllerName.text,
                             imageUrl: imageUrl,
                           );
-                          newservice.saveToDatabase();
+                          String result = await newservice.saveToDatabase();
                           setState(() {
                             showSpinner = false;
                           });
                           ControllerName.clear();
                           ControllerId.clear();
                           ControllerImage.clear();
+
                           QuickAlert.show(
                             context: context,
-                            type: QuickAlertType.success,
+                            text: result,
+                            type: QuickAlertType.info,
                           );
                         },
                       ),
@@ -237,7 +249,7 @@ class _AddServiceState extends State<AddService> {
                   borderRadius: BorderRadius.circular(30),
                   color: Colors.white,
                 ),
-                width: 400,
+                width: 450,
                 height: double.maxFinite,
                 child: ServiceScreen(),
               ),
@@ -300,10 +312,10 @@ class _AddServiceState extends State<AddService> {
             } else {
               final eventDocs = snapshot.data!.docs;
               return GridView.builder(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(4),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent:
-                      150, // Adjust according to your requirement
+                      191, // Adjust according to your requirement
                   childAspectRatio: 1, // Ensure each item is square
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
@@ -311,8 +323,7 @@ class _AddServiceState extends State<AddService> {
                 itemCount: eventDocs.length,
                 itemBuilder: (context, index) {
                   final doc = eventDocs[index];
-                  return EventItemDisplay(
-                    title: doc['name'].toString(),
+                  return ServiceItem(
                     imageUrl: doc['image_url'].toString(),
                     id: doc.id,
                     onTapFunction: () {
@@ -327,42 +338,4 @@ class _AddServiceState extends State<AddService> {
       ),
     );
   }
-}
-
-// QuickAlert class
-class QuickAlert {
-  static void show(
-      {required BuildContext context, required QuickAlertType type}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title:
-              type == QuickAlertType.success ? Text('Success') : Text('Error'),
-          content: type == QuickAlertType.success
-              ? Text('Operation successful!')
-              : Text('Error occurred.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// QuickAlertType enum
-enum QuickAlertType { success, error }
-
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: AddService(),
-    ),
-  ));
 }
