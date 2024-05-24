@@ -42,8 +42,8 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: const [
-                  DataColumn(label: Text('معرف الطلب')),
-                  DataColumn(label: Text('معرف المستخدم')),
+                  DataColumn(label: Text('رقم تعريف الطلب')),
+                  DataColumn(label: Text('رقم تعريف المستخدم')),
                   DataColumn(label: Text('تفاصيل الطلب')),
                 ],
                 rows: snapshot.data!.docs.map<DataRow>((doc) {
@@ -75,17 +75,17 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   Future<void> _showOrderDialog(BuildContext context, String orderId,
       String userId, Map<String, dynamic>? vendors) async {
     List<Widget> content = [
-      Text('معرف الطلب: $orderId'),
-      Text('معرف المستخدم: $userId'),
+      Text('رقم تعريف الطلب: $orderId'),
+      Text('رقم تعريف المستخدم: $userId'),
     ];
 
     if (vendors == null || vendors.isEmpty) {
-      content.add(const Text('لا توجد موردين مرتبطين بهذا الطلب.'));
+      content.add(const Text('لا توجد بائعين مرتبطين بهذا الطلب.'));
     } else {
       try {
         content.add(await _buildVendorDetails(vendors));
       } catch (e) {
-        content.add(Text('حدث خطأ أثناء تحميل تفاصيل المورد: $e'));
+        content.add(Text('حدث خطأ أثناء تحميل تفاصيل البائع: $e'));
       }
     }
 
@@ -94,7 +94,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
 
   Widget _buildVendorDetails(Map<String, dynamic>? vendors) {
     if (vendors == null || vendors.isEmpty) {
-      return const Text('لا توجد موردين مرتبطين بهذا الطلب.');
+      return const Text('لا توجد بائعين مرتبطين بهذا الطلب.');
     }
 
     List<Widget> vendorWidgets = [];
@@ -107,7 +107,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
           ],
           rows: [
             DataRow(cells: [
-              DataCell(Text('معرف المورد')),
+              DataCell(Text('رقم تعريف البائع')),
               DataCell(Text(value['vendor_id'].toString())),
             ]),
             DataRow(cells: [
@@ -116,7 +116,22 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
             ]),
             DataRow(cells: [
               DataCell(Text('حالة الطلب')),
-              DataCell(Text(value['order_status_id'].toString())),
+              DataCell(FutureBuilder<DocumentSnapshot>(
+                future: value['order_status_id'].get(),
+                builder: (context, statusSnapshot) {
+                  if (statusSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (statusSnapshot.hasError) {
+                    return Text('Error fetching data');
+                  } else {
+                    var orderStatusData =
+                        statusSnapshot.data!.data() as Map<String, dynamic>;
+                    var orderStatusValue = orderStatusData['description'];
+                    return Text(orderStatusValue);
+                  }
+                },
+              )),
             ]),
             DataRow(cells: [
               DataCell(Text('تاريخ الإنشاء')),
@@ -131,7 +146,7 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       );
 
       if (value['vendor_id_items'] != null) {
-        vendorWidgets.add(const Text('عناصر المورد:'));
+        vendorWidgets.add(const Text('عناصر البائع:'));
         vendorWidgets.add(_buildVendorItems(value['vendor_id_items']));
       }
     });
