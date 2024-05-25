@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Vendor.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/email_acceptance.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/email_send.dart';
 
 import 'package:toggle_list/toggle_list.dart';
 

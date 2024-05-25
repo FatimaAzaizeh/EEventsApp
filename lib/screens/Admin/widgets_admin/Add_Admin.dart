@@ -5,7 +5,6 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AlertAddAdmin.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdminView.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/DraweVendor.dart';
-import 'package:testtapp/screens/Admin/displayImage.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 
 class AdminLogin extends StatefulWidget {

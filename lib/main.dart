@@ -3,27 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:testtapp/firebase_options.dart';
-
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
-import 'package:testtapp/screens/Admin/DraweVendor.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/loginAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
-
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/email_acceptance.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/email_send.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardScreen.dart';
-
 import 'package:testtapp/screens/Event_screen.dart';
 import 'package:testtapp/screens/Vendor/VendorHome.dart';
-
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 
 final _auth = FirebaseAuth.instance;
@@ -68,8 +58,6 @@ class MyApp extends StatelessWidget {
         AddAdmin.screenRoute: (context) => AddAdmin(),
         EventScreen.screenRoute: (context) => EventScreen(),
         ListReq.screenRoute: (context) => ListReq(),
-        AllAdmin.screenRoute: (context) => AllAdmin(),
-        SendEmail.screenRoute: (context) => SendEmail(),
         VendorList.screenRoute: (context) => VendorList(),
         AddService.screenRoute: (context) => AddService(),
         EventClassification.screenRoute: (context) => EventClassification(),
