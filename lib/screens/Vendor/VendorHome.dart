@@ -8,12 +8,16 @@ import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/wizard_steps%20.dart';
-import 'package:testtapp/screens/Vendor/addItem.dart';
+import 'package:testtapp/screens/Vendor/AllOrders.dart';
+import 'package:testtapp/screens/Vendor/StoreStatus.dart';
+import 'package:testtapp/screens/Vendor/VendorItem.dart';
+import 'package:testtapp/screens/Vendor/VendorProfile.dart';
+import 'package:testtapp/screens/Vendor/WorkHour.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -34,7 +38,7 @@ Future<void> getCurrentUserInfo() async {
 
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
       .collection('users')
-      .where('id', isEqualTo: uid)
+      .where('UID', isEqualTo: uid)
       .get()
       .then((querySnapshot) => querySnapshot.docs.first);
 
@@ -208,72 +212,42 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               Divider(),
               buildListTile(
-                'أضافة تنظيم جديد',
-                Icons.person_add_alt,
+                ' المنتحات',
+                Icons.sell,
                 () {
-                  widget.changeMainSection(AddItem());
+                  widget.changeMainSection(VendorItem());
                 },
                 1,
               ),
               Divider(),
               buildListTile(
-                'طلبات إنشاء حسابات الشركاء ',
-                Icons.add_business_outlined,
+                'الطلبات',
+                Icons.online_prediction_rounded,
                 () {
-                  widget.changeMainSection(ListReq());
+                  widget.changeMainSection(VendorOrders(
+                    currentUserUID: _auth.currentUser!.uid.toString(),
+                  ));
                 },
                 2,
               ),
               buildListTile(
-                'إدارة حسابات الشركاء',
-                Icons.account_circle_outlined,
+                'إدارة الحساب',
+                Icons.manage_accounts,
                 () {
                   setState(() {
-                    widget.changeMainSection(VendorList());
+                    widget.changeMainSection(ProfileVendor());
                   });
                 },
                 3,
               ),
               Divider(),
               buildListTile(
-                'ادارة المناسبات',
-                Icons.post_add,
+                'ادارة مواعيد العمل',
+                Icons.timelapse,
                 () {
-                  widget.changeMainSection(AddEvent());
+                  widget.changeMainSection(OpeningHoursPage());
                 },
                 4,
-              ),
-              buildListTile(
-                'ادارة الخدمات',
-                Icons.widgets,
-                () {
-                  widget.changeMainSection(AddService());
-                },
-                5,
-              ),
-              buildListTile(
-                'إدارة التصنيفات  ',
-                Icons.category_outlined,
-                () {
-                  widget.changeMainSection(EventClassification());
-                },
-                6,
-              ),
-              buildListTile(
-                'تنظيم مراحل المناسبات ',
-                Icons.onetwothree_rounded,
-                () {
-                  widget.changeMainSection(Wizard());
-                },
-                7,
-              ),
-              buildListTile(
-                'الطلبات',
-                Icons.online_prediction_rounded,
-                () {
-                  widget.changeMainSection(AllAdmin());
-                },
-                8,
               ),
               Divider(),
               buildListTile(
@@ -282,8 +256,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, SignIn.screenRoute);
                 },
-                9,
+                5,
               ),
             ],
           ),
