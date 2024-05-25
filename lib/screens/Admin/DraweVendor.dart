@@ -36,7 +36,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
   String commercialName = '';
   String description = '';
   String password = '';
-  String fileName = "No File Selected";
+  String fileName = " لم يتم اختيار صورة";
   Uint8List? fileBytes;
   bool showSpinner = false;
   String imageUrls = '';
@@ -180,23 +180,23 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         child: pickedImage!,
                       ),
                     )
-                  : CircleAvatar(
-                      radius: size.width * 0.02,
-                      backgroundColor: Colors.grey[400]!.withOpacity(0.4),
-                      child: Icon(
-                        Icons.person_3_outlined,
-                        color: Colors.white,
-                        size: size.width * 0.02,
+                  : Tooltip(
+                      message: 'إضغط هنا لإضافة صورة',
+                      child: CircleAvatar(
+                        radius: size.width * 0.02,
+                        backgroundColor: Colors.grey[400]!.withOpacity(0.4),
+                        child: Icon(
+                          Icons.person_3_outlined,
+                          color: Colors.white,
+                          size: size.width * 0.02,
+                        ),
                       ),
                     ),
             ),
             SizedBox(height: 10),
             Text(
               'هل تود تسجيل الدخول كبائع؟',
-              style: TextStyle(
-                color: activeColor,
-                fontSize: 24,
-              ),
+              style: StyleTextAdmin(20, activeColor),
             ),
           ],
         ),

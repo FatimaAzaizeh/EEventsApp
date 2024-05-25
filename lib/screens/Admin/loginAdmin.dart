@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/DraweVendor.dart';
 import 'package:testtapp/screens/Admin/displayImage.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
@@ -16,8 +17,11 @@ class _AdminLoginState extends State<AdminLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color.fromARGB(121, 242, 228, 217),
-        title: const Text('ضع خدمتك في أقل من 10 دقائق!'),
+        backgroundColor: Color.fromARGB(121, 242, 228, 217),
+        title: Text(
+          'ضع خدمتك في أقل من 10 دقائق!',
+          style: StyleTextAdmin(20, Colors.black),
+        ),
       ),
       drawer: DrawerVendor(),
       body: SignIn(),
