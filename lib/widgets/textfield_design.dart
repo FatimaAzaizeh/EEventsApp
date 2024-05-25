@@ -1,6 +1,7 @@
 // This import statement brings in the Flutter Material package,
 // which contains widgets and utilities to build Material Design applications.
 import 'package:flutter/material.dart';
+import 'package:testtapp/constants.dart';
 
 // CustomTextField is a stateless widget for creating customizable text fields.
 class CustomTextField extends StatelessWidget {
@@ -65,7 +66,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           // Define the color and width of the focused border.
           borderSide: BorderSide(
-            color: Colors.blue,
+            color: Color.fromARGB(255, 9, 18, 108),
             width: 2,
           ),
           // Define the border radius for the focused border.
