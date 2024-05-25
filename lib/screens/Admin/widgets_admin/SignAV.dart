@@ -69,14 +69,14 @@ class _SignInState extends State<SignIn> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadiusDirectional.circular(30),
                             image: DecorationImage(
-                              image: AssetImage('assets/images/logo3.png'),
+                              image: AssetImage('assets/images/logo2.png'),
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                         SizedBox(height: 10),
                         Text('البريد الالكتروني',
-                            style: TextStyle(color: activeColor)),
+                            style: StyleTextAdmin(14, Colors.black)),
                         CustomTextField(
                           hintText: 'ادخال البريد الالكتروني',
                           // color: activeColor,
@@ -89,7 +89,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 10),
                         Text('كلمة المرور',
-                            style: TextStyle(color: activeColor)),
+                            style: StyleTextAdmin(14, Colors.black)),
                         CustomTextField(
                           hintText: 'أدخال كلمة المرور',
                           //  color: activeColor,
@@ -107,7 +107,7 @@ class _SignInState extends State<SignIn> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: Text('مسؤول',
-                                  style: TextStyle(color: activeColor)),
+                                  style: StyleTextAdmin(14, Colors.black)),
                             ),
                             Radio<bool>(
                               value: true,
@@ -127,7 +127,7 @@ class _SignInState extends State<SignIn> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: Text('بائع',
-                                  style: TextStyle(color: activeColor)),
+                                  style: StyleTextAdmin(14, Colors.black)),
                             ),
                             Radio<bool>(
                               value: true,
