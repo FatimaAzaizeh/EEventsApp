@@ -16,6 +16,7 @@ class _AdminLoginState extends State<AdminLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:  Color.fromARGB(121, 242, 228, 217),
         title: const Text('ضع خدمتك في أقل من 10 دقائق!'),
       ),
       drawer: DrawerVendor(),

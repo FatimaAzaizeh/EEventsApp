@@ -76,7 +76,6 @@ class MyApp extends StatelessWidget {
         EventClassification.screenRoute: (context) => EventClassification(),
         VendorHome.screenRoute: (context) => VendorHome(),
         CreateNewEventWizard.screenRoute: (context) => CreateNewEventWizard(),
-        DrawerVendor.screenRoute: (context) => DrawerVendor(),
       },
       home: AdminLogin(),
     );

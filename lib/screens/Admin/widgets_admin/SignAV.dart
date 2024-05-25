@@ -7,7 +7,6 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
-import 'package:testtapp/screens/Admin/DraweVendor.dart';
 import 'package:testtapp/screens/Vendor/VendorHome.dart';
 import 'package:testtapp/screens/loginAdmin.dart';
 import 'package:testtapp/widgets/button_design.dart';
