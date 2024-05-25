@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/loginAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
@@ -256,7 +257,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, SignIn.screenRoute);
+                  Navigator.pushNamed(context, AdminLogin.screenRoute);
                 },
                 5,
               ),
