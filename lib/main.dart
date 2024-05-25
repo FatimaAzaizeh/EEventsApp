@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:testtapp/firebase_options.dart';
 
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
+import 'package:testtapp/screens/Admin/DraweVendor.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/AllAdmin.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
         EventClassification.screenRoute: (context) => EventClassification(),
         VendorHome.screenRoute: (context) => VendorHome(),
         CreateNewEventWizard.screenRoute: (context) => CreateNewEventWizard(),
+        DrawerVendor.screenRoute: (context) => DrawerVendor(),
       },
       home: AdminLogin(),
     );
