@@ -36,8 +36,6 @@ class ProfileVendor extends StatefulWidget {
 }
 
 class _ProfileVendorState extends State<ProfileVendor> {
-  late Future<Vendor> _vendorFuture;
-
   @override
   void initState() {
     super.initState();
@@ -110,9 +108,7 @@ class _ProfileVendorState extends State<ProfileVendor> {
                   CustomTextField(
                     hintText: 'رقم الهاتف',
                     keyboardType: TextInputType.phone,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     obscureText: false,
                     TextController: _contactController,
                   ),
@@ -120,18 +116,14 @@ class _ProfileVendorState extends State<ProfileVendor> {
                   CustomTextField(
                     hintText: ' رابط التواصل الاجتماعي الانستغرام',
                     keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     obscureText: false,
                     TextController: _instegramController,
                   ),
                   CustomTextField(
                     hintText: '  رابط التواصل الاجتماعي موقع ويب',
                     keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     obscureText: false,
                     TextController: _websiteController,
                   ),
@@ -139,18 +131,14 @@ class _ProfileVendorState extends State<ProfileVendor> {
                   CustomTextField(
                     hintText: 'العنوان',
                     keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     obscureText: false,
                     TextController: _adressController,
                   ),
                   CustomTextField(
                     hintText: 'الموقع',
                     keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     obscureText: false,
                     TextController: _locatinController,
                   ),

@@ -9,8 +9,6 @@ import 'package:testtapp/screens/Admin/loginAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/DisplayAllOrders.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
-
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';

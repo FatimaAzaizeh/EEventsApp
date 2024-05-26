@@ -173,14 +173,43 @@ class _SignInState extends State<SignIn> {
                                             FirebaseFirestore.instance
                                                 .collection('user_types')
                                                 .doc('3');
+                                        DocumentReference vendorStatus =
+                                            FirebaseFirestore.instance
+                                                .collection('vendor_status')
+                                                .doc('2');
 
                                         bool isValid = await UserDataBase
                                             .isUserTypeReferenceValid(
                                                 userId, userTypeRef);
                                         if (isValid) {
-                                          Navigator.pushNamed(
-                                              context, VendorHome.screenRoute);
-                                          return;
+                                          DocumentSnapshot vendorSnapshot =
+                                              await FirebaseFirestore.instance
+                                                  .collection('vendor')
+                                                  .doc(userId)
+                                                  .get();
+
+                                          if (vendorSnapshot.exists) {
+                                            Map<String, dynamic> vendorData =
+                                                vendorSnapshot.data()
+                                                    as Map<String, dynamic>;
+
+                                            if (vendorData[
+                                                    'vendor_status_id'] ==
+                                                vendorStatus) {
+                                              Navigator.pushNamed(context,
+                                                  VendorHome.screenRoute);
+                                              return;
+                                            } else {
+                                              QuickAlert.show(
+                                                context: context,
+                                                title: 'خطأ',
+                                                text:
+                                                    'الحساب الذي تحاول الدخول منة غير فعال ',
+                                                type: QuickAlertType.error,
+                                                confirmBtnText: 'إغلاق',
+                                              );
+                                            }
+                                          }
                                         } else {
                                           setState(() {
                                             showSpinner = false;
