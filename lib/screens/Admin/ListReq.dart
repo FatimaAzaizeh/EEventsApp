@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Vendor.dart';
-
 import 'package:toggle_list/toggle_list.dart';
 
 const Color appColor = Colors.black;
@@ -27,7 +26,7 @@ class _ListReqState extends State<ListReq> {
     );
   }
 
-  //send accept email to vendor
+  // Send accept email to vendor
   static Future<void> sendEmail(String email) async {
     try {
       await EmailJS.send(
@@ -64,6 +63,24 @@ class _ListReqState extends State<ListReq> {
 
         List<DocumentSnapshot> documents = snapshot.data!.docs;
 
+        // Filter documents based on vendor_status_id
+        DocumentReference vendorStatusRef =
+            FirebaseFirestore.instance.collection('vendor_status').doc('1');
+
+        List<DocumentSnapshot> filteredDocuments = documents.where((doc) {
+          var data = doc.data() as Map<String, dynamic>;
+          return data['vendor_status_id'] == vendorStatusRef;
+        }).toList();
+
+        if (filteredDocuments.isEmpty) {
+          return Center(
+            child: Text(
+              'لا يوجد طلبات جديدة',
+              style: TextStyle(fontSize: 18, color: Colors.black),
+            ),
+          );
+        }
+
         return Container(
           color: Color.fromARGB(0, 255, 255, 255),
           height: double.maxFinite,
@@ -78,7 +95,7 @@ class _ListReqState extends State<ListReq> {
                   padding: EdgeInsets.all(10),
                   child: Icon(Icons.expand_more),
                 ),
-                children: documents.map((doc) {
+                children: filteredDocuments.map((doc) {
                   var data = doc.data() as Map<String, dynamic>;
                   return buildToggleListItem(data);
                 }).toList(),
@@ -94,7 +111,7 @@ class _ListReqState extends State<ListReq> {
     FirebaseFirestore.instance
         .collection("vendor")
         .where("id", isEqualTo: id)
-        .limit(1) // Limit the query to just one document
+        .limit(1)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
@@ -111,7 +128,6 @@ class _ListReqState extends State<ListReq> {
   void deleteAccount(String userId) {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null && user.uid == userId) {
-        // If the user is found with the provided UID, delete the account
         user.delete().then((_) {
           print("User account deleted");
         }).catchError((e) {
@@ -123,141 +139,36 @@ class _ListReqState extends State<ListReq> {
     });
   }
 
-  DocumentReference VendorStatusRef =
-      FirebaseFirestore.instance.collection('vendor_status').doc('1');
-
   ToggleListItem buildToggleListItem(Map<String, dynamic> data) {
-    if (data['vendor_status_id'] == VendorStatusRef) {
-      String logo = data['logo_url'].toString();
-      return ToggleListItem(
-        leading: Padding(
-          padding: EdgeInsets.all(10),
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 20,
-            backgroundImage: NetworkImage(logo),
-          ),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Text(
-            data['business_name'],
-            style: StyleTextAdmin(22, AdminButton),
-          ),
-        ),
-        divider: const Divider(
-          color: Colors.black,
-          height: 4,
-          thickness: 2,
-        ),
-        content: Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 4,
-                blurRadius: 3,
-                offset: Offset(0, 3),
-              ),
-            ],
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data['bio'],
-                style: StyleTextAdmin(18, AdminButton),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                data['instagram_url'],
-                style: TextStyle(fontSize: 14, color: Colors.black),
-              ),
-              const SizedBox(height: 8),
-              const Divider(
-                color: Colors.white,
-                height: 2,
-                thickness: 2,
-              ),
-              ButtonBar(
-                alignment: MainAxisAlignment.spaceAround,
-                buttonHeight: 32.0,
-                buttonMinWidth: 90.0,
-                children: [
-                  Tooltip(
-                    waitDuration: Duration(milliseconds: 600),
-                    message: 'قبول إنشاء الحساب ',
-                    child: TextButton(
-                      onPressed: () {
-                        // Implement accept logic
-                        //رمز التحقق
-                        DocumentReference VendorStatusRef = FirebaseFirestore
-                            .instance
-                            .collection('vendor_status')
-                            .doc('2');
+    String logo = data['logo_url'].toString();
+    DocumentReference vendorStatusRef =
+        FirebaseFirestore.instance.collection('vendor_status').doc('2');
 
-                        setState(() {
-                          Vendor.updateStatusIdInFirestore(
-                              VendorStatusRef, data['UID'].toString());
-//لازم تغيري الحالة بجدول الuser كمان
-                          // sendEmail(data['email']);
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: ColorPurple_100,
-                          ),
-                          const SizedBox(height: 2.0),
-                          Text('موافقة'),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Tooltip(
-                    waitDuration: Duration(milliseconds: 600),
-                    message: 'رفض إنشاء الحساب ',
-                    child: TextButton(
-                      onPressed: () {
-                        // Implement reject logic
-                        deleteDocument(data['UID']);
-                        deleteAccount(data['UID']);
-                      },
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.cancel_sharp,
-                            color: Colors.black,
-                          ),
-                          const SizedBox(height: 2.0),
-                          Text('رفض'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return ToggleListItem(
+      leading: Padding(
+        padding: EdgeInsets.all(10),
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 20,
+          backgroundImage: NetworkImage(logo),
         ),
-        headerDecoration: BoxDecoration(
-          color: ColorPurple_20,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 8,
-              blurRadius: 7,
-              offset: Offset(0, 3),
-            ),
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      title: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          data['business_name'],
+          style: StyleTextAdmin(22, AdminButton),
         ),
-        expandedHeaderDecoration: BoxDecoration(
+      ),
+      divider: const Divider(
+        color: Colors.black,
+        height: 4,
+        thickness: 2,
+      ),
+      content: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
@@ -267,14 +178,103 @@ class _ListReqState extends State<ListReq> {
               offset: Offset(0, 3),
             ),
           ],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
-      );
-    } else {
-      return ToggleListItem(
-        content: const SizedBox(), // Empty content
-        title: const SizedBox(), // Empty title
-      );
-    }
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              data['bio'],
+              style: StyleTextAdmin(18, AdminButton),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              data['instagram_url'],
+              style: TextStyle(fontSize: 14, color: Colors.black),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.white,
+              height: 2,
+              thickness: 2,
+            ),
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceAround,
+              buttonHeight: 32.0,
+              buttonMinWidth: 90.0,
+              children: [
+                Tooltip(
+                  waitDuration: Duration(milliseconds: 600),
+                  message: 'قبول إنشاء الحساب ',
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        Vendor.updateStatusIdInFirestore(
+                            vendorStatusRef, data['UID'].toString());
+                        //   sendEmail(data['email']);
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: ColorPurple_100,
+                        ),
+                        const SizedBox(height: 2.0),
+                        Text('موافقة'),
+                      ],
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  waitDuration: Duration(milliseconds: 600),
+                  message: 'رفض إنشاء الحساب ',
+                  child: TextButton(
+                    onPressed: () {
+                      deleteDocument(data['UID']);
+                      deleteAccount(data['UID']);
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.cancel_sharp,
+                          color: Colors.black,
+                        ),
+                        const SizedBox(height: 2.0),
+                        Text('رفض'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      headerDecoration: BoxDecoration(
+        color: ColorPurple_20,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 8,
+            blurRadius: 7,
+            offset: Offset(0, 3),
+          ),
+        ],
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      expandedHeaderDecoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 4,
+            blurRadius: 3,
+            offset: Offset(0, 3),
+          ),
+        ],
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+    );
   }
 }
