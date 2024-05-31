@@ -217,25 +217,28 @@ class _AddEventState extends State<AddEvent> {
                       height: 2,
                       color: Colors.deepPurpleAccent,
                     ),
-                    onChanged: (String? value) {
-                      setState(() async {
-                        dropdownValue = value!;
+                    onChanged: (String? value) async {
+                      if (value != null) {
+                        setState(() {
+                          dropdownValue = value;
+                        });
+
                         QuerySnapshot querySnapshot = await FirebaseFirestore
                             .instance
                             .collection('event_classificaion_types')
                             .where('description', isEqualTo: value)
                             .get();
 
-// Check if any documents match the query
                         if (querySnapshot.docs.isNotEmpty) {
-                          // Get the reference to the first document that matches the query
-                          eventClassificationRef =
-                              querySnapshot.docs[0].reference;
-                          // Now you have a reference to the document that matches the condition
+                          setState(() {
+                            eventClassificationRef =
+                                querySnapshot.docs[0].reference;
+                          });
                         } else {
                           // Handle the case where no documents match the query
+                          // Optionally, show a message or take other actions
                         }
-                      });
+                      }
                     },
                     items: classificationList
                         .map<DropdownMenuItem<String>>((String value) {
