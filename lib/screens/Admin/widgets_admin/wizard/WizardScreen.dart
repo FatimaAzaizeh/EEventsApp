@@ -25,6 +25,25 @@ class _WizardState extends State<Wizard> {
   int activeStep = 0;
   double progress = 0.2;
 
+  @override
+  void initState() {
+    super.initState();
+    _showPopupMessage();
+  }
+
+  Future<void> _showPopupMessage() async {
+    await Future.delayed(
+        Duration.zero); // Ensures the dialog shows after the first frame
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.info,
+      title: 'تنبيه',
+      text:
+          'جميع المناسبات جاهزة للعرض للمستخدم. عند الضغط على أي واحدة سيتم تغييرها تلقائيًا بدون رجوع.',
+      confirmBtnText: 'حسناً',
+    );
+  }
+
   Future<void> readData(String id) async {
     try {
       setState(() {
