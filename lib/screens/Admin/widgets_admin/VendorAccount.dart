@@ -73,21 +73,19 @@ class _VendorListState extends State<VendorList> {
                   .toList() ??
               [];
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-              children: vendors.map((vendorData) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 250, // Fixed width
-                    height: 250, // Fixed height to make it a square
-                    child: VendorCard(vendorData: vendorData),
-                  ),
-                );
-              }).toList(),
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, // 3 containers in each row
+              childAspectRatio:
+                  1.5, // Aspect ratio to make the containers smaller
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
             ),
+            itemCount: vendors.length,
+            itemBuilder: (context, index) {
+              final vendorData = vendors[index];
+              return VendorCard(vendorData: vendorData);
+            },
           );
         },
       ),
@@ -116,9 +114,9 @@ class _VendorCardState extends State<VendorCard> {
         });
       },
       child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.all(16),
+        width: 140, // Reduced width
+        height: 180, // Reduced height
+        padding: EdgeInsets.all(8), // Reduced padding
         decoration: BoxDecoration(
           color: widget.vendorData['vendor_status_id'] == VendorStatusRef
               ? Colors.white.withOpacity(0.8)
@@ -127,8 +125,8 @@ class _VendorCardState extends State<VendorCard> {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 8,
-              blurRadius: 7,
+              spreadRadius: 4,
+              blurRadius: 5,
               offset: Offset(0, 3),
             ),
           ],
@@ -140,7 +138,7 @@ class _VendorCardState extends State<VendorCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CircleAvatar(
-                  radius: 32,
+                  radius: 35, // Increased radius
                   backgroundImage:
                       NetworkImage(widget.vendorData['logo_url'] ?? ''),
                   backgroundColor: Colors.pink[100],
@@ -198,10 +196,11 @@ class _VendorCardState extends State<VendorCard> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 4), // Reduced padding
               child: Text(
                 widget.vendorData['business_name'] ?? '',
-                style: TextStyle(fontSize: 20, color: Colors.black),
+                style: TextStyle(
+                    fontSize: 14, color: Colors.black), // Reduced font size
                 textAlign: TextAlign.right,
               ),
             ),
@@ -212,20 +211,24 @@ class _VendorCardState extends State<VendorCard> {
                       children: [
                         Text(
                           widget.vendorData['bio'] ?? '',
-                          style: TextStyle(fontSize: 15, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black), // Reduced font size
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 4),
                         Text(
                           widget.vendorData['instagram_url'] ?? '',
                           maxLines: 4,
-                          style: TextStyle(fontSize: 14, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black), // Reduced font size
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   )
                 : Container(),
-            SizedBox(height: 8),
+            SizedBox(height: 4),
             TextButton(
               onPressed: () {
                 setState(() {
@@ -234,7 +237,8 @@ class _VendorCardState extends State<VendorCard> {
               },
               child: Text(
                 isExpanded ? 'تقليل المعلومات' : 'المزيد من المعلومات...',
-                style: TextStyle(fontSize: 12, color: Colors.black),
+                style: TextStyle(
+                    fontSize: 10, color: Colors.black), // Reduced font size
               ),
             ),
           ],
