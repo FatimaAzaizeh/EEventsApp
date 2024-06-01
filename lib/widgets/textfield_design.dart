@@ -20,7 +20,7 @@ class CustomTextField extends StatelessWidget {
     required this.keyboardType,
     required this.onChanged,
     required this.obscureText,
-    required this.TextController, required Color color,
+    required this.TextController,
   }) : super(key: key);
 
   // Build method to create the actual widget.
