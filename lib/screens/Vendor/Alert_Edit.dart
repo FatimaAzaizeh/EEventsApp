@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -105,50 +106,43 @@ class _AlertEditItemState extends State<AlertEditItem> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Color.fromARGB(147, 246, 242, 239) ,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'إضافة منتج جديد',
+            'تعديل المنتج',
             style: StyleTextAdmin(22, Colors.black),
           ),
-          Row(
-            children: [
-              TextButton(
-                onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
-                  if (result != null) {
-                    setState(() {
-                      fileBytes = result.files.first.bytes;
-                      fileName = result.files.first.name;
-                    });
-                  }
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Tooltip(
-                      message: 'إضافة صورة',
-                      child: Icon(
-                        Icons.add,
-                        size: 34,
-                        color: ColorPurple_100,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      fileName,
-                      style: StyleTextAdmin(
-                        18,
-                        fileBytes != null ? ColorPurple_100 : Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
+           GestureDetector(
+            onTap: () async {
+              FilePickerResult? result =
+                  await FilePicker.platform.pickFiles();
+              if (result != null) {
+                setState(() {
+                  fileBytes = result.files.first.bytes;
+                  fileName = result.files.first.name;
+                });
+              }
+            },
+            child: Container(
+              width: 400,
+              height: 200,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 224, 224, 224),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: fileBytes != null
+                  ? Image.memory(
+                      fileBytes!,
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.camera_alt, color: Colors.grey[700]),
+            ),
+          ),
+          SizedBox(height: 8),
+          SizedBox(width: 8),
+        
         ],
       ),
       content: Column(
@@ -164,7 +158,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ),
           TextFieldDesign(
             Text: 'إدخال وصف المنتج',
-            icon: Icons.account_circle,
+            icon: Icons.description,
             ControllerTextField: ControllerDescription,
             onChanged: (value) {},
             obscureTextField: false,
@@ -172,7 +166,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ),
           TextFieldDesign(
             Text: 'إدخال رمز المنتج',
-            icon: Icons.account_circle,
+            icon: Icons.numbers,
             ControllerTextField: ControllerItemCode,
             onChanged: (value) {},
             obscureTextField: false,
@@ -180,7 +174,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ),
           TextFieldDesign(
             Text: 'السعر',
-            icon: Icons.account_circle,
+            icon: Icons.price_change_outlined,
             ControllerTextField: ControllerPrice,
             onChanged: (value) {},
             obscureTextField: false,
@@ -260,7 +254,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
                 }
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black),
+                backgroundColor: MaterialStateProperty.all(ColorPink_100),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
