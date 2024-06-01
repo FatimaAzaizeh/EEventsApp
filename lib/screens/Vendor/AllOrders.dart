@@ -165,7 +165,7 @@ class _VendorOrdersState extends State<VendorOrders> {
                                             String useremail =
                                                 docSnapshot.data()?['email'];
 
-                                            sendEmail(useremail);
+                                            //sendEmail(useremail);
                                           });
                                         }
                                       },
