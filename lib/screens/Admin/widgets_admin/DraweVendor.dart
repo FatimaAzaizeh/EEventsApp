@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Vendor/DropdownList.dart';
@@ -120,7 +121,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       },
                       obscureText: false,
-                      TextController: _commercialNameController,
+                      TextController: _commercialNameController, color: activeColor,
                     ),
                     SizedBox(height: 10),
                     CustomTextField(
@@ -132,7 +133,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       },
                       obscureText: false,
-                      TextController: _emailController,
+                      TextController: _emailController, color: activeColor,
                     ),
                     SizedBox(height: 10),
                     CustomTextField(
@@ -144,7 +145,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       },
                       obscureText: false,
-                      TextController: _socialMediaController,
+                      TextController: _socialMediaController, color: activeColor,
                     ),
                     SizedBox(height: 10),
                     CustomTextField(
@@ -156,7 +157,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       },
                       obscureText: true,
-                      TextController: _passwordController,
+                      TextController: _passwordController, color: activeColor,
                     ),
                     SizedBox(height: 10),
                     CustomTextField(
@@ -168,7 +169,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         });
                       },
                       obscureText: false,
-                      TextController: _descriptionController,
+                      TextController: _descriptionController, color: activeColor,
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
