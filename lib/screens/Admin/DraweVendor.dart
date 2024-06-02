@@ -216,7 +216,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
       keyboardType: keyboardType,
       onChanged: onChanged,
       obscureText: obscureText,
-      TextController: controller,
+      TextController: controller, color: activeColor,
     );
   }
 
