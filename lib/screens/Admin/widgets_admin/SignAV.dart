@@ -40,7 +40,7 @@ class _SignInState extends State<SignIn> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/signin.png"),
+                image: AssetImage("assets/images/signin.png"), 
                 fit: BoxFit.cover,
               ),
             ),
@@ -70,16 +70,15 @@ class _SignInState extends State<SignIn> {
                             borderRadius: BorderRadiusDirectional.circular(30),
                             image: DecorationImage(
                               image: AssetImage('assets/images/logo2.png'),
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
-                        Text('البريد الالكتروني',
-                            style: StyleTextAdmin(14, Colors.black)),
+                        SizedBox(height: 15),
+                        Text('البريد الالكتروني', style:  StyleTextAdmin(20, Colors.black),),
                         CustomTextField(
                           hintText: 'ادخال البريد الالكتروني',
-                          // color: activeColor,
+                          color: activeColor,
                           keyboardType: TextInputType.emailAddress,
                           onChanged: (value) {
                             email = value;
@@ -88,11 +87,10 @@ class _SignInState extends State<SignIn> {
                           TextController: ControllerEmail,
                         ),
                         SizedBox(height: 10),
-                        Text('كلمة المرور',
-                            style: StyleTextAdmin(14, Colors.black)),
+                        Text('كلمة المرور',  style: StyleTextAdmin(20, Colors.black),),
                         CustomTextField(
                           hintText: 'أدخال كلمة المرور',
-                          //  color: activeColor,
+                          color: activeColor,
                           keyboardType: TextInputType.visiblePassword,
                           onChanged: (value) {
                             password = value;
@@ -104,10 +102,8 @@ class _SignInState extends State<SignIn> {
                         Row(
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text('مسؤول',
-                                  style: StyleTextAdmin(14, Colors.black)),
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text('مسؤول', style: TextStyle(color: activeColor)),
                             ),
                             Radio<bool>(
                               value: true,
@@ -124,12 +120,11 @@ class _SignInState extends State<SignIn> {
                             ),
                             SizedBox(width: 15),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text('بائع',
-                                  style: StyleTextAdmin(14, Colors.black)),
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text('بائع', style: TextStyle(color: activeColor)),
                             ),
                             Radio<bool>(
+        
                               value: true,
                               groupValue: isVendorSelected,
                               activeColor: activeColor,
@@ -157,59 +152,22 @@ class _SignInState extends State<SignIn> {
                                     showSpinner = true;
                                   });
                                   try {
-                                    final user =
-                                        await _auth.signInWithEmailAndPassword(
+                                    final user = await _auth.signInWithEmailAndPassword(
                                       email: email,
                                       password: password,
                                     );
 
                                     if (user != null) {
-                                      String? uid = FirebaseAuth
-                                          .instance.currentUser?.uid;
+                                      String? uid = FirebaseAuth.instance.currentUser?.uid;
 
                                       if (!admin && vendor) {
                                         String userId = uid ?? '';
-                                        DocumentReference userTypeRef =
-                                            FirebaseFirestore.instance
-                                                .collection('user_types')
-                                                .doc('3');
-                                        DocumentReference vendorStatus =
-                                            FirebaseFirestore.instance
-                                                .collection('vendor_status')
-                                                .doc('2');
+                                        DocumentReference userTypeRef = FirebaseFirestore.instance.collection('user_types').doc('3');
 
-                                        bool isValid = await UserDataBase
-                                            .isUserTypeReferenceValid(
-                                                userId, userTypeRef);
+                                        bool isValid = await UserDataBase.isUserTypeReferenceValid(userId, userTypeRef);
                                         if (isValid) {
-                                          DocumentSnapshot vendorSnapshot =
-                                              await FirebaseFirestore.instance
-                                                  .collection('vendor')
-                                                  .doc(userId)
-                                                  .get();
-
-                                          if (vendorSnapshot.exists) {
-                                            Map<String, dynamic> vendorData =
-                                                vendorSnapshot.data()
-                                                    as Map<String, dynamic>;
-
-                                            if (vendorData[
-                                                    'vendor_status_id'] ==
-                                                vendorStatus) {
-                                              Navigator.pushNamed(context,
-                                                  VendorHome.screenRoute);
-                                              return;
-                                            } else {
-                                              QuickAlert.show(
-                                                context: context,
-                                                title: 'خطأ',
-                                                text:
-                                                    'الحساب الذي تحاول الدخول منة غير فعال ',
-                                                type: QuickAlertType.error,
-                                                confirmBtnText: 'إغلاق',
-                                              );
-                                            }
-                                          }
+                                          Navigator.pushNamed(context, VendorHome.screenRoute);
+                                          return;
                                         } else {
                                           setState(() {
                                             showSpinner = false;
@@ -217,8 +175,7 @@ class _SignInState extends State<SignIn> {
                                           QuickAlert.show(
                                             context: context,
                                             title: 'خطأ',
-                                            text:
-                                                'الحساب الذي تحاول الدخول بة ليس حساب بائع',
+                                            text: 'الحساب الذي تحاول الدخول بة ليس حساب بائع',
                                             type: QuickAlertType.error,
                                             confirmBtnText: 'إغلاق',
                                           );
@@ -227,18 +184,12 @@ class _SignInState extends State<SignIn> {
 
                                       if (admin) {
                                         String userId = uid ?? '';
-                                        DocumentReference userTypeRef =
-                                            FirebaseFirestore.instance
-                                                .collection('user_types')
-                                                .doc('1');
+                                        DocumentReference userTypeRef = FirebaseFirestore.instance.collection('user_types').doc('1');
 
-                                        bool isValid = await UserDataBase
-                                            .isUserTypeReferenceValid(
-                                                userId, userTypeRef);
+                                        bool isValid = await UserDataBase.isUserTypeReferenceValid(userId, userTypeRef);
 
                                         if (isValid) {
-                                          Navigator.pushNamed(
-                                              context, AdminScreen.screenRoute);
+                                          Navigator.pushNamed(context, AdminScreen.screenRoute);
                                         } else {
                                           setState(() {
                                             showSpinner = false;
@@ -246,8 +197,7 @@ class _SignInState extends State<SignIn> {
                                           QuickAlert.show(
                                             context: context,
                                             title: 'خطأ',
-                                            text:
-                                                'الحساب الذي تحاول الدخول بة ليس حساب مسؤول',
+                                            text: 'الحساب الذي تحاول الدخول بة ليس حساب مسؤول',
                                             type: QuickAlertType.error,
                                             confirmBtnText: 'إغلاق',
                                           );
@@ -284,3 +234,4 @@ class _SignInState extends State<SignIn> {
     );
   }
 }
+c
