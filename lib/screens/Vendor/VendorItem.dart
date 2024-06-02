@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:testtapp/constants.dart';
+import 'package:testtapp/main.dart';
 import 'package:testtapp/models/item.dart';
 import 'package:testtapp/screens/Vendor/Alert_Edit.dart';
 import 'package:testtapp/screens/Vendor/Alert_Item.dart';
+
 
 class VendorItem extends StatelessWidget {
   @override
@@ -13,14 +16,14 @@ class VendorItem extends StatelessWidget {
       builder: (context, userSnapshot) {
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
-            appBar: AppBar(title: Text('Items')),
+          
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (userSnapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(title: Text('Items')),
+           
             body: Center(child: Text('Error: ${userSnapshot.error}')),
           );
         }
@@ -30,7 +33,7 @@ class VendorItem extends StatelessWidget {
         if (currentUser == null) {
           // User not logged in
           return Scaffold(
-            appBar: AppBar(title: Text('Items')),
+          
             body: Center(child: Text('User not logged in.')),
           );
         }
@@ -70,7 +73,7 @@ class VendorItemContent extends StatelessWidget {
 
         if (snapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(title: Text('Items')),
+           
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         }
@@ -103,22 +106,22 @@ class VendorItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Items for Vendor ${currentUser.uid}'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertItem(
-                  vendorId: currentUser.uid,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+  
+         floatingActionButton: ElevatedButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertItem(
+              vendorId: currentUser.uid,
+            ),
+          );
+        },
+                style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.all(ColorPink_100),),
+  
+         
+        child: Text('اضف منتج جديد',style: TextStyle(color: Colors.white),),
+         ),  
       body: items.isEmpty
           ? Center(
               child: Column(
@@ -129,12 +132,12 @@ class VendorItemList extends StatelessWidget {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertItem(
+                        builder: (context) => AlertItem (
                           vendorId: currentUser.uid,
                         ),
                       );
-                    },
-                    child: Text('Add New Item'),
+             },
+                    child: Text('اضف منتج جديد'),
                   ),
                 ],
               ),
