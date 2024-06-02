@@ -73,7 +73,8 @@ class _AlertItemState extends State<AlertItem> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
-              width: 400,
+              color: Color.fromARGB(97, 246, 242, 239),
+              width: 700,
               padding: EdgeInsets.all(16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -83,34 +84,11 @@ class _AlertItemState extends State<AlertItem> {
                     style: StyleTextAdmin(22, Colors.black),
                   ),
                   SizedBox(height: 16),
-                  Container(
-                    height: 150,
-                    width: double.infinity,
-                    color: Colors.grey[200],
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        if (fileBytes != null)
-                          Image.memory(
-                            fileBytes!,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        if (fileBytes == null)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.photo, size: 50, color: Colors.grey),
-                              SizedBox(height: 8),
-                              Text('No photo'),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () async {
+            
+                 
+                    
+                        GestureDetector(
+                    onTap:  () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
                       if (result != null) {
@@ -120,28 +98,26 @@ class _AlertItemState extends State<AlertItem> {
                         });
                       }
                     },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Tooltip(
-                          message: 'إضافة صورة',
-                          child: Icon(
-                            Icons.add,
-                            size: 34,
-                            color: ColorPurple_100,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          fileName,
-                          style: StyleTextAdmin(
-                            18,
-                            fileBytes != null ? ColorPurple_100 : Colors.grey,
-                          ),
-                        ),
-                      ],
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: fileBytes != null
+                          ? Image.memory(
+                              fileBytes!,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(Icons.camera_alt, color: Colors.grey[700]),
                     ),
                   ),
+                  SizedBox(width: 16),
+                       
+                    
+                 
+                 
                   SizedBox(height: 16),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -156,7 +132,7 @@ class _AlertItemState extends State<AlertItem> {
                       ),
                       TextFieldDesign(
                         Text: 'إدخال وصف المنتج',
-                        icon: Icons.account_circle,
+                        icon: Icons.description,
                         ControllerTextField: ControllerDescription,
                         onChanged: (value) {},
                         obscureTextField: false,
@@ -164,7 +140,7 @@ class _AlertItemState extends State<AlertItem> {
                       ),
                       TextFieldDesign(
                         Text: 'إدخال رمز المنتج',
-                        icon: Icons.account_circle,
+                        icon: Icons.numbers,
                         ControllerTextField: ControllerItemCode,
                         onChanged: (value) {},
                         obscureTextField: false,
@@ -172,7 +148,7 @@ class _AlertItemState extends State<AlertItem> {
                       ),
                       TextFieldDesign(
                         Text: 'السعر',
-                        icon: Icons.account_circle,
+                        icon: Icons.price_change,
                         ControllerTextField: ControllerPrice,
                         onChanged: (value) {},
                         obscureTextField: false,
@@ -247,7 +223,7 @@ class _AlertItemState extends State<AlertItem> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('Cancel'),
+                        child: Text('الغاء'),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -315,7 +291,7 @@ class _AlertItemState extends State<AlertItem> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
+                              MaterialStateProperty.all(ColorPink_100),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
