@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/screens/Admin/Admin_screen.dart';
 
 class OpeningHoursPage extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _OpeningHoursPageState extends State<OpeningHoursPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Opening Hours'),
+       
         actions: [
           IconButton(
             icon: Icon(Icons.save),
