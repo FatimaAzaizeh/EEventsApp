@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/admin_dashboard.dart';
 import 'package:testtapp/screens/Admin/loginAdmin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/DisplayAllOrders.dart';
@@ -74,7 +75,7 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
-  Widget _currentMainSection = Container();
+  Widget _currentMainSection = HomePageAdmin();
 
   void _changeMainSection(Widget newSection) {
     setState(() {
@@ -85,20 +86,59 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kColorBack,
-      body: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-            child: SideMenuAdmin(
-              changeMainSection: _changeMainSection,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/signin.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+              child: SideMenuAdmin(
+                changeMainSection: _changeMainSection,
+              ),
             ),
-          ),
-          MainSectionContainer(
-            titleAppBarText: 'nothing',
-            child: _currentMainSection,
-          ),
-        ],
+            MainSectionContainer(
+              titleAppBarText: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      backgroundColor: const Color.fromARGB(12, 255, 255, 255),
+                      radius: 40,
+                      backgroundImage: NetworkImage(userImage),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userName,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        userEmail,
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              child: _currentMainSection,
+              userImage: userImage,
+              userEmail: userEmail,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -106,11 +146,16 @@ class _AdminScreenState extends State<AdminScreen> {
 
 class MainSectionContainer extends StatelessWidget {
   final Widget child;
-  final String titleAppBarText;
+  final Widget titleAppBarText;
+  final String userImage;
+  final String userEmail;
+
   const MainSectionContainer({
     Key? key,
     required this.child,
     required this.titleAppBarText,
+    required this.userImage,
+    required this.userEmail,
   }) : super(key: key);
 
   @override
@@ -120,8 +165,46 @@ class MainSectionContainer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: child,
+          backgroundColor: Color.fromARGB(0, 195, 192, 192),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: const Color.fromARGB(12, 255, 255, 255),
+                      radius: 20,
+                      backgroundImage: NetworkImage(userImage),
+                    ),
+                    SizedBox(width: 16.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          userName,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          userEmail,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: child),
+            ],
+          ),
         ),
       ),
     );
@@ -147,7 +230,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       flex: 3,
       child: Container(
         decoration: BoxDecoration(
-          color: kColorBack,
+          color: Color.fromARGB(200, 252, 251, 250),
           boxShadow: [
             BoxShadow(
               color: Color.fromARGB(0, 96, 96, 96).withOpacity(0.5),
@@ -175,37 +258,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 40,
-                      backgroundImage: NetworkImage(userImage),
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userName,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        userEmail,
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+           
               Divider(),
               buildListTile(
                 'أضافة مسؤول جديد',
@@ -335,7 +388,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               });
             },
             selected: _selectedIndex == index,
-            selectedTileColor: Colors.white,
+            selectedTileColor: Color.fromARGB(255, 223, 193, 193),
             hoverColor: Colors.white,
           ),
           // Add more ListTiles if needed
