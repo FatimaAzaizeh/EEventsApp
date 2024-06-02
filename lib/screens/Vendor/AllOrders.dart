@@ -1,3 +1,5 @@
+import 'package:emailjs/emailjs.dart';
+import 'package:emailjs/emailjs.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/models/Orders.dart';
@@ -24,7 +26,6 @@ class _VendorOrdersState extends State<VendorOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').snapshots(),
         builder: (context, snapshot) {
@@ -144,15 +145,26 @@ class _VendorOrdersState extends State<VendorOrders> {
                                               FirebaseFirestore.instance
                                                   .collection('order_status')
                                                   .doc(newStatusId.toString());
-                                          setState(() {
+                                          setState(() async {
                                             dropDownValues[index] = newValue;
-                                          });
-                                          await FirebaseFirestore.instance
-                                              .collection('orders')
-                                              .doc(doc.id)
-                                              .update({
-                                            'vendors.${vendorEntry.key}.order_status_id':
-                                                newStatusIdRef,
+
+                                            await FirebaseFirestore.instance
+                                                .collection('orders')
+                                                .doc(doc.id)
+                                                .update({
+                                              'vendors.${vendorEntry.key}.order_status_id':
+                                                  newStatusIdRef,
+                                            });
+                                            final docSnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(data['user_id'])
+                                                    .get();
+
+                                            String useremail =
+                                                docSnapshot.data()?['email'];
+
+                                            //sendEmail(useremail);
                                           });
                                         }
                                       },
@@ -192,6 +204,28 @@ class _VendorOrdersState extends State<VendorOrders> {
         },
       ),
     );
+  }
+
+  static Future<void> sendEmail(String email) async {
+    try {
+      await EmailJS.send(
+        'service_rjv9jb8',
+        'template_q224g4l',
+        {
+          'user_email': email,
+        },
+        const Options(
+          publicKey: 'TpYQwF1u4eoGTKps4',
+          privateKey: '3gCIuEMMsyXcrE9MZAUDz',
+        ),
+      );
+      print('SUCCESS! Email sent to $email');
+    } catch (error) {
+      if (error is EmailJSResponseStatus) {
+        print('ERROR... ${error.status}: ${error.text}');
+      }
+      print(error.toString());
+    }
   }
 
   String? _parseTimestamp(dynamic timestamp) {
