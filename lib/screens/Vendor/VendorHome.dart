@@ -4,11 +4,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/screens/Admin/loginAdmin.dart';
+import 'package:testtapp/screens/Admin/ListReq.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
+
+import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Vendor/AllOrders.dart';
+import 'package:testtapp/screens/Vendor/StoreStatus.dart';
 import 'package:testtapp/screens/Vendor/VendorItem.dart';
 import 'package:testtapp/screens/Vendor/VendorProfile.dart';
 import 'package:testtapp/screens/Vendor/WorkHour.dart';
+import 'package:testtapp/screens/Vendor/dashboard.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -36,11 +45,9 @@ Future<void> getCurrentUserInfo() async {
   if (userSnapshot.exists) {
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
 
-    userName = userData['name'] ??
-        ''; // Save the 'name' field from the user data, or null if it's null
-    userEmail = userData['email'] ??
-        ''; // Save the 'email' field from the user data, or null if it's null
-    userImage = userData['Image_url'];
+    userName = userData['name'] ?? '';
+    userEmail = userData['email'] ?? '';
+    userImage = userData['Image_url'] ?? '';
   }
 }
 
@@ -48,28 +55,21 @@ class _VendorHomeState extends State<VendorHome> {
   @override
   void initState() {
     super.initState();
-
     initialize();
   }
 
   void initialize() async {
-    await getCurrentUserInfo(); // Wait for getCurrentUserInfo() to complete
-    if (userName != null && userEmail != null) {
-      setState(() {
-        userName;
-        userEmail;
-        userImage;
-      });
-      print('User Name: $userName');
-      print('User Email: $userEmail');
-      // Continue with your initialization logic here
-    } else {
-      print('User data not available.');
-      // Handle the case where user data is not available
-    }
+    await getCurrentUserInfo();
+    setState(() {
+      userName;
+      userEmail;
+      userImage;
+    });
   }
 
-  Widget _currentMainSection = Container();
+  final DocumentReference vendorId =
+      FirebaseFirestore.instance.collection('item').doc('vendor_id');
+  Widget _currentMainSection = Dashboard(); // Default main section
 
   void _changeMainSection(Widget newSection) {
     setState(() {
@@ -80,7 +80,6 @@ class _VendorHomeState extends State<VendorHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kColorBack,
       body: Row(
         children: [
           Padding(
@@ -90,7 +89,7 @@ class _VendorHomeState extends State<VendorHome> {
             ),
           ),
           MainSectionContainer(
-            titleAppBarText: 'nothing',
+            
             child: _currentMainSection,
           ),
         ],
@@ -101,11 +100,12 @@ class _VendorHomeState extends State<VendorHome> {
 
 class MainSectionContainer extends StatelessWidget {
   final Widget child;
-  final String titleAppBarText;
+ 
+
   const MainSectionContainer({
     Key? key,
     required this.child,
-    required this.titleAppBarText,
+   
   }) : super(key: key);
 
   @override
@@ -116,6 +116,7 @@ class MainSectionContainer extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
           backgroundColor: Colors.transparent,
+         
           body: child,
         ),
       ),
@@ -136,16 +137,18 @@ class SideMenuAdmin extends StatefulWidget {
 }
 
 class _SideMenuAdminState extends State<SideMenuAdmin> {
+  int _selectedIndex = -1;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
       child: Container(
         decoration: BoxDecoration(
-          color: kColorBack,
+          color: Color(0xFFF6F2EF), // Light background color
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(0, 96, 96, 96).withOpacity(0.5),
+              color: Color(0x1D616060).withOpacity(0.5),
               spreadRadius: 8,
               blurRadius: 7,
               offset: Offset(3, 3),
@@ -153,7 +156,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
           ],
         ),
         child: Drawer(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color(0xFFF6F2EF),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +165,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   height: 150,
                   width: 150,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadiusDirectional.circular(30),
+                    borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
                       image: AssetImage('assets/images/logo2.png'),
                       fit: BoxFit.fill,
@@ -170,45 +173,24 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 40,
-                      backgroundImage: NetworkImage(userImage),
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userName,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        userEmail,
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ],
+              
+             
+              buildListTile(
+                'الصفحه الرئسيه',
+                Icons.dashboard,
+                () {
+                  widget.changeMainSection(Dashboard());
+                },
+                1,
               ),
               Divider(),
               buildListTile(
-                ' المنتحات',
+                'اضافة المنتجات',
                 Icons.sell,
                 () {
                   widget.changeMainSection(VendorItem());
                 },
-                1,
+                2,
               ),
               Divider(),
               buildListTile(
@@ -219,37 +201,38 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                     currentUserUID: _auth.currentUser!.uid.toString(),
                   ));
                 },
-                2,
+                3,
               ),
+              Divider(),
               buildListTile(
-                'إدارة الحساب',
+                'تعديل معلومات الحساب',
                 Icons.manage_accounts,
                 () {
                   setState(() {
                     widget.changeMainSection(ProfileVendor());
                   });
                 },
-                3,
-              ),
-              Divider(),
-              buildListTile(
-                'ادارة مواعيد العمل',
-                Icons.timelapse,
-                () {
-                  widget.changeMainSection(OpeningHoursPage());
-                },
                 4,
               ),
               Divider(),
               buildListTile(
-                'تسجيل الخروج',
+                'ساعات العمل',
+                Icons.timelapse,
+                () {
+                  widget.changeMainSection(OpeningHoursPage());
+                },
+                5,
+              ),
+              Divider(),
+              buildListTile(
+                'تسجيل خروج',
                 Icons.logout,
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, AdminLogin.screenRoute);
+                  Navigator.pushNamed(context, SignIn.screenRoute);
                 },
-                5,
+                6,
               ),
             ],
           ),
@@ -258,44 +241,35 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     );
   }
 
-  int _selectedIndex =
-      -1; // Track the selected index, -1 means none is selected
-
-  Expanded buildListTile(
+  Widget buildListTile(
       String title, IconData icon, Function() onPress, int index) {
-    return Expanded(
-      child: ListView(
-        children: [
-          ListTile(
-            contentPadding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            leading: Icon(
-              icon,
-              size: 28,
-              color: Colors.black, // Color changes based on the selection
-              shadows: [BoxShadow(color: Colors.black, offset: Offset(0, 2))],
-            ),
-            title: Text(
-              title,
-              style: TextStyle(fontSize: 18, color: Colors.black),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            onTap: () {
-              setState(() {
-                _selectedIndex = index; // Update the selected index
-                onPress();
-              });
-            },
-            selected: _selectedIndex == index,
-            selectedTileColor: Colors.white,
-            hoverColor: Colors.white,
-          ),
-          // Add more ListTiles if needed
-        ],
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
+      leading: Icon(
+        icon,
+        size: 28,
+        color: _selectedIndex == index ? Colors.white : Colors.black,
+        shadows: [BoxShadow(color: Colors.black, offset: Offset(0, 2))],
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          color: _selectedIndex == index ? Colors.white : Colors.black,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+          onPress();
+        });
+      },
+      selected: _selectedIndex == index,
+      selectedTileColor: Color.fromARGB(255, 243, 222, 216),
+      hoverColor: Colors.grey[200],
     );
   }
 }
