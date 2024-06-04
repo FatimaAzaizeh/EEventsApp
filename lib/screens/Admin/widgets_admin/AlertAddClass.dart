@@ -9,6 +9,7 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Classification.dart';
+import 'package:testtapp/models/FirestoreService.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 
@@ -59,7 +60,7 @@ class _AddClassificationState extends State<AddClassification> {
               });
             },
             obscureTextField: false,
-            enabled: true,
+            enabled: false,
           ),
           SizedBox(height: 8),
           Padding(
@@ -80,8 +81,11 @@ class _AddClassificationState extends State<AddClassification> {
                     showSpinner = true; // Show spinner while creating user
                   });
                   try {
+                    int count = await FirestoreService.getCountOfRecords(
+                        'event_classificaion_types');
+                    int id = count + 1;
                     Classification newClass = Classification(
-                      id: ControllerId.text,
+                      id: id.toString(),
                       description: ControllerName.text,
                     );
                     status = await newClass.addDocumentWithCustomId();

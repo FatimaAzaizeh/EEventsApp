@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/EventType.dart';
+import 'package:testtapp/models/FirestoreService.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -159,7 +160,7 @@ class _AddEventState extends State<AddEvent> {
                   enabled: true,
                 ),
                 TextFieldDesign(
-                  enabled: !editButton,
+                  enabled: false,
                   Text: 'رقم المناسبة',
                   icon: Icons.room_service,
                   ControllerTextField: controllerId,
@@ -266,9 +267,11 @@ class _AddEventState extends State<AddEvent> {
                     onPressed: () async {
                       setState(() async {
                         showSpinner = true;
-
+                        int count = await FirestoreService.getCountOfRecords(
+                            'event_types');
+                        int id = count + 1;
                         EventType newEvent = EventType(
-                          id: controllerId.text,
+                          id: id.toString(),
                           name: controllerName.text,
                           imageUrl: imageUrl,
                           event_classificaion_types: eventClassificationRef,

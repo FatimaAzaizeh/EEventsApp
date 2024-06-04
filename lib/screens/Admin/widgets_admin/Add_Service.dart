@@ -8,6 +8,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 // Your imports
 import 'package:testtapp/constants.dart';
+import 'package:testtapp/models/FirestoreService.dart';
 import 'package:testtapp/models/ServiceType.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/serviceItem.dart';
 import 'package:testtapp/widgets/Event_item.dart';
@@ -156,7 +157,7 @@ class _AddServiceState extends State<AddService> {
                       onChanged: (value) {
                         value;
                       },
-                      enabled: !showEditButton,
+                      enabled: false,
                     ),
                     Row(
                       children: [
@@ -216,9 +217,11 @@ class _AddServiceState extends State<AddService> {
                           setState(() {
                             showSpinner = true;
                           });
-
+                          int count = await FirestoreService.getCountOfRecords(
+                              'service_types');
+                          int id = count + 1;
                           ServiceType newservice = ServiceType(
-                            id: ControllerId.text,
+                            id: id.toString(),
                             name: ControllerName.text,
                             imageUrl: imageUrl,
                           );
