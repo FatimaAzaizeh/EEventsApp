@@ -182,14 +182,7 @@ class MainSectionContainer extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          userName,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text(userName, style: StyleTextAdmin(20, Colors.black)),
                         Text(
                           userEmail,
                           style: TextStyle(
@@ -228,21 +221,18 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
-      child: Container(
-        decoration: BoxDecoration(
-          color: ColorPink_100, // Semi-transparent background
-          //  color: Color.fromARGB(255, 255, 255, 255),
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(213, 219, 213, 213).withOpacity(0.5),
-              spreadRadius: 4,
-              blurRadius: 3,
-              offset: Offset(3, 3),
-            ),
-          ],
-        ),
-        child: Drawer(
-          backgroundColor: Colors.white.withOpacity(0.1),
+      child: Drawer(
+        elevation: 1,
+        backgroundColor: Color.fromARGB(255, 246, 249, 250).withOpacity(0.2),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+                color:
+                    const Color.fromARGB(165, 255, 255, 255).withOpacity(0.08),
+                width: 5),
+            borderRadius: BorderRadius.circular(20),
+            color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.1),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -259,7 +249,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-              Divider(),
+              Divider(
+                color: Colors.black.withOpacity(0.25),
+              ),
               buildListTile(
                 'أضافة مسؤول جديد',
                 Icons.person_add_alt,
@@ -268,7 +260,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 1,
               ),
-              Divider(),
+              Divider(
+                color: Colors.black.withOpacity(0.25),
+              ),
               buildListTile(
                 'طلبات إنشاء حسابات الشركاء ',
                 Icons.add_business_outlined,
@@ -287,7 +281,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 3,
               ),
-              Divider(),
+              Divider(
+                color: Colors.black.withOpacity(0.25),
+              ),
               buildListTile(
                 'ادارة المناسبات',
                 Icons.post_add,
@@ -338,7 +334,9 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 },
                 8,
               ),
-              Divider(),
+              Divider(
+                color: Colors.black.withOpacity(0.25),
+              ),
               buildListTile(
                 'تسجيل الخروج',
                 Icons.logout,
@@ -377,7 +375,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
             ),
             title: Text(
               title,
-              style: TextStyle(fontSize: 18, color: Colors.black),
+              style: StyleTextAdmin(16, Colors.black.withOpacity(0.7)),
+              // TextStyle(fontSize: 18, color: Colors.black),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -388,7 +387,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               });
             },
             selected: _selectedIndex == index,
-            selectedTileColor: Colors.white.withOpacity(0.74),
+            selectedTileColor: Colors.white.withOpacity(0.7),
             hoverColor: Color.fromARGB(255, 223, 193, 193),
           ),
           // Add more ListTiles if needed

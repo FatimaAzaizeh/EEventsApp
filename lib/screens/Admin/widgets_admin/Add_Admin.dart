@@ -25,8 +25,11 @@ class _AddAdminState extends State<AddAdmin> {
       width: double.maxFinite,
       height: double.maxFinite,
       decoration: BoxDecoration(
-        borderRadius: BorderRadiusDirectional.circular(5),
-        color: Colors.white.withOpacity(0.7),
+        border: Border.all(
+            color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.08),
+            width: 5),
+        borderRadius: BorderRadius.circular(20),
+        color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.3),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

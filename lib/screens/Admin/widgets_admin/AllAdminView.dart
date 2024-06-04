@@ -37,7 +37,7 @@ class _AllAdminViewState extends State<AllAdminView> {
                 DocumentSnapshot document = validUsers[index];
                 return Container(
                   width: 400,
-                  color: ColorPurple_20,
+                  // color: ColorPurple_20,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
