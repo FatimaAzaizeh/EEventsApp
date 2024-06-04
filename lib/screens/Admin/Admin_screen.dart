@@ -223,13 +223,13 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       flex: 3,
       child: Drawer(
         elevation: 1,
-        backgroundColor: Color.fromARGB(255, 246, 249, 250).withOpacity(0.2),
+        backgroundColor: Color.fromARGB(255, 246, 249, 250).withOpacity(0.05),
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
                 color:
-                    const Color.fromARGB(165, 255, 255, 255).withOpacity(0.08),
-                width: 5),
+                    const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+                width: 3),
             borderRadius: BorderRadius.circular(20),
             color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.1),
           ),
@@ -387,7 +387,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               });
             },
             selected: _selectedIndex == index,
-            selectedTileColor: Colors.white.withOpacity(0.7),
+            selectedTileColor: Colors.white.withOpacity(0.42),
             hoverColor: Color.fromARGB(255, 223, 193, 193),
           ),
           // Add more ListTiles if needed
