@@ -230,18 +230,19 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
       flex: 3,
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromARGB(200, 252, 251, 250),
+          color: ColorPink_100, // Semi-transparent background
+          //  color: Color.fromARGB(255, 255, 255, 255),
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(0, 96, 96, 96).withOpacity(0.5),
-              spreadRadius: 8,
-              blurRadius: 7,
+              color: Color.fromARGB(213, 219, 213, 213).withOpacity(0.5),
+              spreadRadius: 4,
+              blurRadius: 3,
               offset: Offset(3, 3),
             ),
           ],
         ),
         child: Drawer(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white.withOpacity(0.1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -258,7 +259,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-           
               Divider(),
               buildListTile(
                 'أضافة مسؤول جديد',
@@ -331,7 +331,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                 7,
               ),
               buildListTile(
-                'الطلبات',
+                'إدارة الطلبات ',
                 Icons.online_prediction_rounded,
                 () {
                   widget.changeMainSection(DisplayAllOrders());
@@ -388,8 +388,8 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               });
             },
             selected: _selectedIndex == index,
-            selectedTileColor: Color.fromARGB(255, 223, 193, 193),
-            hoverColor: Colors.white,
+            selectedTileColor: Colors.white.withOpacity(0.74),
+            hoverColor: Color.fromARGB(255, 223, 193, 193),
           ),
           // Add more ListTiles if needed
         ],
