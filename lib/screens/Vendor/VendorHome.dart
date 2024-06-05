@@ -89,7 +89,6 @@ class _VendorHomeState extends State<VendorHome> {
             ),
           ),
           MainSectionContainer(
-            
             child: _currentMainSection,
           ),
         ],
@@ -100,12 +99,10 @@ class _VendorHomeState extends State<VendorHome> {
 
 class MainSectionContainer extends StatelessWidget {
   final Widget child;
- 
 
   const MainSectionContainer({
     Key? key,
     required this.child,
-   
   }) : super(key: key);
 
   @override
@@ -116,7 +113,6 @@ class MainSectionContainer extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-         
           body: child,
         ),
       ),
@@ -173,8 +169,6 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-              
-             
               buildListTile(
                 'الصفحه الرئسيه',
                 Icons.dashboard,
@@ -185,7 +179,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
               ),
               Divider(),
               buildListTile(
-                'اضافة المنتجات',
+                'اضافة المنتجات / الخدمات',
                 Icons.sell,
                 () {
                   widget.changeMainSection(VendorItem());

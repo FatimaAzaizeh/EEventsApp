@@ -50,6 +50,7 @@ class _AddAdminState extends State<AddAdmin> {
                     TextButton(
                       onPressed: () {
                         showDialog(
+                          barrierColor: Colors.grey.withOpacity(0.45),
                           context: context,
                           builder: (context) =>
                               AlertAddAdmin(), // Call AlertAddAdmin within showDialog

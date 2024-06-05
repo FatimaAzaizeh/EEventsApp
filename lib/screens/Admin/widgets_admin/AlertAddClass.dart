@@ -51,7 +51,7 @@ class _AddClassificationState extends State<AddClassification> {
           ),
 
           TextFieldDesign(
-            Text: 'إدخال رقم التصنيف',
+            Text: 'يتم تعيين رقم معرّف التصنيف تلقائيًا.',
             icon: Icons.account_circle,
             ControllerTextField: ControllerId,
             onChanged: (value) {

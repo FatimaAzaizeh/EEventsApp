@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Wizard.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/Service/DisplayService.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardSteps.dart';
 
 String id = '';
@@ -22,6 +22,7 @@ class _WizardState extends State<Wizard> {
   List<String> serviceImages = [];
   List<DocumentReference> serviceIds = []; // Store DocumentReferences
   bool isLoading = false;
+
   int activeStep = 0;
   double progress = 0.2;
 
@@ -84,51 +85,67 @@ class _WizardState extends State<Wizard> {
     }
   }
 
+//the main Section of the page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CreateEventWizard(EventName: widget.EventName),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              height: double.maxFinite,
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    Text(widget.EventName),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (id != '') {
-                          await readData(id);
-                        }
-                      },
-                      child: Text('Load Data'),
-                    ),
-                    if (isLoading)
-                      CircularProgressIndicator() // Show spinner while loading
-                    else if (serviceNames.isNotEmpty &&
-                        serviceImages.isNotEmpty)
-                      WizardSteps(
-                        activeStep: activeStep,
-                        imagePaths: serviceImages,
-                        titles: serviceNames,
-                        pages: serviceIds,
-                        onStepTapped: (int value) {},
+      backgroundColor: Color.fromARGB(0, 255, 255, 255),
+      body: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+              width: 3),
+          borderRadius: BorderRadius.circular(20),
+          color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
+        ),
+        width: double.maxFinite,
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+              child: CreateEventWizard(EventName: widget.EventName),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: ColorPink_20,
+                height: double.maxFinite,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      Text(widget.EventName),
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (id != '') {
+                            await readData(id);
+                          }
+                        },
+                        child: Text('Load Data'),
                       ),
-                  ],
+                      if (isLoading)
+                        CircularProgressIndicator() // Show spinner while loading
+                      else if (serviceNames.isNotEmpty &&
+                          serviceImages.isNotEmpty)
+                        SingleChildScrollView(
+                          child: Container(
+                            width: 500,
+                            child: WizardSteps(
+                              activeStep: activeStep,
+                              imagePaths: serviceImages,
+                              titles: serviceNames,
+                              pages: serviceIds,
+                              onStepTapped: (int value) {},
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -146,6 +163,7 @@ class CreateEventWizard extends StatefulWidget {
 class _CreateEventWizardState extends State<CreateEventWizard> {
   List<Map<String, dynamic>> _checkboxData = [];
   late Map<int, Map<String, dynamic>> services = {};
+  bool showSpinner = false;
 
   @override
   void initState() {
@@ -165,14 +183,12 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
     return Expanded(
       flex: 1,
       child: Container(
-        color: Colors.white.withOpacity(0.5),
-        height: double.maxFinite,
-        width: MediaQuery.of(context).size.width * 0.3,
-        child: Column(
-          children: [
+          height: double.maxFinite,
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: Column(children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 8),
                 child: ListView.builder(
                   itemCount: _checkboxData.length,
                   itemBuilder: (context, index) {
@@ -180,8 +196,16 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                     return Column(
                       children: [
                         CheckboxListTile(
-                          title: Text(checkboxRecord['name'] ?? ''),
+                          activeColor: Colors.black,
+                          title: Text(checkboxRecord['name'] ?? '',
+                              style: StyleTextAdmin(14, AdminButton)),
                           value: checkboxRecord['checked'] ?? false,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          side: BorderSide(
+                            width: 0.7,
+                            color: AdminButton,
+                          ),
                           onChanged: (newValue) {
                             setState(() {
                               checkboxRecord['checked'] = newValue;
@@ -228,46 +252,61 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                QuerySnapshot snapshot = await FirebaseFirestore.instance
-                    .collection('event_types')
-                    .where('name', isEqualTo: widget.EventName)
-                    .get();
+            Stack(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      showSpinner = true;
+                    });
 
-                if (snapshot.docs.isNotEmpty) {
-                  String eventTypeId = snapshot.docs[0].id;
-                  id = eventTypeId;
-                  EventWizard event = EventWizard(
-                    services: services,
-                    event_type_id: eventTypeId,
-                  );
+                    QuerySnapshot snapshot = await FirebaseFirestore.instance
+                        .collection('event_types')
+                        .where('name', isEqualTo: widget.EventName)
+                        .get();
 
-                  String message = await event.uploadToFirebase();
+                    if (snapshot.docs.isNotEmpty) {
+                      String eventTypeId = snapshot.docs[0].id;
+                      id = eventTypeId;
+                      EventWizard event = EventWizard(
+                        services: services,
+                        event_type_id: eventTypeId,
+                      );
 
-                  QuickAlert.show(
-                    context: context,
-                    customAsset: 'assets/images/Completionanimation.gif',
-                    width: 300,
-                    title: '$message',
-                    type: QuickAlertType.success,
-                    confirmBtnText: 'إغلاق',
-                  );
-                } else {
-                  // Handle the case where no matching event type is found
-                  QuickAlert.show(
-                    context: context,
-                    title: 'Event not found',
-                    type: QuickAlertType.error,
-                    confirmBtnText: 'Close',
-                  );
-                }
-              },
-              child: Text('انشئ مراحل المناسبة'),
+                      String message = await event.uploadToFirebase();
+                      setState(() {
+                        showSpinner = false;
+                      });
+                      QuickAlert.show(
+                        context: context,
+                        customAsset: 'assets/images/Completionanimation.gif',
+                        width: 300,
+                        title: '$message',
+                        type: QuickAlertType.success,
+                        confirmBtnText: 'إغلاق',
+                      );
+                    } else {
+                      // Handle the case where no matching event type is found
+                      QuickAlert.show(
+                        context: context,
+                        title: 'Event not found',
+                        type: QuickAlertType.error,
+                        confirmBtnText: 'Close',
+                      );
+                    }
+                  },
+                  child: Text('انشئ مراحل المناسبة'),
+                ),
+                if (showSpinner) // Render spinner only when showSpinner is true
+                  Positioned.fill(
+                    child: Center(
+                      child:
+                          CircularProgressIndicator(), // Customize spinner as needed
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ])),
     );
   }
 

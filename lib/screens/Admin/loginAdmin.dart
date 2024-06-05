@@ -18,7 +18,7 @@ class _AdminLoginState extends State<AdminLogin> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(121, 242, 228, 217),
         title: Text(
-          '(بائع جديد)ضع خدمتك     !',
+          'هل ترغب في الانضمام إلينا كبائع جديد؟',
           style: StyleTextAdmin(20, Colors.black),
         ),
       ),

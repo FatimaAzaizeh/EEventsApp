@@ -11,6 +11,7 @@ class DisplayService extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(0, 255, 255, 255),
       body: SingleChildScrollView(
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance

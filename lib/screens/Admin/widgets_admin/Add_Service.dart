@@ -150,7 +150,7 @@ class _AddServiceState extends State<AddService> {
                     ),
                     TextField(
                       decoration: InputDecoration(
-                        labelText: 'رقم الخدمة',
+                        labelText: 'يتم تعيين رقم معرّف الخدمة تلقائيًا',
                         icon: Icon(Icons.room_service),
                       ),
                       controller: ControllerId,

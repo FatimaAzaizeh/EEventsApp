@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
@@ -58,11 +59,17 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      shadowColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      elevation: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('إنشاء حساب مسؤول جديد',
-              style: StyleTextAdmin(22, Colors.black)),
+          Text(
+            'إنشاء حساب مسؤول جديد',
+            style: StyleTextAdmin(22, AdminButton),
+          ),
           Row(
             children: [
               TextButton(
@@ -204,7 +211,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
               },
               style: const ButtonStyle(
                 animationDuration: Durations.long3,
-                backgroundColor: MaterialStatePropertyAll(Colors.black),
+                backgroundColor: MaterialStatePropertyAll(ColorPink_100),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

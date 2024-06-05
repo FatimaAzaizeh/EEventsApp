@@ -150,7 +150,7 @@ class _AddEventState extends State<AddEvent> {
                   ),
                 ),
                 TextFieldDesign(
-                  Text: 'أسم الخدمة:',
+                  Text: 'أسم المناسبة:',
                   icon: Icons.title,
                   ControllerTextField: controllerName,
                   onChanged: (value) {
@@ -161,7 +161,7 @@ class _AddEventState extends State<AddEvent> {
                 ),
                 TextFieldDesign(
                   enabled: false,
-                  Text: 'رقم المناسبة',
+                  Text: 'يتم تعيين رقم معرّف المناسبة تلقائيًا.',
                   icon: Icons.room_service,
                   ControllerTextField: controllerId,
                   onChanged: (value) {},
