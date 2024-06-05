@@ -54,8 +54,7 @@ class _WizardStepsState extends State<WizardSteps> {
             stepRadius: 28,
             finishedStepBorderColor: const Color.fromARGB(255, 248, 241, 239),
             finishedStepTextColor: Color.fromARGB(255, 209, 205, 203),
-            finishedStepBackgroundColor:
-                const Color.fromARGB(255, 244, 232, 228),
+            finishedStepBackgroundColor: Color.fromARGB(0, 244, 232, 228),
             showLoadingAnimation: false,
             steps: List.generate(widget.imagePaths.length, (index) {
               return EasyStep(

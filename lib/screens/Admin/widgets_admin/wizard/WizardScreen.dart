@@ -163,6 +163,7 @@ class CreateEventWizard extends StatefulWidget {
 class _CreateEventWizardState extends State<CreateEventWizard> {
   List<Map<String, dynamic>> _checkboxData = [];
   late Map<int, Map<String, dynamic>> services = {};
+  List<int> enteredValues = [];
   bool showSpinner = false;
 
   @override
@@ -209,6 +210,18 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                           onChanged: (newValue) {
                             setState(() {
                               checkboxRecord['checked'] = newValue;
+
+                              if (newValue != null) {
+                                checkboxRecord['checked'] = newValue;
+                                if (!newValue) {
+                                  // Remove service if checkbox is unchecked
+                                  services.removeWhere((key, value) =>
+                                      value['servicename'] ==
+                                      checkboxRecord['name']);
+                                  enteredValues.removeWhere(
+                                      (value) => services.keys.contains(value));
+                                }
+                              }
                             });
                           },
                         ),
@@ -222,30 +235,49 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                               ),
                               keyboardType: TextInputType.number,
                               onChanged: (value) async {
-                                String serviceName = checkboxRecord['name'];
-                                QuerySnapshot snapshot = await FirebaseFirestore
-                                    .instance
-                                    .collection('service_types')
-                                    .where('name', isEqualTo: serviceName)
-                                    .get();
+                                int enteredNumber = int.parse(value);
+                                if (enteredValues.isEmpty ||
+                                    enteredValues.last + 1 == enteredNumber) {
+                                  enteredValues.add(enteredNumber);
+                                  enteredValues
+                                      .sort(); // Ensure the list is sorted
 
-                                if (snapshot.docs.isNotEmpty) {
-                                  // Assuming only one document with the same name exists
-                                  DocumentReference serviceId =
-                                      snapshot.docs[0].reference;
-                                  String serviceImage =
-                                      snapshot.docs[0].get('image_url');
+                                  String serviceName = checkboxRecord['name'];
+                                  QuerySnapshot snapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('service_types')
+                                          .where('name', isEqualTo: serviceName)
+                                          .get();
 
-                                  services[int.parse(value)] = {
-                                    'servicename': serviceName,
-                                    'serviceimage': serviceImage,
-                                    'serviceId':
-                                        serviceId, // Storing the DocumentReference
-                                  };
+                                  if (snapshot.docs.isNotEmpty) {
+                                    // Assuming only one document with the same name exists
+                                    DocumentReference serviceId =
+                                        snapshot.docs[0].reference;
+                                    String serviceImage =
+                                        snapshot.docs[0].get('image_url');
+
+                                    setState(() {
+                                      services[enteredNumber] = {
+                                        'servicename': serviceName,
+                                        'serviceimage': serviceImage,
+                                        'serviceId':
+                                            serviceId, // Storing the DocumentReference
+                                      };
+                                    });
+                                  }
+                                } else {
+                                  // Notify the user that the numbers should be consecutive
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          "Numbers should be consecutive. Next number should be ${enteredValues.last + 1}"),
+                                    ),
+                                  );
                                 }
                               },
                             ),
                           ),
+                        Divider(),
                       ],
                     );
                   },
