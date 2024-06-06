@@ -75,7 +75,7 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
-  Widget _currentMainSection = HomePageAdmin();
+  Widget _currentMainSection = AddAdmin();
 
   void _changeMainSection(Widget newSection) {
     setState(() {

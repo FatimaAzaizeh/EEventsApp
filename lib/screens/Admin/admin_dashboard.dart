@@ -9,12 +9,14 @@ class HomePageAdmin extends StatefulWidget {
 class _HomePageAdminState extends State<HomePageAdmin> {
   List<String> _buttonTexts = ['نظره عامه', 'مهام الاداره', 'Eevents نصيحة'];
   List<String> _messages = [
-    'هو ان تكون المنظم للمناسبه حسب الخدمه التي يريدها الزبون عن طريق استخدام تطبيقنا الذي يتيح الابداع لتصميم مناسبه فريده من نوعها :ماذا يعني ان تكون مسؤول في تطبيقنا ',
+    ' ماذا يعني ان تكون مسؤول في تطبيقنا :'
+        ' هو ان تكون المنظم للمناسبه حسب الخدمه التي يريدها الزبون عن طريق استخدام تطبيقنا الذي يتيح الابداع لتصميم مناسبه فريده من نوعها ',
     'سوف تكون مسؤول عن تنظيم شكل التطبيق لدى المستخدم واعطاء اذونات للبائعين بستخدام التطبيق او لا',
     'نظم المناسبات بشغف'
   ];
 
-  String _displayText = 'هو ان تكون المنظم للمناسبه حسب الخدمه التي يريدها الزبون عن طريق استخدام تطبيقنا الذي يتيح الابداع لتصميم مناسبه فريده من نوعها :ماذا يعني ان تكون مسؤول في تطبيقنا';
+  String _displayText =
+      'هو ان تكون المنظم للمناسبه حسب الخدمه التي يريدها الزبون عن طريق استخدام تطبيقنا الذي يتيح الابداع لتصميم مناسبه فريده من نوعها :ماذا يعني ان تكون مسؤول في تطبيقنا';
 
   void _updateText(int index) {
     setState(() {
@@ -41,8 +43,8 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                       _updateText(index);
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          ColorPink_100),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(ColorPink_100),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.symmetric(
                               vertical: 16.0, horizontal: 24.0)),
