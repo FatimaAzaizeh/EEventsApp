@@ -24,7 +24,7 @@ class AddEvent extends StatefulWidget {
 class _AddEventState extends State<AddEvent> {
   late String imageUrl;
   Uint8List? fileBytes;
-  late String fileName = "No image selected";
+  late String fileName = "لم يتم اختيار صورة";
   var controllerName = TextEditingController();
   var controllerImage = TextEditingController();
   late DocumentReference eventClassificationRef;
@@ -101,52 +101,70 @@ class _AddEventState extends State<AddEvent> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Color.fromARGB(221, 255, 255, 255),
+              border: Border.all(
+                  color:
+                      const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+                  width: 3),
+              borderRadius: BorderRadius.circular(20),
+              color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
             ),
             width: 500,
             height: double.maxFinite,
             child: Column(
               children: [
-                Container(
-                  width: double.maxFinite,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'المناسبات',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 28,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 60, 19, 60),
-                          ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'المناسبات',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 28,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 60, 19, 60),
                         ),
-                        SizedBox(width: 220),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              controllerName.clear();
-                              controllerId.clear();
-                              controllerImage.clear();
-                              editButton = false;
-                            });
-                          },
-                          child: Icon(Icons.clear),
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 220),
+                      TextButton(
+                        onPressed: editButton
+                            ? () {
+                                setState(() {
+                                  controllerName.clear();
+                                  controllerId.clear();
+                                  controllerImage.clear();
+                                  editButton = false;
+                                });
+                              }
+                            : null,
+                        child: Icon(Icons.clear),
+                      ),
+                      IconButton(
+                        onPressed: editButton
+                            ? () {
+                                EventType.updateEventTypeFirestore(
+                                    controllerName.text,
+                                    imageUrl,
+                                    eventClassificationRef,
+                                    controllerId.text);
+                                setState(() {
+                                  showEditButton = false;
+                                });
+                                controllerName.clear();
+                                controllerId.clear();
+                                controllerImage.clear();
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.success,
+                                );
+                                editButton = false;
+                              }
+                            : null, // Set onPressed to null when editButton is false
+                        icon: Icon(Icons.edit),
+                      ),
+                    ],
                   ),
                 ),
                 TextFieldDesign(
@@ -213,10 +231,10 @@ class _AddEventState extends State<AddEvent> {
                     value: classificationList.isNotEmpty ? dropdownValue : null,
                     icon: const Icon(Icons.arrow_downward),
                     elevation: 16,
-                    style: const TextStyle(color: Colors.deepPurple),
+                    style: StyleTextAdmin(14, AdminButton),
                     underline: Container(
                       height: 2,
-                      color: Colors.deepPurpleAccent,
+                      color: ColorPurple_100,
                     ),
                     onChanged: (String? value) async {
                       if (value != null) {
@@ -251,19 +269,19 @@ class _AddEventState extends State<AddEvent> {
                   ),
                 ),
                 Container(
-                  width: double.maxFinite,
+                  width: 200,
                   margin: EdgeInsets.only(bottom: 90),
-                  child: FloatingActionButton(
-                    backgroundColor: ColorPink_100,
-                    child: Text(
-                      'إضافة مناسبة',
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 18,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                      ),
-                    ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: const Color.fromARGB(165, 255, 255, 255)
+                            .withOpacity(0.3),
+                        width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black.withOpacity(0.17),
+                  ),
+                  child: TextButton(
+                    child: Text('إضافة مناسبة',
+                        style: StyleTextAdmin(16, AdminButton)),
                     onPressed: () async {
                       setState(() async {
                         showSpinner = true;
@@ -300,29 +318,6 @@ class _AddEventState extends State<AddEvent> {
                     },
                   ),
                 ),
-                IconButton(
-                  onPressed: editButton
-                      ? () {
-                          EventType.updateEventTypeFirestore(
-                              controllerName.text,
-                              imageUrl,
-                              eventClassificationRef,
-                              controllerId.text);
-                          setState(() {
-                            showEditButton = false;
-                          });
-                          controllerName.clear();
-                          controllerId.clear();
-                          controllerImage.clear();
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.success,
-                          );
-                          editButton = false;
-                        }
-                      : null, // Set onPressed to null when editButton is false
-                  icon: Icon(Icons.edit),
-                ),
               ],
             ),
           ),
@@ -330,10 +325,6 @@ class _AddEventState extends State<AddEvent> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
             width: 400,
             height: double.maxFinite,
             child: EventScreen(),
@@ -390,6 +381,7 @@ class _AddEventState extends State<AddEvent> {
   SafeArea EventScreen() {
     return SafeArea(
       child: Material(
+        color: ColorPink_20,
         child: StreamBuilder<QuerySnapshot>(
           stream:
               FirebaseFirestore.instance.collection('event_types').snapshots(),

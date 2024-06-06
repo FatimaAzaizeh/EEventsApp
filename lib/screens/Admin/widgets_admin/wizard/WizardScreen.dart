@@ -121,7 +121,7 @@ class _WizardState extends State<Wizard> {
                             await readData(id);
                           }
                         },
-                        child: Text('Load Data'),
+                        child: Text('عرض مراحل المناسبة'),
                       ),
                       if (isLoading)
                         CircularProgressIndicator() // Show spinner while loading

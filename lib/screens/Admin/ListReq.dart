@@ -160,25 +160,15 @@ class _ListReqState extends State<ListReq> {
           style: StyleTextAdmin(22, AdminButton),
         ),
       ),
-      divider: const Divider(
-        color: Colors.black,
-        height: 4,
-        thickness: 2,
-      ),
       content: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 4,
-              blurRadius: 3,
-              offset: Offset(0, 3),
-            ),
-          ],
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          border: Border.all(
+              color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.4),
+              width: 3),
+          borderRadius: BorderRadius.circular(20),
+          color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,29 +242,16 @@ class _ListReqState extends State<ListReq> {
         ),
       ),
       headerDecoration: BoxDecoration(
-        color: ColorPurple_20,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 8,
-            blurRadius: 7,
-            offset: Offset(0, 3),
-          ),
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        border: Border.all(
+            color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+            width: 3),
+        borderRadius: BorderRadius.circular(20),
+        color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
       ),
       expandedHeaderDecoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 4,
-            blurRadius: 3,
-            offset: Offset(0, 3),
+          // borderRadius: BorderRadius.circular(20),
+          // color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
           ),
-        ],
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
     );
   }
 }

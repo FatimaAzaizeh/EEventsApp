@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
+import 'package:testtapp/constants.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 
 class DisplayAllOrders extends StatefulWidget {
   const DisplayAllOrders({Key? key}) : super(key: key);
@@ -11,63 +14,102 @@ class DisplayAllOrders extends StatefulWidget {
 class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('جدول الطلبات'),
+    return Container(
+      height: double.maxFinite,
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+            width: 3),
+        borderRadius: BorderRadius.circular(20),
+        color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('orders').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('خطأ: ${snapshot.error}'),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('لا توجد طلبات.'),
-            );
-          }
-
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('رقم تعريف الطلب')),
-                  DataColumn(label: Text('رقم تعريف المستخدم')),
-                  DataColumn(label: Text('تفاصيل الطلب')),
-                ],
-                rows: snapshot.data!.docs.map<DataRow>((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final orderId = data['order_id'] ?? 'غير متاح';
-                  final userId = data['user_id'] ?? 'غير متاح';
-                  final vendors = data['vendors'] as Map<String, dynamic>?;
-
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(orderId)),
-                      DataCell(Text(userId)),
-                      DataCell(ElevatedButton(
-                        onPressed: () =>
-                            _showOrderDialog(context, orderId, userId, vendors),
-                        child: const Text('عرض التفاصيل'),
-                      )),
-                    ],
-                  );
-                }).toList(),
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              'جدول الطلبات',
+              style: StyleTextAdmin(20, AdminButton),
             ),
-          );
-        },
+          ),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('خطأ: ${snapshot.error}'),
+                );
+              }
+
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Text('لا توجد طلبات.'),
+                );
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DataTable(
+                        border: TableBorder.all(
+                            color: Color.fromARGB(137, 255, 255, 255),
+                            width: 2,
+                            borderRadius: BorderRadius.circular(15)),
+                        decoration: BoxDecoration(color: ColorPink_20),
+                        columns: const [
+                          DataColumn(label: Text('رقم تعريف الطلب')),
+                          DataColumn(label: Text('رقم تعريف المستخدم')),
+                          DataColumn(label: Text('تفاصيل الطلب')),
+                        ],
+                        rows: snapshot.data!.docs.map<DataRow>((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          final orderId = data['order_id'] ?? 'غير متاح';
+                          final userId = data['user_id'] ?? 'غير متاح';
+                          final vendors =
+                              data['vendors'] as Map<String, dynamic>?;
+
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(orderId)),
+                              DataCell(Text(userId)),
+                              DataCell(Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: AdminButton.withOpacity(0.37),
+                                      width: 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                                child: TextButton(
+                                  onPressed: () => _showOrderDialog(
+                                      context, orderId, userId, vendors),
+                                  child: const Text('عرض التفاصيل',
+                                      style: TextStyle(color: AdminButton)),
+                                ),
+                              )),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }

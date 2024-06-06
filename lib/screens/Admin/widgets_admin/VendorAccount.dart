@@ -118,19 +118,16 @@ class _VendorCardState extends State<VendorCard> {
         height: 180, // Reduced height
         padding: EdgeInsets.all(8), // Reduced padding
         decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+            width: 3,
+          ),
+          borderRadius: BorderRadius.circular(20),
           color: widget.vendorData['vendor_status_id'] == VendorStatusRef
-              ? Colors.white.withOpacity(0.8)
-              : Colors.grey,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 4,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
+              ? Color.fromARGB(165, 255, 255, 255).withOpacity(0.2)
+              : Colors.grey.withOpacity(0.2),
         ),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -138,10 +135,10 @@ class _VendorCardState extends State<VendorCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CircleAvatar(
-                  radius: 35, // Increased radius
+                  radius: 30, // Increased radius
                   backgroundImage:
                       NetworkImage(widget.vendorData['logo_url'] ?? ''),
-                  backgroundColor: Colors.pink[100],
+                  backgroundColor: Colors.white,
                 ),
                 Switch(
                   value:
@@ -190,7 +187,8 @@ class _VendorCardState extends State<VendorCard> {
                     );
                   },
                   activeColor: ColorPink_100,
-                  inactiveTrackColor: Colors.grey[300], // Change to light gray
+                  inactiveTrackColor:
+                      Colors.grey.withOpacity(0.2), // Change to light gray
                   inactiveThumbColor: Colors.white,
                 ),
               ],
