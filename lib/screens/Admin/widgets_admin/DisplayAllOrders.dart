@@ -63,15 +63,25 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DataTable(
+                        headingTextStyle: StyleTextAdmin(15, Colors.black),
                         border: TableBorder.all(
                             color: Color.fromARGB(137, 255, 255, 255),
                             width: 2,
                             borderRadius: BorderRadius.circular(15)),
                         decoration: BoxDecoration(color: ColorPink_20),
-                        columns: const [
-                          DataColumn(label: Text('رقم تعريف الطلب')),
-                          DataColumn(label: Text('رقم تعريف المستخدم')),
-                          DataColumn(label: Text('تفاصيل الطلب')),
+                        columns: [
+                          DataColumn(
+                              label: Text(
+                            'رقم تعريف الطلب',
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'رقم تعريف المستخدم',
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'تفاصيل الطلب',
+                          )),
                         ],
                         rows: snapshot.data!.docs.map<DataRow>((doc) {
                           final data = doc.data() as Map<String, dynamic>;
@@ -87,16 +97,18 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
                               DataCell(Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: AdminButton.withOpacity(0.37),
-                                      width: 1),
+                                      color: const Color.fromARGB(
+                                              165, 255, 255, 255)
+                                          .withOpacity(0.3),
+                                      width: 2),
                                   borderRadius: BorderRadius.circular(20),
                                   color: Colors.white.withOpacity(0.3),
                                 ),
                                 child: TextButton(
                                   onPressed: () => _showOrderDialog(
                                       context, orderId, userId, vendors),
-                                  child: const Text('عرض التفاصيل',
-                                      style: TextStyle(color: AdminButton)),
+                                  child: Text('عرض التفاصيل',
+                                      style: StyleTextAdmin(12, AdminButton)),
                                 ),
                               )),
                             ],
@@ -117,8 +129,13 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   Future<void> _showOrderDialog(BuildContext context, String orderId,
       String userId, Map<String, dynamic>? vendors) async {
     List<Widget> content = [
-      Text('رقم تعريف الطلب: $orderId'),
-      Text('رقم تعريف المستخدم: $userId'),
+      Text('رقم تعريف الطلب: $orderId',
+          style: StyleTextAdmin(15, Colors.black)),
+      SizedBox(
+        height: 10,
+      ),
+      Text('رقم تعريف المستخدم: $userId',
+          style: StyleTextAdmin(15, Colors.black)),
     ];
 
     if (vendors == null || vendors.isEmpty) {
@@ -143,17 +160,29 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
     vendors.forEach((key, value) {
       vendorWidgets.add(
         DataTable(
-          columns: const [
-            DataColumn(label: Text('الحقل')),
-            DataColumn(label: Text('القيمة')),
+          headingTextStyle: StyleTextAdmin(16, Colors.black),
+          dataTextStyle: StyleTextAdmin(12, Colors.black),
+          columns: [
+            DataColumn(
+                label: Text(
+              'الحقل',
+            )),
+            DataColumn(
+                label: Text(
+              'القيمة',
+            )),
           ],
           rows: [
             DataRow(cells: [
-              DataCell(Text('رقم تعريف البائع')),
+              DataCell(Text(
+                'رقم تعريف البائع',
+              )),
               DataCell(Text(value['vendor_id'].toString())),
             ]),
             DataRow(cells: [
-              DataCell(Text('السعر')),
+              DataCell(Text(
+                'السعر',
+              )),
               DataCell(Text(value['price'].toString())),
             ]),
             DataRow(cells: [
@@ -176,11 +205,15 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
               )),
             ]),
             DataRow(cells: [
-              DataCell(Text('تاريخ الإنشاء')),
+              DataCell(Text(
+                'تاريخ الإنشاء',
+              )),
               DataCell(Text(_parseTimestamp(value['created_at']))),
             ]),
             DataRow(cells: [
-              DataCell(Text('تاريخ التسليم')),
+              DataCell(Text(
+                'تاريخ التسليم',
+              )),
               DataCell(Text(_parseTimestamp(value['deliver_at']))),
             ]),
           ],
@@ -188,7 +221,10 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       );
 
       if (value['vendor_id_items'] != null) {
-        vendorWidgets.add(const Text('عناصر البائع:'));
+        vendorWidgets.add(Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Text('عناصر البائع:', style: StyleTextAdmin(15, Colors.black)),
+        ));
         vendorWidgets.add(_buildVendorItems(value['vendor_id_items']));
       }
     });
@@ -212,7 +248,9 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
     });
 
     return DataTable(
-      columns: const [
+      headingTextStyle: StyleTextAdmin(15, Colors.black),
+      dataTextStyle: StyleTextAdmin(12, Colors.black),
+      columns: [
         DataColumn(label: Text('رمز العنصر')),
         DataColumn(label: Text('اسم العنصر')),
         DataColumn(label: Text('الكمية')),
@@ -234,7 +272,10 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(title),
+          title: Text(
+            title,
+            style: StyleTextAdmin(24, ColorPink_100),
+          ),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +285,11 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('إغلاق'),
+              child: Center(
+                  child: Text(
+                'إغلاق',
+                style: StyleTextAdmin(20, ColorPink_100),
+              )),
             ),
           ],
         );

@@ -153,12 +153,31 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     fileBytes == null) {
                   // Show an alert if any required field is empty
                   QuickAlert.show(
-                    context: context,
-                    title: 'خطأ',
-                    text: 'الرجاء إدخال كل البيانات المطلوبة',
-                    type: QuickAlertType.error,
-                    confirmBtnText: 'حسناً',
-                  );
+                      context: context,
+                      title: '',
+                      width: 400,
+                      customAsset: 'assets/images/error.gif',
+                      widget: Column(
+                        children: [
+                          Text(
+                            'خطأ',
+                            style: StyleTextAdmin(
+                                25, Colors.black), // Custom style for title
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'الرجاء إدخال كل البيانات المطلوبة',
+                            style: StyleTextAdmin(
+                                14, AdminButton), // Custom style for text
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                      type: QuickAlertType.error,
+                      confirmBtnText: 'حسناً',
+                      confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
+                      backgroundColor: Colors.white,
+                      confirmBtnColor: AdminButton.withOpacity(0.8));
                 } else {
                   await uploadFile(); // Upload file before creating user
                   setState(() {
@@ -192,14 +211,19 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     Navigator.of(context).pop();
 
                     // Show QuickAlert dialog after user creation
+
                     QuickAlert.show(
-                      context: context,
-                      customAsset: 'assets/images/Completionanimation.gif',
-                      width: 300,
-                      title: 'تم إضافة $email',
-                      type: QuickAlertType.success,
-                      confirmBtnText: 'إغلاق',
-                    );
+                        context: context,
+                        customAsset: 'assets/images/Completionanimation.gif',
+                        width: 300,
+                        title: '',
+                        widget: Text(
+                          'تم إضافة $email',
+                          style: StyleTextAdmin(18, Colors.black),
+                        ),
+                        type: QuickAlertType.success,
+                        confirmBtnText: 'إغلاق',
+                        confirmBtnTextStyle: StyleTextAdmin(20, Colors.white));
                   } catch (e) {
                     print(e);
                   } finally {

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -36,13 +37,29 @@ class _WizardState extends State<Wizard> {
     await Future.delayed(
         Duration.zero); // Ensures the dialog shows after the first frame
     QuickAlert.show(
-      context: context,
-      type: QuickAlertType.info,
-      title: 'تنبيه',
-      text:
-          'جميع المناسبات جاهزة للعرض للمستخدم. عند الضغط على أي واحدة سيتم تغييرها تلقائيًا بدون رجوع.',
-      confirmBtnText: 'حسناً',
-    );
+        context: context,
+        type: QuickAlertType.info,
+        width: 440,
+        customAsset: 'assets/images/info.gif', // Replace with your asset path
+        title: '',
+        widget: Column(
+          children: [
+            Text(
+              'تنبيه',
+              style: StyleTextAdmin(25, Colors.black), // Custom style for title
+            ),
+            SizedBox(height: 10),
+            Text(
+              'جميع المناسبات جاهزة للعرض للمستخدم. عند الضغط على أي واحدة سيتم تغييرها تلقائيًا بدون رجوع.',
+              style: StyleTextAdmin(14, AdminButton), // Custom style for text
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+        confirmBtnText: 'حسناً',
+        confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
+        backgroundColor: Colors.white,
+        confirmBtnColor: AdminButton.withOpacity(0.8));
   }
 
   Future<void> readData(String id) async {
@@ -99,6 +116,7 @@ class _WizardState extends State<Wizard> {
           color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
         ),
         width: double.maxFinite,
+        height: double.maxFinite,
         child: Row(
           children: [
             Padding(
@@ -114,14 +132,35 @@ class _WizardState extends State<Wizard> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      Text(widget.EventName),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (id != '') {
-                            await readData(id);
-                          }
-                        },
-                        child: Text('عرض مراحل المناسبة'),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          widget.EventName,
+                          style: StyleTextAdmin(18, AdminButton),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: 200,
+                        margin: EdgeInsets.only(bottom: 90),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: const Color.fromARGB(165, 255, 255, 255)
+                                  .withOpacity(0.3),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white.withOpacity(0.3),
+                        ),
+                        child: TextButton(
+                            onPressed: () async {
+                              if (id != '') {
+                                await readData(id);
+                              }
+                            },
+                            child: Text('عرض مراحل المناسبة',
+                                style: StyleTextAdmin(14, AdminButton))),
                       ),
                       if (isLoading)
                         CircularProgressIndicator() // Show spinner while loading
@@ -181,164 +220,185 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: Container(
-          height: double.maxFinite,
-          width: MediaQuery.of(context).size.width * 0.3,
-          child: Column(children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: ListView.builder(
-                  itemCount: _checkboxData.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> checkboxRecord = _checkboxData[index];
-                    return Column(
-                      children: [
-                        CheckboxListTile(
-                          activeColor: Colors.black,
-                          title: Text(checkboxRecord['name'] ?? '',
-                              style: StyleTextAdmin(14, AdminButton)),
-                          value: checkboxRecord['checked'] ?? false,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          side: BorderSide(
-                            width: 0.7,
-                            color: AdminButton,
-                          ),
-                          onChanged: (newValue) {
-                            setState(() {
-                              checkboxRecord['checked'] = newValue;
-
-                              if (newValue != null) {
-                                checkboxRecord['checked'] = newValue;
-                                if (!newValue) {
-                                  // Remove service if checkbox is unchecked
-                                  services.removeWhere((key, value) =>
-                                      value['servicename'] ==
-                                      checkboxRecord['name']);
-                                  enteredValues.removeWhere(
-                                      (value) => services.keys.contains(value));
-                                }
-                              }
-                            });
-                          },
+    return Container(
+      height: double.maxFinite,
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ListView.builder(
+                itemCount: _checkboxData.length,
+                itemBuilder: (context, index) {
+                  Map<String, dynamic> checkboxRecord = _checkboxData[index];
+                  return Column(
+                    children: [
+                      CheckboxListTile(
+                        activeColor: Colors.black,
+                        title: Text(checkboxRecord['name'] ?? '',
+                            style: StyleTextAdmin(14, AdminButton)),
+                        value: checkboxRecord['checked'] ?? false,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        side: BorderSide(
+                          width: 0.7,
+                          color: AdminButton,
                         ),
-                        if (checkboxRecord['checked'] ?? false)
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Enter number',
-                              ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) async {
-                                int enteredNumber = int.parse(value);
-                                if (enteredValues.isEmpty ||
-                                    enteredValues.last + 1 == enteredNumber) {
-                                  enteredValues.add(enteredNumber);
-                                  enteredValues
-                                      .sort(); // Ensure the list is sorted
+                        onChanged: (newValue) {
+                          setState(() {
+                            checkboxRecord['checked'] = newValue;
 
-                                  String serviceName = checkboxRecord['name'];
-                                  QuerySnapshot snapshot =
-                                      await FirebaseFirestore.instance
-                                          .collection('service_types')
-                                          .where('name', isEqualTo: serviceName)
-                                          .get();
+                            if (newValue != null) {
+                              checkboxRecord['checked'] = newValue;
+                              if (!newValue) {
+                                // Remove service if checkbox is unchecked
+                                services.removeWhere((key, value) =>
+                                    value['servicename'] ==
+                                    checkboxRecord['name']);
+                                enteredValues.removeWhere(
+                                    (value) => services.keys.contains(value));
+                              }
+                            }
+                          });
+                        },
+                      ),
+                      if (checkboxRecord['checked'] ?? false)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                hintText: 'أدخل رقم ترتيب هذه الخدمة',
+                                hintStyle: StyleTextAdmin(
+                                    14, AdminButton.withOpacity(0.6))),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) async {
+                              int enteredNumber = int.parse(value);
+                              if (enteredValues.isEmpty ||
+                                  enteredValues.last + 1 == enteredNumber) {
+                                enteredValues.add(enteredNumber);
+                                enteredValues
+                                    .sort(); // Ensure the list is sorted
 
-                                  if (snapshot.docs.isNotEmpty) {
-                                    // Assuming only one document with the same name exists
-                                    DocumentReference serviceId =
-                                        snapshot.docs[0].reference;
-                                    String serviceImage =
-                                        snapshot.docs[0].get('image_url');
+                                String serviceName = checkboxRecord['name'];
+                                QuerySnapshot snapshot = await FirebaseFirestore
+                                    .instance
+                                    .collection('service_types')
+                                    .where('name', isEqualTo: serviceName)
+                                    .get();
 
-                                    setState(() {
-                                      services[enteredNumber] = {
-                                        'servicename': serviceName,
-                                        'serviceimage': serviceImage,
-                                        'serviceId':
-                                            serviceId, // Storing the DocumentReference
-                                      };
-                                    });
-                                  }
-                                } else {
-                                  // Notify the user that the numbers should be consecutive
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          "Numbers should be consecutive. Next number should be ${enteredValues.last + 1}"),
-                                    ),
-                                  );
+                                if (snapshot.docs.isNotEmpty) {
+                                  // Assuming only one document with the same name exists
+                                  DocumentReference serviceId =
+                                      snapshot.docs[0].reference;
+                                  String serviceImage =
+                                      snapshot.docs[0].get('image_url');
+
+                                  setState(() {
+                                    services[enteredNumber] = {
+                                      'servicename': serviceName,
+                                      'serviceimage': serviceImage,
+                                      'serviceId':
+                                          serviceId, // Storing the DocumentReference
+                                    };
+                                  });
                                 }
-                              },
-                            ),
+                              } else {
+                                // Notify the user that the numbers should be consecutive
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.white,
+                                    content: Center(
+                                      child: Text(
+                                        "يجب أن تكون الأرقام متتالية. الرقم التالي يجب أن يكون ${enteredValues.last + 1}",
+                                        style: StyleTextAdmin(14, Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                           ),
-                        Divider(),
-                      ],
-                    );
-                  },
-                ),
+                        ),
+                      Divider(),
+                    ],
+                  );
+                },
               ),
             ),
-            Stack(
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      showSpinner = true;
-                    });
-
-                    QuerySnapshot snapshot = await FirebaseFirestore.instance
-                        .collection('event_types')
-                        .where('name', isEqualTo: widget.EventName)
-                        .get();
-
-                    if (snapshot.docs.isNotEmpty) {
-                      String eventTypeId = snapshot.docs[0].id;
-                      id = eventTypeId;
-                      EventWizard event = EventWizard(
-                        services: services,
-                        event_type_id: eventTypeId,
-                      );
-
-                      String message = await event.uploadToFirebase();
-                      setState(() {
-                        showSpinner = false;
-                      });
-                      QuickAlert.show(
-                        context: context,
-                        customAsset: 'assets/images/Completionanimation.gif',
-                        width: 300,
-                        title: '$message',
-                        type: QuickAlertType.success,
-                        confirmBtnText: 'إغلاق',
-                      );
-                    } else {
-                      // Handle the case where no matching event type is found
-                      QuickAlert.show(
-                        context: context,
-                        title: 'Event not found',
-                        type: QuickAlertType.error,
-                        confirmBtnText: 'Close',
-                      );
-                    }
-                  },
-                  child: Text('انشئ مراحل المناسبة'),
-                ),
-                if (showSpinner) // Render spinner only when showSpinner is true
-                  Positioned.fill(
-                    child: Center(
-                      child:
-                          CircularProgressIndicator(), // Customize spinner as needed
-                    ),
-                  ),
-              ],
+          ),
+          if (showSpinner) // Render spinner only when showSpinner is true
+            Positioned.fill(
+              child: Center(
+                child:
+                    CircularProgressIndicator(), // Customize spinner as needed
+              ),
             ),
-          ])),
+          Container(
+            width: 200,
+            margin: EdgeInsets.only(bottom: 90),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color:
+                      const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+                  width: 2),
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white.withOpacity(0.3),
+            ),
+            child: TextButton(
+              onPressed: () async {
+                setState(() {
+                  showSpinner = true;
+                });
+
+                QuerySnapshot snapshot = await FirebaseFirestore.instance
+                    .collection('event_types')
+                    .where('name', isEqualTo: widget.EventName)
+                    .get();
+
+                if (snapshot.docs.isNotEmpty) {
+                  String eventTypeId = snapshot.docs[0].id;
+                  id = eventTypeId;
+                  EventWizard event = EventWizard(
+                    services: services,
+                    event_type_id: eventTypeId,
+                  );
+
+                  String message = await event.uploadToFirebase();
+                  setState(() {
+                    showSpinner = false;
+                  });
+                  QuickAlert.show(
+                      context: context,
+                      customAsset: 'assets/images/Completionanimation.gif',
+                      width: 300,
+                      title: '',
+                      widget: Text(
+                        '$message',
+                        style: StyleTextAdmin(18, Colors.black),
+                      ),
+                      type: QuickAlertType.success,
+                      confirmBtnText: 'إغلاق',
+                      confirmBtnTextStyle: StyleTextAdmin(20, Colors.white));
+                } else {
+                  // Handle the case where no matching event type is found
+                  QuickAlert.show(
+                    context: context,
+                    title: 'Event not found',
+                    type: QuickAlertType.error,
+                    confirmBtnText: 'Close',
+                  );
+                }
+              },
+              child: Text(
+                'انشئ مراحل المناسبة',
+                style: StyleTextAdmin(16, AdminButton),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -30,7 +30,7 @@ class Classification {
       });
       return 'تم إضافة تصنيف جديد  $description';
     } catch (e) {
-      return 'Error adding document: $e';
+      return 'حدث خطأ ,لم يتم إضافة التصنيف: $e';
     }
   }
 

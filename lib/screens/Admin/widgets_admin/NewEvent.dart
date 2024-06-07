@@ -95,7 +95,7 @@ class _AddEventState extends State<AddEvent> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -113,56 +113,132 @@ class _AddEventState extends State<AddEvent> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'المناسبات',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 60, 19, 60),
-                        ),
-                      ),
-                      SizedBox(width: 220),
-                      TextButton(
-                        onPressed: editButton
-                            ? () {
-                                setState(() {
-                                  controllerName.clear();
-                                  controllerId.clear();
-                                  controllerImage.clear();
-                                  editButton = false;
-                                });
-                              }
-                            : null,
-                        child: Icon(Icons.clear),
-                      ),
-                      IconButton(
-                        onPressed: editButton
-                            ? () {
-                                EventType.updateEventTypeFirestore(
-                                    controllerName.text,
-                                    imageUrl,
-                                    eventClassificationRef,
-                                    controllerId.text);
-                                setState(() {
-                                  showEditButton = false;
-                                });
-                                controllerName.clear();
-                                controllerId.clear();
-                                controllerImage.clear();
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.success,
-                                );
-                                editButton = false;
-                              }
-                            : null, // Set onPressed to null when editButton is false
-                        icon: Icon(Icons.edit),
+                      Text('المناسبات',
+                          textAlign: TextAlign.center,
+                          style: StyleTextAdmin(20, AdminButton)),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: editButton
+                                ? () async {
+                                    if (controllerName.text.isNotEmpty) {
+                                      Future<bool> editEnent =
+                                          EventType.updateEventTypeFirestore(
+                                              controllerName.text,
+                                              imageUrl,
+                                              eventClassificationRef,
+                                              controllerId.text);
+                                      setState(() {
+                                        showEditButton = false;
+                                        editButton = false;
+                                      });
+                                      controllerName.clear();
+                                      controllerId.clear();
+                                      controllerImage.clear();
+                                      if (await editEnent) {
+                                        QuickAlert.show(
+                                            context: context,
+                                            customAsset:
+                                                'assets/images/Completionanimation.gif',
+                                            width: 300,
+                                            title: '',
+                                            widget: Text(
+                                              'تم تعديل المناسبة بنجاح',
+                                              style: StyleTextAdmin(
+                                                  18, Colors.black),
+                                            ),
+                                            type: QuickAlertType.success,
+                                            confirmBtnText: 'إغلاق',
+                                            confirmBtnTextStyle: StyleTextAdmin(
+                                                18, Colors.white));
+                                      } else {
+                                        QuickAlert.show(
+                                            context: context,
+                                            title: '',
+                                            width: 400,
+                                            customAsset:
+                                                'assets/images/error.gif',
+                                            widget: Column(
+                                              children: [
+                                                Text(
+                                                  'خطأ',
+                                                  style: StyleTextAdmin(
+                                                      25,
+                                                      Colors
+                                                          .black), // Custom style for title
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  'حدث خطأ, لم يتم تعديل المناسبة ',
+                                                  style: StyleTextAdmin(14,
+                                                      AdminButton), // Custom style for text
+                                                ),
+                                                SizedBox(height: 10),
+                                              ],
+                                            ),
+                                            type: QuickAlertType.error,
+                                            confirmBtnText: 'حسناً',
+                                            confirmBtnTextStyle: StyleTextAdmin(
+                                                16, Colors.white),
+                                            backgroundColor: Colors.white,
+                                            confirmBtnColor:
+                                                AdminButton.withOpacity(0.8));
+                                      }
+                                    } else {
+                                      QuickAlert.show(
+                                          context: context,
+                                          title: '',
+                                          width: 400,
+                                          customAsset:
+                                              'assets/images/error.gif',
+                                          widget: Column(
+                                            children: [
+                                              Text(
+                                                'خطأ',
+                                                style: StyleTextAdmin(
+                                                    25,
+                                                    Colors
+                                                        .black), // Custom style for title
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                'الرجاء إدخال كل البيانات المطلوبة',
+                                                style: StyleTextAdmin(14,
+                                                    AdminButton), // Custom style for text
+                                              ),
+                                              SizedBox(height: 10),
+                                            ],
+                                          ),
+                                          type: QuickAlertType.error,
+                                          confirmBtnText: 'حسناً',
+                                          confirmBtnTextStyle:
+                                              StyleTextAdmin(16, Colors.white),
+                                          backgroundColor: Colors.white,
+                                          confirmBtnColor:
+                                              AdminButton.withOpacity(0.8));
+                                    }
+                                  }
+                                : null, // Set onPressed to null when editButton is false
+                            icon: Icon(Icons.edit),
+                          ),
+                          TextButton(
+                            onPressed: editButton
+                                ? () {
+                                    setState(() {
+                                      controllerName.clear();
+                                      controllerId.clear();
+                                      controllerImage.clear();
+                                      editButton = false;
+                                    });
+                                  }
+                                : null,
+                            child: Icon(Icons.clear),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -212,14 +288,21 @@ class _AddEventState extends State<AddEvent> {
                             ),
                           ),
                           SizedBox(width: 8),
-                          Text(
-                            fileName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: fileBytes != null
-                                  ? ColorPurple_100 // Set color to ColorPurple_100 if fileBytes is not null
-                                  : Colors.grey, // Otherwise, set color to grey
-                            ),
+                          Container(
+                            width: 200,
+                            child: Text(fileName,
+                                style: StyleTextAdmin(
+                                  18,
+
+                                  fileBytes != null
+                                      ? ColorPurple_100 // Set color to ColorPurple_100 if fileBytes is not null
+                                      : Colors
+                                          .grey, // Otherwise, set color to grey
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis
+                                // Apply ellipsis if fileName is longer than 20 characters
+                                ),
                           ),
                         ],
                       ),
@@ -273,18 +356,34 @@ class _AddEventState extends State<AddEvent> {
                   margin: EdgeInsets.only(bottom: 90),
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: const Color.fromARGB(165, 255, 255, 255)
-                            .withOpacity(0.3),
-                        width: 2),
+                      color: const Color.fromARGB(165, 255, 255, 255)
+                          .withOpacity(0.3),
+                      width: 2,
+                    ),
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.black.withOpacity(0.17),
+                    color: Colors.white.withOpacity(0.3),
                   ),
                   child: TextButton(
-                    child: Text('إضافة مناسبة',
-                        style: StyleTextAdmin(16, AdminButton)),
+                    child: showSpinner
+                        ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            'إضافة مناسبة',
+                            style: StyleTextAdmin(16, AdminButton),
+                          ),
                     onPressed: () async {
-                      setState(() async {
-                        showSpinner = true;
+                      setState(() {
+                        showSpinner =
+                            true; // Set showSpinner to true when button is pressed
+                      });
+                      if (controllerName.text.isNotEmpty &&
+                          controllerImage.text.isNotEmpty) {
                         int count = await FirestoreService.getCountOfRecords(
                             'event_types');
                         int id = count + 1;
@@ -302,19 +401,71 @@ class _AddEventState extends State<AddEvent> {
                         controllerName.clear();
                         controllerId.clear();
                         controllerImage.clear();
-
+                        fileName = "لم يتم اختيار صورة";
+                        fileBytes = null;
                         // Update UI based on the result
 
                         // If addition was successful, show success message
-                        QuickAlert.show(
-                          context: context,
-                          text: result,
-                          type: QuickAlertType.info,
-                        );
 
-                        // Set spinner to false after processing is done
-                        showSpinner = false;
-                      });
+                        QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.info,
+                            width: 440,
+                            customAsset:
+                                'assets/images/info.gif', // Replace with your asset path
+                            title: '',
+                            widget: Column(
+                              children: [
+                                Text(
+                                  result,
+                                  style: StyleTextAdmin(
+                                      14, AdminButton), // Custom style for text
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                            confirmBtnText: 'إغلاق',
+                            confirmBtnTextStyle:
+                                StyleTextAdmin(16, Colors.white),
+                            backgroundColor: Colors.white,
+                            confirmBtnColor: AdminButton.withOpacity(0.8));
+                        setState(() {
+                          showSpinner =
+                              false; // Set showSpinner to false after processing is done
+                        });
+                      } else {
+                        setState(() {
+                          showSpinner =
+                              false; // Set showSpinner to false after processing is done
+                        });
+                        QuickAlert.show(
+                            context: context,
+                            title: '',
+                            width: 400,
+                            customAsset: 'assets/images/error.gif',
+                            widget: Column(
+                              children: [
+                                Text(
+                                  'خطأ',
+                                  style: StyleTextAdmin(25,
+                                      Colors.black), // Custom style for title
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'الرجاء إدخال كل البيانات المطلوبة',
+                                  style: StyleTextAdmin(
+                                      14, AdminButton), // Custom style for text
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                            type: QuickAlertType.error,
+                            confirmBtnText: 'حسناً',
+                            confirmBtnTextStyle:
+                                StyleTextAdmin(16, Colors.white),
+                            backgroundColor: Colors.white,
+                            confirmBtnColor: AdminButton.withOpacity(0.8));
+                      }
                     },
                   ),
                 ),

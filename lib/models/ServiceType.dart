@@ -39,10 +39,10 @@ class ServiceType {
       });
 
       print('Document added with ID: ${this.id}');
-      return 'success';
+      return 'تم إضافة الخدمة بنجاح';
     } catch (e) {
       print('Error adding document: $e');
-      return 'Error adding document: $e';
+      return 'حدث خطأ لم تتم إضافة الخدمة: $e';
     }
   }
 

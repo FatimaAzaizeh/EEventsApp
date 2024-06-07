@@ -33,9 +33,9 @@ class EventWizard {
           );
         }),
       });
-      return 'EventWizard uploaded to Firebase successfully!';
+      return 'تم تحميل مراحل المناسبة  بنجاح إلى Firebase!';
     } catch (e) {
-      return 'Error uploading EventWizard to Firebase: $e';
+      return 'حدث خطأ أثناء تحميل مراحل المناسبة إلى Firebase: $e';
     }
   }
 }

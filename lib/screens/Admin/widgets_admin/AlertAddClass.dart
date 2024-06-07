@@ -67,15 +67,34 @@ class _AddClassificationState extends State<AddClassification> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () async {
-                if (ControllerName.text.isEmpty || ControllerId.text.isEmpty) {
+                if (ControllerName.text.isEmpty) {
                   // Show an alert if any required field is empty
                   QuickAlert.show(
-                    context: context,
-                    title: 'خطأ',
-                    text: 'الرجاء إدخال كل البيانات المطلوبة',
-                    type: QuickAlertType.error,
-                    confirmBtnText: 'حسناً',
-                  );
+                      context: context,
+                      title: '',
+                      width: 400,
+                      customAsset: 'assets/images/error.gif',
+                      widget: Column(
+                        children: [
+                          Text(
+                            'خطأ',
+                            style: StyleTextAdmin(
+                                25, Colors.black), // Custom style for title
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'الرجاء إدخال كل البيانات المطلوبة',
+                            style: StyleTextAdmin(
+                                14, AdminButton), // Custom style for text
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                      type: QuickAlertType.error,
+                      confirmBtnText: 'حسناً',
+                      confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
+                      backgroundColor: Colors.white,
+                      confirmBtnColor: AdminButton.withOpacity(0.8));
                 } else {
                   setState(() {
                     showSpinner = true; // Show spinner while creating user
@@ -98,12 +117,28 @@ class _AddClassificationState extends State<AddClassification> {
                     // Close only the current dialog
                     Navigator.of(context).pop();
                     // Show QuickAlert dialog after user creation
+
                     QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.info,
-                      title: '  $status',
-                      confirmBtnText: 'إغلاق',
-                    );
+                        context: context,
+                        type: QuickAlertType.info,
+                        width: 440,
+                        customAsset:
+                            'assets/images/info.gif', // Replace with your asset path
+                        title: '',
+                        widget: Column(
+                          children: [
+                            Text(
+                              '  $status',
+                              style: StyleTextAdmin(
+                                  14, AdminButton), // Custom style for text
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        confirmBtnText: 'إغلاق',
+                        confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
+                        backgroundColor: Colors.white,
+                        confirmBtnColor: AdminButton.withOpacity(0.8));
                   }
                 }
               },

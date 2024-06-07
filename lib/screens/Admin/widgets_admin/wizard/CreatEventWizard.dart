@@ -37,12 +37,12 @@ class _CreateNewEventWizardState extends State<CreateNewEventWizard> {
               children: [
                 Text(
                   'اختر مناسبة',
-                  style: TextStyle(fontSize: 24, color: ColorPink_100),
+                  style: StyleTextAdmin(24, AdminButton),
                 ),
                 SizedBox(height: 10),
                 Container(
-                  width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 0.6,
+                  width: MediaQuery.of(context).size.height * 0.62,
+                  height: MediaQuery.of(context).size.height * 0.62,
                   child: EventScreen(),
                 ),
               ],

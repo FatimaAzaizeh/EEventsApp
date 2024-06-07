@@ -49,10 +49,10 @@ class EventType {
         // Add other fields as needed
       });
       print('Document added with ID: ${this.id}');
-      return 'success';
+      return 'تم إضافة المناسبة بنجاح';
     } catch (e) {
       print('Error adding document: $e');
-      return 'Error adding document: $e';
+      return 'حدث خطأ لم تتم إضافة المناسبة: $e';
     }
   }
 

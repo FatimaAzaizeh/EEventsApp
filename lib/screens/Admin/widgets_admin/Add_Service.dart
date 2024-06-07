@@ -11,7 +11,6 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/FirestoreService.dart';
 import 'package:testtapp/models/ServiceType.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/serviceItem.dart';
-import 'package:testtapp/widgets/Event_item.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -66,65 +65,131 @@ class _AddServiceState extends State<AddService> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'الخدمات',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 60, 19, 60),
-                        ),
-                      ),
-                      SizedBox(width: 220),
-                      TextButton(
-                        onPressed: showEditButton
-                            ? () async {
-                                if (fileName != 'لم يتم اختيار صورة ') {
-                                  await uploadFile();
-                                }
-                                bool result =
-                                    await ServiceType.updateServiceFirestore(
-                                        ControllerName.text,
-                                        imageUrl,
-                                        ControllerId.text);
+                      Text('الخدمات', style: StyleTextAdmin(20, AdminButton)),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: showEditButton
+                                ? () async {
+                                    if (ControllerName.text.isNotEmpty) {
+                                      if (fileName != 'لم يتم اختيار صورة ') {
+                                        await uploadFile();
+                                      }
+                                      bool result = await ServiceType
+                                          .updateServiceFirestore(
+                                              ControllerName.text,
+                                              imageUrl,
+                                              ControllerId.text);
 
-                                setState(() {
-                                  showEditButton = false;
-                                });
-                                ControllerName.clear();
-                                ControllerId.clear();
-                                if (result) {
-                                  QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.success,
-                                  );
-                                } else {
-                                  QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.error,
-                                  );
-                                }
-                                setState(() {
-                                  showEditButton = false;
-                                });
-                              }
-                            : null,
-                        child: Icon(Icons.edit),
-                      ),
-                      TextButton(
-                        onPressed: showEditButton
-                            ? () {
-                                setState(() {
-                                  ControllerName.clear();
-                                  ControllerId.clear();
-                                  ControllerImage.clear();
-                                });
-                              }
-                            : null,
-                        child: Icon(Icons.clear),
+                                      setState(() {
+                                        showEditButton = false;
+                                      });
+                                      ControllerName.clear();
+                                      ControllerId.clear();
+                                      if (result) {
+                                        QuickAlert.show(
+                                            context: context,
+                                            customAsset:
+                                                'assets/images/Completionanimation.gif',
+                                            width: 300,
+                                            title: '',
+                                            widget: Text(
+                                              'تم تعديل الخدمة بنجاح',
+                                              style: StyleTextAdmin(
+                                                  18, Colors.black),
+                                            ),
+                                            type: QuickAlertType.success,
+                                            confirmBtnText: 'إغلاق',
+                                            confirmBtnTextStyle: StyleTextAdmin(
+                                                18, Colors.white));
+                                      } else {
+                                        QuickAlert.show(
+                                            context: context,
+                                            title: '',
+                                            width: 400,
+                                            customAsset:
+                                                'assets/images/error.gif',
+                                            widget: Column(
+                                              children: [
+                                                Text(
+                                                  'خطأ',
+                                                  style: StyleTextAdmin(
+                                                      25,
+                                                      Colors
+                                                          .black), // Custom style for title
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  'حدث خطأ, لم يتم تعديل الحدمة ',
+                                                  style: StyleTextAdmin(14,
+                                                      AdminButton), // Custom style for text
+                                                ),
+                                                SizedBox(height: 10),
+                                              ],
+                                            ),
+                                            type: QuickAlertType.error,
+                                            confirmBtnText: 'حسناً',
+                                            confirmBtnTextStyle: StyleTextAdmin(
+                                                16, Colors.white),
+                                            backgroundColor: Colors.white,
+                                            confirmBtnColor:
+                                                AdminButton.withOpacity(0.8));
+                                      }
+                                      setState(() {
+                                        showEditButton = false;
+                                      });
+                                    } else {
+                                      QuickAlert.show(
+                                          context: context,
+                                          title: '',
+                                          width: 400,
+                                          customAsset:
+                                              'assets/images/error.gif',
+                                          widget: Column(
+                                            children: [
+                                              Text(
+                                                'خطأ',
+                                                style: StyleTextAdmin(
+                                                    25,
+                                                    Colors
+                                                        .black), // Custom style for title
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                'الرجاء إدخال كل البيانات المطلوبة',
+                                                style: StyleTextAdmin(14,
+                                                    AdminButton), // Custom style for text
+                                              ),
+                                              SizedBox(height: 10),
+                                            ],
+                                          ),
+                                          type: QuickAlertType.error,
+                                          confirmBtnText: 'حسناً',
+                                          confirmBtnTextStyle:
+                                              StyleTextAdmin(16, Colors.white),
+                                          backgroundColor: Colors.white,
+                                          confirmBtnColor:
+                                              AdminButton.withOpacity(0.8));
+                                    }
+                                  }
+                                : null,
+                            child: Icon(Icons.edit),
+                          ),
+                          TextButton(
+                            onPressed: showEditButton
+                                ? () {
+                                    setState(() {
+                                      ControllerName.clear();
+                                      ControllerId.clear();
+                                      ControllerImage.clear();
+                                    });
+                                  }
+                                : null,
+                            child: Icon(Icons.clear),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -133,6 +198,7 @@ class _AddServiceState extends State<AddService> {
                   decoration: InputDecoration(
                     labelText: 'أسم الخدمة:',
                     icon: Icon(Icons.title),
+                    labelStyle: StyleTextAdmin(14, AdminButton),
                   ),
                   controller: ControllerName,
                   onChanged: (value) {
@@ -144,6 +210,8 @@ class _AddServiceState extends State<AddService> {
                   decoration: InputDecoration(
                     labelText: 'يتم تعيين رقم معرّف الخدمة تلقائيًا',
                     icon: Icon(Icons.room_service),
+                    labelStyle:
+                        StyleTextAdmin(14, AdminButton.withOpacity(0.55)),
                   ),
                   controller: ControllerId,
                   onChanged: (value) {
@@ -177,60 +245,138 @@ class _AddServiceState extends State<AddService> {
                             ),
                           ),
                           SizedBox(width: 8),
-                          Text(
-                            fileName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: fileBytes != null
-                                  ? ColorPurple_100
-                                  : Colors.grey,
-                            ),
+                          Container(
+                            width: 200,
+                            child: Text(fileName,
+                                style: StyleTextAdmin(
+                                  18,
+
+                                  fileBytes != null
+                                      ? ColorPurple_100 // Set color to ColorPurple_100 if fileBytes is not null
+                                      : Colors
+                                          .grey, // Otherwise, set color to grey
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis
+                                // Apply ellipsis if fileName is longer than 20 characters
+                                ),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                Container(
-                  width: 200,
-                  margin: EdgeInsets.only(bottom: 90),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: const Color.fromARGB(165, 255, 255, 255)
-                            .withOpacity(0.3),
-                        width: 2),
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black.withOpacity(0.17),
-                  ),
-                  child: TextButton(
-                    child: Text('إضافة خدمة',
-                        style: StyleTextAdmin(16, AdminButton)),
-                    onPressed: () async {
-                      setState(() {
-                        showSpinner = true;
-                      });
-                      int count = await FirestoreService.getCountOfRecords(
-                          'service_types');
-                      int id = count + 1;
-                      ServiceType newservice = ServiceType(
-                        id: id.toString(),
-                        name: ControllerName.text,
-                        imageUrl: imageUrl,
-                      );
-                      String result = await newservice.saveToDatabase();
-                      setState(() {
-                        showSpinner = false;
-                      });
-                      ControllerName.clear();
-                      ControllerId.clear();
-                      ControllerImage.clear();
-
-                      QuickAlert.show(
-                        context: context,
-                        text: result,
-                        type: QuickAlertType.info,
-                      );
-                    },
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    width: 200,
+                    margin: EdgeInsets.only(bottom: 90),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color.fromARGB(165, 255, 255, 255)
+                              .withOpacity(0.3),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    child: showSpinner
+                        ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : TextButton(
+                            child: Text('إضافة خدمة',
+                                style: StyleTextAdmin(16, AdminButton)),
+                            onPressed: () async {
+                              setState(() {
+                                showSpinner = true;
+                              });
+                              if (ControllerName.text.isNotEmpty &&
+                                  ControllerImage.text.isNotEmpty) {
+                                int count =
+                                    await FirestoreService.getCountOfRecords(
+                                        'service_types');
+                                int id = count + 1;
+                                ServiceType newservice = ServiceType(
+                                  id: id.toString(),
+                                  name: ControllerName.text,
+                                  imageUrl: imageUrl,
+                                );
+                                String result =
+                                    await newservice.saveToDatabase();
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                ControllerName.clear();
+                                ControllerId.clear();
+                                ControllerImage.clear();
+                                fileName = "لم يتم اختيار صورة";
+                                fileBytes = null;
+                                QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.info,
+                                    width: 440,
+                                    customAsset:
+                                        'assets/images/info.gif', // Replace with your asset path
+                                    title: '',
+                                    widget: Column(
+                                      children: [
+                                        Text(
+                                          result,
+                                          style: StyleTextAdmin(14,
+                                              AdminButton), // Custom style for text
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                    confirmBtnText: 'إغلاق',
+                                    confirmBtnTextStyle:
+                                        StyleTextAdmin(16, Colors.white),
+                                    backgroundColor: Colors.white,
+                                    confirmBtnColor:
+                                        AdminButton.withOpacity(0.8));
+                              } else {
+                                setState(() {
+                                  showSpinner =
+                                      false; // Set showSpinner to false after processing is done
+                                });
+                                QuickAlert.show(
+                                    context: context,
+                                    title: '',
+                                    width: 400,
+                                    customAsset: 'assets/images/error.gif',
+                                    widget: Column(
+                                      children: [
+                                        Text(
+                                          'خطأ',
+                                          style: StyleTextAdmin(
+                                              25,
+                                              Colors
+                                                  .black), // Custom style for title
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'الرجاء إدخال كل البيانات المطلوبة',
+                                          style: StyleTextAdmin(14,
+                                              AdminButton), // Custom style for text
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                    type: QuickAlertType.error,
+                                    confirmBtnText: 'حسناً',
+                                    confirmBtnTextStyle:
+                                        StyleTextAdmin(16, Colors.white),
+                                    backgroundColor: Colors.white,
+                                    confirmBtnColor:
+                                        AdminButton.withOpacity(0.8));
+                              }
+                            },
+                          ),
                   ),
                 ),
               ],
