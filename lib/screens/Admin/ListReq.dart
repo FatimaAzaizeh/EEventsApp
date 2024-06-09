@@ -76,7 +76,7 @@ class _ListReqState extends State<ListReq> {
           return Center(
             child: Text(
               'لا يوجد طلبات جديدة',
-              style: TextStyle(fontSize: 18, color: Colors.black),
+              style: StyleTextAdmin(18, Colors.black),
             ),
           );
         }
