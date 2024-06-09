@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 
 class OpeningHoursPage extends StatefulWidget {
@@ -44,7 +46,6 @@ class _OpeningHoursPageState extends State<OpeningHoursPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       
         actions: [
           IconButton(
             icon: Icon(Icons.save),
@@ -150,16 +151,10 @@ class _OpeningHoursPageState extends State<OpeningHoursPage> {
       'working_hours': workingHoursMap,
     }).then((_) {
       print('Opening hours saved successfully!');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Opening hours saved successfully!'),
-        duration: Duration(seconds: 2),
-      ));
+
+      SuccessAlert(context, "تم حفظ ساعات العمل بنجاح!");
     }).catchError((error) {
-      print('Failed to save opening hours: $error');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to save opening hours'),
-        duration: Duration(seconds: 2),
-      ));
+      ErrorAlert(context, 'خطأ', 'فشل حفظ ساعات العمل.');
     });
   }
 

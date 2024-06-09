@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/success.dart';
 
 // Your imports
 import 'package:testtapp/constants.dart';
@@ -89,89 +91,18 @@ class _AddServiceState extends State<AddService> {
                                       ControllerName.clear();
                                       ControllerId.clear();
                                       if (result) {
-                                        QuickAlert.show(
-                                            context: context,
-                                            customAsset:
-                                                'assets/images/Completionanimation.gif',
-                                            width: 300,
-                                            title: '',
-                                            widget: Text(
-                                              'تم تعديل الخدمة بنجاح',
-                                              style: StyleTextAdmin(
-                                                  18, Colors.black),
-                                            ),
-                                            type: QuickAlertType.success,
-                                            confirmBtnText: 'إغلاق',
-                                            confirmBtnTextStyle: StyleTextAdmin(
-                                                18, Colors.white));
+                                        SuccessAlert(
+                                            context, 'تم تعديل الخدمة بنجاح');
                                       } else {
-                                        QuickAlert.show(
-                                            context: context,
-                                            title: '',
-                                            width: 400,
-                                            customAsset:
-                                                'assets/images/error.gif',
-                                            widget: Column(
-                                              children: [
-                                                Text(
-                                                  'خطأ',
-                                                  style: StyleTextAdmin(
-                                                      25,
-                                                      Colors
-                                                          .black), // Custom style for title
-                                                ),
-                                                SizedBox(height: 10),
-                                                Text(
-                                                  'حدث خطأ, لم يتم تعديل الحدمة ',
-                                                  style: StyleTextAdmin(14,
-                                                      AdminButton), // Custom style for text
-                                                ),
-                                                SizedBox(height: 10),
-                                              ],
-                                            ),
-                                            type: QuickAlertType.error,
-                                            confirmBtnText: 'حسناً',
-                                            confirmBtnTextStyle: StyleTextAdmin(
-                                                16, Colors.white),
-                                            backgroundColor: Colors.white,
-                                            confirmBtnColor:
-                                                AdminButton.withOpacity(0.8));
+                                        ErrorAlert(context, 'خطأ',
+                                            'حدث خطأ, لم يتم تعديل الحدمة ');
                                       }
                                       setState(() {
                                         showEditButton = false;
                                       });
                                     } else {
-                                      QuickAlert.show(
-                                          context: context,
-                                          title: '',
-                                          width: 400,
-                                          customAsset:
-                                              'assets/images/error.gif',
-                                          widget: Column(
-                                            children: [
-                                              Text(
-                                                'خطأ',
-                                                style: StyleTextAdmin(
-                                                    25,
-                                                    Colors
-                                                        .black), // Custom style for title
-                                              ),
-                                              SizedBox(height: 10),
-                                              Text(
-                                                'الرجاء إدخال كل البيانات المطلوبة',
-                                                style: StyleTextAdmin(14,
-                                                    AdminButton), // Custom style for text
-                                              ),
-                                              SizedBox(height: 10),
-                                            ],
-                                          ),
-                                          type: QuickAlertType.error,
-                                          confirmBtnText: 'حسناً',
-                                          confirmBtnTextStyle:
-                                              StyleTextAdmin(16, Colors.white),
-                                          backgroundColor: Colors.white,
-                                          confirmBtnColor:
-                                              AdminButton.withOpacity(0.8));
+                                      ErrorAlert(context, 'خطأ',
+                                          'الرجاء إدخال كل البيانات المطلوبة');
                                     }
                                   }
                                 : null,
@@ -316,64 +247,18 @@ class _AddServiceState extends State<AddService> {
                                 ControllerImage.clear();
                                 fileName = "لم يتم اختيار صورة";
                                 fileBytes = null;
-                                QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.info,
-                                    width: 440,
-                                    customAsset:
-                                        'assets/images/info.gif', // Replace with your asset path
-                                    title: '',
-                                    widget: Column(
-                                      children: [
-                                        Text(
-                                          result,
-                                          style: StyleTextAdmin(14,
-                                              AdminButton), // Custom style for text
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                    ),
-                                    confirmBtnText: 'إغلاق',
-                                    confirmBtnTextStyle:
-                                        StyleTextAdmin(16, Colors.white),
-                                    backgroundColor: Colors.white,
-                                    confirmBtnColor:
-                                        AdminButton.withOpacity(0.8));
+                                if (result == 'تم إضافة الخدمة بنجاح') {
+                                  SuccessAlert(context, result);
+                                } else {
+                                  ErrorAlert(context, 'خطأ', result);
+                                }
                               } else {
                                 setState(() {
                                   showSpinner =
                                       false; // Set showSpinner to false after processing is done
                                 });
-                                QuickAlert.show(
-                                    context: context,
-                                    title: '',
-                                    width: 400,
-                                    customAsset: 'assets/images/error.gif',
-                                    widget: Column(
-                                      children: [
-                                        Text(
-                                          'خطأ',
-                                          style: StyleTextAdmin(
-                                              25,
-                                              Colors
-                                                  .black), // Custom style for title
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          'الرجاء إدخال كل البيانات المطلوبة',
-                                          style: StyleTextAdmin(14,
-                                              AdminButton), // Custom style for text
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                    ),
-                                    type: QuickAlertType.error,
-                                    confirmBtnText: 'حسناً',
-                                    confirmBtnTextStyle:
-                                        StyleTextAdmin(16, Colors.white),
-                                    backgroundColor: Colors.white,
-                                    confirmBtnColor:
-                                        AdminButton.withOpacity(0.8));
+                                ErrorAlert(context, 'خطأ',
+                                    'الرجاء إدخال كل البيانات المطلوبة');
                               }
                             },
                           ),

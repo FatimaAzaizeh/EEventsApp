@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Classification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Service.dart';
@@ -115,79 +117,14 @@ class _EventClassificationState extends State<EventClassification> {
                             Id = '';
                           });
                           if (await editclass) {
-                            QuickAlert.show(
-                                context: context,
-                                customAsset:
-                                    'assets/images/Completionanimation.gif',
-                                width: 300,
-                                title: '',
-                                widget: Text(
-                                  'تم تعديل اسم التصنيف بنجاح',
-                                  style: StyleTextAdmin(18, Colors.black),
-                                ),
-                                type: QuickAlertType.success,
-                                confirmBtnText: 'إغلاق',
-                                confirmBtnTextStyle:
-                                    StyleTextAdmin(18, Colors.white));
+                            SuccessAlert(context, 'تم تعديل اسم التصنيف بنجاح');
                           } else {
-                            QuickAlert.show(
-                                context: context,
-                                title: '',
-                                width: 400,
-                                customAsset: 'assets/images/error.gif',
-                                widget: Column(
-                                  children: [
-                                    Text(
-                                      'خطأ',
-                                      style: StyleTextAdmin(
-                                          25,
-                                          Colors
-                                              .black), // Custom style for title
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'حدث خطأ, لم يتم تعديل إسم التصنيف ',
-                                      style: StyleTextAdmin(14,
-                                          AdminButton), // Custom style for text
-                                    ),
-                                    SizedBox(height: 10),
-                                  ],
-                                ),
-                                type: QuickAlertType.error,
-                                confirmBtnText: 'حسناً',
-                                confirmBtnTextStyle:
-                                    StyleTextAdmin(16, Colors.white),
-                                backgroundColor: Colors.white,
-                                confirmBtnColor: AdminButton.withOpacity(0.8));
+                            ErrorAlert(context, 'خطأ',
+                                'حدث خطأ, لم يتم تعديل إسم التصنيف ');
                           }
                         } else {
-                          QuickAlert.show(
-                              context: context,
-                              title: '',
-                              width: 400,
-                              customAsset: 'assets/images/error.gif',
-                              widget: Column(
-                                children: [
-                                  Text(
-                                    'خطأ',
-                                    style: StyleTextAdmin(25,
-                                        Colors.black), // Custom style for title
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'الرجاء إدخال كل البيانات المطلوبة',
-                                    style: StyleTextAdmin(14,
-                                        AdminButton), // Custom style for text
-                                  ),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                              type: QuickAlertType.error,
-                              confirmBtnText: 'حسناً',
-                              confirmBtnTextStyle:
-                                  StyleTextAdmin(16, Colors.white),
-                              backgroundColor: Colors.white,
-                              confirmBtnColor: AdminButton.withOpacity(0.8));
+                          ErrorAlert(context, 'خطأ',
+                              'الرجاء إدخال كل البيانات المطلوبة');
                         }
                       }
                     : null,

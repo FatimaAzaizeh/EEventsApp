@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/info.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/models/Vendor.dart';
@@ -277,7 +280,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
 
         String result = await newVendorUser.saveToDatabase();
 
-        if (result == 'User added to the database successfully!') {
+        if (result == 'تمت إضافة المستخدم إلى قاعدة البيانات بنجاح!') {
           Vendor newVendor = Vendor(
             id: uid,
             businessName: _commercialNameController.text,
@@ -298,20 +301,14 @@ class _DrawerVendorState extends State<DrawerVendor> {
 
           await newVendor.addToFirestore();
           setState(() {
-            QuickAlert.show(
-              context: context,
-              text: 'User and vendor added successfully!',
-              type: QuickAlertType.success,
-            );
+            SuccessAlert(context, 'تم تقديم الطلب بنجاح');
+          });
+        } else if (result.contains('خطأ')) {
+          setState(() {
+            ErrorAlert(context, 'خطأ', '$result');
           });
         } else {
-          setState(() {
-            QuickAlert.show(
-              context: context,
-              text: 'Error: $result',
-              type: QuickAlertType.error,
-            );
-          });
+          InfoAlert(context, 'معلومات مكررة', result);
         }
 
         setState(() {

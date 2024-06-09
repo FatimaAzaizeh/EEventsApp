@@ -3,33 +3,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Orders {
   String orderId;
   String userId;
-  Map<int, Map<String, dynamic>> vendors;
+  Map<String, Map<String, dynamic>> vendors;
+  double totalPrice;
+  int totalItems;
 
   Orders({
     required this.orderId,
     required this.userId,
     required this.vendors,
+    required this.totalPrice,
+    required this.totalItems,
   });
 
   Future<void> uploadToFirebase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    // Specify the custom document ID
-    String customId = this.orderId;
-
-    // Reference to the collection where you want to add the document
-    CollectionReference collectionReference = firestore.collection('orders');
-
     try {
-      // Add the document with the custom ID
-      await collectionReference.doc(customId).set({
+      // Reference to the collection where you want to add the document
+      CollectionReference collectionReference = firestore.collection('orders');
+
+      // Add the document with the generated order ID
+      await collectionReference.doc(orderId).set({
         'order_id': orderId,
         'user_id': userId,
+        'total_price': totalPrice,
+        'total_items': totalItems,
         'vendors': vendors.map((key, value) {
           return MapEntry(
             key.toString(),
             {
-              'vendor_id': key,
+              'vendor_id': value['vendor_id'],
               'created_at': value['created_at'],
               'deliver_at': value['deliver_at'],
               'order_status_id': value['order_status_id'],
@@ -48,8 +51,10 @@ class Orders {
           );
         }),
       });
+
+      print('Orders uploaded to Firebase successfully!');
     } catch (e) {
-      print('Error uploading to Firebase: $e');
+      print('Error uploading orders to Firebase: $e');
     }
   }
 }

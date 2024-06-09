@@ -7,6 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/info.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Classification.dart';
 import 'package:testtapp/models/FirestoreService.dart';
@@ -69,32 +72,8 @@ class _AddClassificationState extends State<AddClassification> {
               onPressed: () async {
                 if (ControllerName.text.isEmpty) {
                   // Show an alert if any required field is empty
-                  QuickAlert.show(
-                      context: context,
-                      title: '',
-                      width: 400,
-                      customAsset: 'assets/images/error.gif',
-                      widget: Column(
-                        children: [
-                          Text(
-                            'خطأ',
-                            style: StyleTextAdmin(
-                                25, Colors.black), // Custom style for title
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'الرجاء إدخال كل البيانات المطلوبة',
-                            style: StyleTextAdmin(
-                                14, AdminButton), // Custom style for text
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                      type: QuickAlertType.error,
-                      confirmBtnText: 'حسناً',
-                      confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
-                      backgroundColor: Colors.white,
-                      confirmBtnColor: AdminButton.withOpacity(0.8));
+                  ErrorAlert(
+                      context, 'خطأ', 'الرجاء إدخال كل البيانات المطلوبة');
                 } else {
                   setState(() {
                     showSpinner = true; // Show spinner while creating user
@@ -117,28 +96,13 @@ class _AddClassificationState extends State<AddClassification> {
                     // Close only the current dialog
                     Navigator.of(context).pop();
                     // Show QuickAlert dialog after user creation
-
-                    QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.info,
-                        width: 440,
-                        customAsset:
-                            'assets/images/info.gif', // Replace with your asset path
-                        title: '',
-                        widget: Column(
-                          children: [
-                            Text(
-                              '  $status',
-                              style: StyleTextAdmin(
-                                  14, AdminButton), // Custom style for text
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        confirmBtnText: 'إغلاق',
-                        confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
-                        backgroundColor: Colors.white,
-                        confirmBtnColor: AdminButton.withOpacity(0.8));
+                    if (status == 'تم إضافة تصنيف جديد ') {
+                      SuccessAlert(context, status);
+                    } else if (status.contains('خطأ')) {
+                      ErrorAlert(context, 'خطأ', status);
+                    } else {
+                      InfoAlert(context, 'معلومات مكررة', status);
+                    }
                   }
                 }
               },

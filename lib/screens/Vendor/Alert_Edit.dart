@@ -7,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/item.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
@@ -106,7 +108,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(147, 246, 242, 239) ,
+      backgroundColor: Color.fromARGB(147, 246, 242, 239),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -114,10 +116,9 @@ class _AlertEditItemState extends State<AlertEditItem> {
             'تعديل المنتج',
             style: StyleTextAdmin(22, Colors.black),
           ),
-           GestureDetector(
+          GestureDetector(
             onTap: () async {
-              FilePickerResult? result =
-                  await FilePicker.platform.pickFiles();
+              FilePickerResult? result = await FilePicker.platform.pickFiles();
               if (result != null) {
                 setState(() {
                   fileBytes = result.files.first.bytes;
@@ -142,7 +143,6 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ),
           SizedBox(height: 8),
           SizedBox(width: 8),
-        
         ],
       ),
       content: Column(
@@ -206,13 +206,8 @@ class _AlertEditItemState extends State<AlertEditItem> {
             child: ElevatedButton(
               onPressed: () async {
                 if (ControllerName.text.isEmpty) {
-                  QuickAlert.show(
-                    context: context,
-                    title: 'خطأ',
-                    text: 'الرجاء إدخال كل البيانات المطلوبة',
-                    type: QuickAlertType.error,
-                    confirmBtnText: 'حسناً',
-                  );
+                  ErrorAlert(
+                      context, 'خطأ', 'الرجاء إدخال كل البيانات المطلوبة');
                 } else {
                   await uploadFile();
                   double price = double.tryParse(ControllerPrice.text) ?? 0.0;
@@ -240,12 +235,11 @@ class _AlertEditItemState extends State<AlertEditItem> {
                     // Handle error with specific message
                   } finally {
                     Navigator.of(context).pop();
-
-                    QuickAlert.show(
-                      context: context,
-                      text: result,
-                      type: QuickAlertType.info,
-                    );
+                    if (result.contains('تعديل')) {
+                      SuccessAlert(context, result);
+                    } else {
+                      ErrorAlert(context, 'خطأ', result);
+                    }
 
                     setState(() {
                       showSpinner = false;

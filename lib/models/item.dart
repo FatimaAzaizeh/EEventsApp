@@ -39,7 +39,7 @@ class Item {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        return 'Item with ID $itemCode already exists for vendor $vendorId.';
+        return 'العنصر ذو المعرف $itemCode موجود بالفعل   .';
       }
       await collectionRef.add({
         'vendor_id': vendorId,
@@ -54,9 +54,9 @@ class Item {
         'item_status_id': itemStatusId,
         'created_at': createdAt,
       });
-      return 'Item with ID $itemCode added successfully for vendor $vendorId.';
+      return 'تمت إضافة العنصر ذو المعرف $itemCode بنجاح  .';
     } catch (error) {
-      throw Exception('Failed to add item: $error');
+      throw Exception('فشل إضافة العنصر: $error');
     }
   }
 
@@ -79,7 +79,7 @@ class Item {
           .get();
 
       if (querySnapshot.docs.isEmpty) {
-        return 'Item with ID $itemCode does not exist for vendor .';
+        return 'العنصر ذو المعرف $itemCode غير موجود  .';
       }
 
       // Update each document found with the provided data
@@ -94,9 +94,9 @@ class Item {
         });
       }
 
-      return 'Item with ID $itemCode updated successfully for vendor';
+      return 'تم تعديل العنصر ذو المعرف $itemCode بنجاح ';
     } catch (error) {
-      throw Exception('Failed to edit item: $error');
+      throw Exception('فشل تعديل العنصر: $error');
     }
   }
 

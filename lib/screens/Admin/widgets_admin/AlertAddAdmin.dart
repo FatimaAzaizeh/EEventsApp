@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
@@ -152,32 +154,8 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     ControllerPassword.text.isEmpty ||
                     fileBytes == null) {
                   // Show an alert if any required field is empty
-                  QuickAlert.show(
-                      context: context,
-                      title: '',
-                      width: 400,
-                      customAsset: 'assets/images/error.gif',
-                      widget: Column(
-                        children: [
-                          Text(
-                            'خطأ',
-                            style: StyleTextAdmin(
-                                25, Colors.black), // Custom style for title
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'الرجاء إدخال كل البيانات المطلوبة',
-                            style: StyleTextAdmin(
-                                14, AdminButton), // Custom style for text
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                      type: QuickAlertType.error,
-                      confirmBtnText: 'حسناً',
-                      confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
-                      backgroundColor: Colors.white,
-                      confirmBtnColor: AdminButton.withOpacity(0.8));
+                  ErrorAlert(
+                      context, 'خطأ', 'الرجاء إدخال كل البيانات المطلوبة');
                 } else {
                   await uploadFile(); // Upload file before creating user
                   setState(() {
@@ -211,19 +189,7 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                     Navigator.of(context).pop();
 
                     // Show QuickAlert dialog after user creation
-
-                    QuickAlert.show(
-                        context: context,
-                        customAsset: 'assets/images/Completionanimation.gif',
-                        width: 300,
-                        title: '',
-                        widget: Text(
-                          'تم إضافة $email',
-                          style: StyleTextAdmin(18, Colors.black),
-                        ),
-                        type: QuickAlertType.success,
-                        confirmBtnText: 'إغلاق',
-                        confirmBtnTextStyle: StyleTextAdmin(20, Colors.white));
+                    SuccessAlert(context, 'تم إضافة $email');
                   } catch (e) {
                     print(e);
                   } finally {

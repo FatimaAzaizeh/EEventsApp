@@ -31,7 +31,7 @@ class UserDataBase {
           await users.where('UID', isEqualTo: UID).limit(1).get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        return 'User with ID $UID already exists.';
+        return 'المستخدم ذو المعرف $UID موجود بالفعل.';
       }
 
       // Add the new user to the database
@@ -46,9 +46,9 @@ class UserDataBase {
         'Image_url': imageUrl,
       });
 
-      return 'User added to the database successfully!';
+      return 'تمت إضافة المستخدم إلى قاعدة البيانات بنجاح!';
     } catch (error) {
-      return 'Error adding user to the database: $error';
+      return 'خطأ في إضافة المستخدم إلى قاعدة البيانات: $error';
     }
   }
 

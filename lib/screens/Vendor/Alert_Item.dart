@@ -7,6 +7,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/info.dart';
+import 'package:testtapp/Alert/success.dart';
 
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/item.dart';
@@ -84,11 +87,8 @@ class _AlertItemState extends State<AlertItem> {
                     style: StyleTextAdmin(22, Colors.black),
                   ),
                   SizedBox(height: 16),
-            
-                 
-                    
-                        GestureDetector(
-                    onTap:  () async {
+                  GestureDetector(
+                    onTap: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
                       if (result != null) {
@@ -114,10 +114,6 @@ class _AlertItemState extends State<AlertItem> {
                     ),
                   ),
                   SizedBox(width: 16),
-                       
-                    
-                 
-                 
                   SizedBox(height: 16),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -233,13 +229,8 @@ class _AlertItemState extends State<AlertItem> {
 
                           if (ControllerName.text.isEmpty ||
                               fileBytes == null) {
-                            QuickAlert.show(
-                              context: context,
-                              title: 'خطأ',
-                              text: 'الرجاء إدخال كل البيانات المطلوبة',
-                              type: QuickAlertType.error,
-                              confirmBtnText: 'حسناً',
-                            );
+                            ErrorAlert(context, 'خطأ',
+                                'الرجاء إدخال كل البيانات المطلوبة');
                           } else {
                             await uploadFile();
                             double price =
@@ -281,12 +272,16 @@ class _AlertItemState extends State<AlertItem> {
                             });
 
                             // عرض الرسالة بنجاح وإغلاق النافذة بعد ذلك
+                            if (result.contains('بنجاح')) {
+                              SuccessAlert(context, result);
+                            } else if (result.contains('خطأ')) {
+                              ErrorAlert(context, 'خطأ', result);
+                            } else {
+                              //هون يفضل اذا تم تكرار الitem code يظهر error تحتي
+                              InfoAlert(context, 'معلومات مكررة', result);
+                            }
+
                             Navigator.of(context).pop();
-                            QuickAlert.show(
-                              context: context,
-                              text: result,
-                              type: QuickAlertType.info,
-                            );
                           }
                         },
                         style: ButtonStyle(

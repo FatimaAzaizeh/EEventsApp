@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:testtapp/Alert/error.dart';
+import 'package:testtapp/Alert/info.dart';
+import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Wizard.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardSteps.dart';
@@ -36,30 +39,9 @@ class _WizardState extends State<Wizard> {
   Future<void> _showPopupMessage() async {
     await Future.delayed(
         Duration.zero); // Ensures the dialog shows after the first frame
-    QuickAlert.show(
-        context: context,
-        type: QuickAlertType.info,
-        width: 440,
-        customAsset: 'assets/images/info.gif', // Replace with your asset path
-        title: '',
-        widget: Column(
-          children: [
-            Text(
-              'تنبيه',
-              style: StyleTextAdmin(25, Colors.black), // Custom style for title
-            ),
-            SizedBox(height: 10),
-            Text(
-              'جميع المناسبات جاهزة للعرض للمستخدم. عند الضغط على أي واحدة سيتم تغييرها تلقائيًا بدون رجوع.',
-              style: StyleTextAdmin(14, AdminButton), // Custom style for text
-            ),
-            SizedBox(height: 10),
-          ],
-        ),
-        confirmBtnText: 'حسناً',
-        confirmBtnTextStyle: StyleTextAdmin(16, Colors.white),
-        backgroundColor: Colors.white,
-        confirmBtnColor: AdminButton.withOpacity(0.8));
+
+    InfoAlert(context, 'تنبيه',
+        'جميع المناسبات جاهزة للعرض للمستخدم. عند الضغط على أي واحدة سيتم تغييرها تلقائيًا بدون رجوع.');
   }
 
   Future<void> readData(String id) async {
@@ -369,26 +351,11 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                   setState(() {
                     showSpinner = false;
                   });
-                  QuickAlert.show(
-                      context: context,
-                      customAsset: 'assets/images/Completionanimation.gif',
-                      width: 300,
-                      title: '',
-                      widget: Text(
-                        '$message',
-                        style: StyleTextAdmin(18, Colors.black),
-                      ),
-                      type: QuickAlertType.success,
-                      confirmBtnText: 'إغلاق',
-                      confirmBtnTextStyle: StyleTextAdmin(20, Colors.white));
+                  SuccessAlert(context, message);
                 } else {
                   // Handle the case where no matching event type is found
-                  QuickAlert.show(
-                    context: context,
-                    title: 'Event not found',
-                    type: QuickAlertType.error,
-                    confirmBtnText: 'Close',
-                  );
+
+                  ErrorAlert(context, 'خطأ', ' المناسبة غير موجودة');
                 }
               },
               child: Text(

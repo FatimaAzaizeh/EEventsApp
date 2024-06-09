@@ -28,7 +28,7 @@ class Classification {
         'id': id,
         // Add other fields as needed
       });
-      return 'تم إضافة تصنيف جديد  $description';
+      return 'تم إضافة تصنيف جديد ';
     } catch (e) {
       return 'حدث خطأ ,لم يتم إضافة التصنيف: $e';
     }
