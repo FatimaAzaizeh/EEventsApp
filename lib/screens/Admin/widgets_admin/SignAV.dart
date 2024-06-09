@@ -150,86 +150,101 @@ class _SignInState extends State<SignIn> {
                           ],
                         ),
                         SizedBox(height: 15),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Center(
-                              child: ButtonDesign(
-                                color: ColorPink_100,
-                                title: 'تسجيل الدخول ',
-                                onPressed: () async {
-                                  setState(() {
-                                    showSpinner = true;
-                                  });
-                                  try {
-                                    final user =
-                                        await _auth.signInWithEmailAndPassword(
-                                      email: email,
-                                      password: password,
-                                    );
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 300,
+                            height: 50,
+                            margin: EdgeInsets.only(bottom: 90),
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    spreadRadius: 1,
+                                    blurRadius: 1,
+                                    offset: Offset(0, 3),
+                                  )
+                                ],
+                                borderRadius: BorderRadius.circular(20),
+                                color: Color.fromARGB(77, 251, 168, 165)),
+                            child: TextButton(
+                              child: Text(
+                                'تسجيل الدخول ',
+                                style: StyleTextAdmin(
+                                    20, Colors.white.withOpacity(0.75)),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  showSpinner = true;
+                                });
+                                try {
+                                  final user =
+                                      await _auth.signInWithEmailAndPassword(
+                                    email: email,
+                                    password: password,
+                                  );
 
-                                    if (user != null) {
-                                      String? uid = FirebaseAuth
-                                          .instance.currentUser?.uid;
+                                  if (user != null) {
+                                    String? uid =
+                                        FirebaseAuth.instance.currentUser?.uid;
 
-                                      if (!admin && vendor) {
-                                        String userId = uid ?? '';
-                                        DocumentReference userTypeRef =
-                                            FirebaseFirestore.instance
-                                                .collection('user_types')
-                                                .doc('3');
+                                    if (!admin && vendor) {
+                                      String userId = uid ?? '';
+                                      DocumentReference userTypeRef =
+                                          FirebaseFirestore.instance
+                                              .collection('user_types')
+                                              .doc('3');
 
-                                        bool isValid = await UserDataBase
-                                            .isUserTypeReferenceValid(
-                                                userId, userTypeRef);
-                                        if (isValid) {
-                                          Navigator.pushNamed(
-                                              context, VendorHome.screenRoute);
-                                          return;
-                                        } else {
-                                          setState(() {
-                                            showSpinner = false;
-                                          });
-                                          ErrorAlert(context, 'خطأ',
-                                              'الحساب الذي تحاول الدخول بة ليس حساب بائع');
-                                        }
-                                      }
-
-                                      if (admin) {
-                                        String userId = uid ?? '';
-                                        DocumentReference userTypeRef =
-                                            FirebaseFirestore.instance
-                                                .collection('user_types')
-                                                .doc('1');
-
-                                        bool isValid = await UserDataBase
-                                            .isUserTypeReferenceValid(
-                                                userId, userTypeRef);
-
-                                        if (isValid) {
-                                          Navigator.pushNamed(
-                                              context, AdminScreen.screenRoute);
-                                        } else {
-                                          setState(() {
-                                            showSpinner = false;
-                                          });
-                                          ErrorAlert(context, 'خطأ',
-                                              'الحساب الذي تحاول الدخول بة ليس حساب مسؤول');
-                                        }
+                                      bool isValid = await UserDataBase
+                                          .isUserTypeReferenceValid(
+                                              userId, userTypeRef);
+                                      if (isValid) {
+                                        Navigator.pushNamed(
+                                            context, VendorHome.screenRoute);
+                                        return;
+                                      } else {
+                                        setState(() {
+                                          showSpinner = false;
+                                        });
+                                        ErrorAlert(context, 'خطأ',
+                                            'الحساب الذي تحاول الدخول بة ليس حساب بائع');
                                       }
                                     }
-                                  } catch (e) {
-                                    setState(() {
-                                      showSpinner = false;
-                                    });
-                                    ErrorAlert(context, 'خطأ', e.toString());
+
+                                    if (admin) {
+                                      String userId = uid ?? '';
+                                      DocumentReference userTypeRef =
+                                          FirebaseFirestore.instance
+                                              .collection('user_types')
+                                              .doc('1');
+
+                                      bool isValid = await UserDataBase
+                                          .isUserTypeReferenceValid(
+                                              userId, userTypeRef);
+
+                                      if (isValid) {
+                                        Navigator.pushNamed(
+                                            context, AdminScreen.screenRoute);
+                                      } else {
+                                        setState(() {
+                                          showSpinner = false;
+                                        });
+                                        ErrorAlert(context, 'خطأ',
+                                            'الحساب الذي تحاول الدخول بة ليس حساب مسؤول');
+                                      }
+                                    }
                                   }
-                                },
-                              ),
+                                } catch (e) {
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                  ErrorAlert(context, 'خطأ', e.toString());
+                                }
+                              },
                             ),
-                            SizedBox(width: 10),
-                          ],
+                          ),
                         ),
+                        SizedBox(width: 10),
                       ],
                     ),
                   ),
