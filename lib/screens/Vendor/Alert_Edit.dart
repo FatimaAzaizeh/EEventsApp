@@ -118,6 +118,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ),
           GestureDetector(
             onTap: () async {
+              await deleteImageByUrl(imageUrl);
               FilePickerResult? result = await FilePicker.platform.pickFiles();
               if (result != null) {
                 setState(() {

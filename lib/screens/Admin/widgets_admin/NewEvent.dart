@@ -31,7 +31,7 @@ class _AddEventState extends State<AddEvent> {
   var controllerImage = TextEditingController();
   late DocumentReference eventClassificationRef;
   var controllerId = TextEditingController();
-  bool showEditButton = false;
+
   bool editButton = false;
   List<String> classificationList = [];
   late String name;
@@ -128,6 +128,11 @@ class _AddEventState extends State<AddEvent> {
                             onPressed: editButton
                                 ? () async {
                                     if (controllerName.text.isNotEmpty) {
+                                      if (fileName !=
+                                          "لتغيير الصورة , انقر هنا.") {
+                                        deleteImageByUrl(imageUrl);
+                                        await uploadFile();
+                                      }
                                       Future<bool> editEnent =
                                           EventType.updateEventTypeFirestore(
                                               controllerName.text,
@@ -135,13 +140,15 @@ class _AddEventState extends State<AddEvent> {
                                               eventClassificationRef,
                                               controllerId.text);
                                       setState(() {
-                                        showEditButton = false;
                                         editButton = false;
                                       });
-                                      controllerName.clear();
-                                      controllerId.clear();
-                                      controllerImage.clear();
+
                                       if (await editEnent) {
+                                        controllerName.clear();
+                                        controllerId.clear();
+                                        controllerImage.clear();
+                                        fileName = "لم يتم اختيار صورة";
+                                        fileBytes = null;
                                         SuccessAlert(
                                             context, 'تم تعديل المناسبة بنجاح');
                                       } else {
@@ -164,6 +171,7 @@ class _AddEventState extends State<AddEvent> {
                                       controllerId.clear();
                                       controllerImage.clear();
                                       editButton = false;
+                                      fileName = "لم يتم اختيار صورة";
                                     });
                                   }
                                 : null,
@@ -199,11 +207,9 @@ class _AddEventState extends State<AddEvent> {
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles();
                         if (result != null) {
-                          setState(() async {
+                          setState(() {
                             fileBytes = result.files.first.bytes;
                             fileName = result.files.first.name;
-
-                            await uploadFile();
                           });
                         }
                       },
@@ -315,6 +321,7 @@ class _AddEventState extends State<AddEvent> {
                       });
                       if (controllerName.text.isNotEmpty &&
                           controllerImage.text.isNotEmpty) {
+                        await uploadFile();
                         int count = await FirestoreService.getCountOfRecords(
                             'event_types');
                         int id = count + 1;
@@ -329,15 +336,16 @@ class _AddEventState extends State<AddEvent> {
                         String result = await newEvent.addToFirestore();
 
                         // Clear text controllers regardless of the result
-                        controllerName.clear();
-                        controllerId.clear();
-                        controllerImage.clear();
-                        fileName = "لم يتم اختيار صورة";
-                        fileBytes = null;
+
                         // Update UI based on the result
 
                         // If addition was successful, show success message
                         if (result == 'تم إضافة المناسبة بنجاح') {
+                          controllerName.clear();
+                          controllerId.clear();
+                          controllerImage.clear();
+                          fileName = "لم يتم اختيار صورة";
+                          fileBytes = null;
                           SuccessAlert(context, result);
                         } else {
                           ErrorAlert(context, 'خطأ', result);
@@ -412,6 +420,7 @@ class _AddEventState extends State<AddEvent> {
         controllerName.text = snapshot.get('name');
         controllerId.text = snapshot.get('id');
         editButton = true;
+        fileName = "لتغيير الصورة , انقر هنا.";
       });
     }
   }

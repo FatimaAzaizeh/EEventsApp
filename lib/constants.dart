@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -47,4 +48,29 @@ TextStyle StyleTextAdmin(double SizeText, Color colorText) {
       fontSize: SizeText,
       fontWeight: FontWeight.w600,
       color: colorText);
+}
+
+Future<void> deleteImageByUrl(String imageUrl) async {
+  try {
+    // Extract the path from the URL
+    final RegExp regExp = RegExp(r'(?<=o/)(.*)(?=\?alt=media)');
+    final Match? match = regExp.firstMatch(imageUrl);
+
+    if (match != null) {
+      final String imagePath = Uri.decodeFull(match[0]!);
+
+      // Create a reference to the file to delete
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child(imagePath);
+
+      // Delete the file
+      await storageReference.delete();
+
+      print("Image successfully deleted");
+    } else {
+      print("Invalid image URL");
+    }
+  } catch (e) {
+    print("Error occurred while deleting image: $e");
+  }
 }

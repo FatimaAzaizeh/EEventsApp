@@ -76,7 +76,9 @@ class _AddServiceState extends State<AddService> {
                             onPressed: showEditButton
                                 ? () async {
                                     if (ControllerName.text.isNotEmpty) {
-                                      if (fileName != 'لم يتم اختيار صورة ') {
+                                      if (fileName !=
+                                          "لتغيير الصورة , انقر هنا.") {
+                                        await deleteImageByUrl(imageUrl);
                                         await uploadFile();
                                       }
                                       bool result = await ServiceType
@@ -88,9 +90,12 @@ class _AddServiceState extends State<AddService> {
                                       setState(() {
                                         showEditButton = false;
                                       });
-                                      ControllerName.clear();
-                                      ControllerId.clear();
+
                                       if (result) {
+                                        ControllerName.clear();
+                                        ControllerId.clear();
+                                        fileName = "لم يتم اختيار صورة";
+                                        fileBytes = null;
                                         SuccessAlert(
                                             context, 'تم تعديل الخدمة بنجاح');
                                       } else {
@@ -115,6 +120,8 @@ class _AddServiceState extends State<AddService> {
                                       ControllerName.clear();
                                       ControllerId.clear();
                                       ControllerImage.clear();
+                                      fileName = "لم يتم اختيار صورة";
+                                      showEditButton = false;
                                     });
                                   }
                                 : null,
@@ -157,10 +164,9 @@ class _AddServiceState extends State<AddService> {
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles();
                         if (result != null) {
-                          setState(() async {
+                          setState(() {
                             fileBytes = result.files.first.bytes;
                             fileName = result.files.first.name;
-                            await uploadFile();
                           });
                         }
                       },
@@ -228,6 +234,7 @@ class _AddServiceState extends State<AddService> {
                               });
                               if (ControllerName.text.isNotEmpty &&
                                   ControllerImage.text.isNotEmpty) {
+                                await uploadFile();
                                 int count =
                                     await FirestoreService.getCountOfRecords(
                                         'service_types');
@@ -242,12 +249,13 @@ class _AddServiceState extends State<AddService> {
                                 setState(() {
                                   showSpinner = false;
                                 });
-                                ControllerName.clear();
-                                ControllerId.clear();
-                                ControllerImage.clear();
-                                fileName = "لم يتم اختيار صورة";
-                                fileBytes = null;
+
                                 if (result == 'تم إضافة الخدمة بنجاح') {
+                                  ControllerName.clear();
+                                  ControllerId.clear();
+                                  ControllerImage.clear();
+                                  fileName = "لم يتم اختيار صورة";
+                                  fileBytes = null;
                                   SuccessAlert(context, result);
                                 } else {
                                   ErrorAlert(context, 'خطأ', result);
@@ -313,6 +321,7 @@ class _AddServiceState extends State<AddService> {
       ControllerName.text = snapshot.get('name');
       ControllerId.text = snapshot.get('id');
       showEditButton = true;
+      fileName = "لتغيير الصورة , انقر هنا.";
     });
   }
 
