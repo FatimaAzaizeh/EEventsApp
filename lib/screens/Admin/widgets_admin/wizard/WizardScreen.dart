@@ -9,6 +9,7 @@ import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/Wizard.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardSteps.dart';
+import 'package:flutter/services.dart';
 
 String id = '';
 
@@ -251,12 +252,28 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: TextField(
                             decoration: InputDecoration(
-                                hintText: 'أدخل رقم ترتيب هذه الخدمة',
-                                hintStyle: StyleTextAdmin(
-                                    14, AdminButton.withOpacity(0.6))),
+                              hintText: 'أدخل رقم ترتيب هذه الخدمة',
+                              hintStyle: StyleTextAdmin(
+                                  14, AdminButton.withOpacity(0.6)),
+                            ),
                             keyboardType: TextInputType.number,
+                            style: StyleTextAdmin(
+                                14, AdminButton.withOpacity(0.9)),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             onChanged: (value) async {
-                              int enteredNumber = int.parse(value);
+                              if (value.isEmpty) {
+                                return;
+                              }
+
+                              int enteredNumber;
+                              try {
+                                enteredNumber = int.parse(value);
+                              } catch (e) {
+                                return;
+                              }
+
                               if (enteredValues.isEmpty ||
                                   enteredValues.last + 1 == enteredNumber) {
                                 enteredValues.add(enteredNumber);

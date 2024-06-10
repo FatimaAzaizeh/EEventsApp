@@ -89,7 +89,7 @@ class _AlertItemState extends State<AlertItem> {
                   SizedBox(height: 16),
                   GestureDetector(
                     onTap: () async {
-                      await deleteImageByUrl(imageUrl);
+               
 
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
