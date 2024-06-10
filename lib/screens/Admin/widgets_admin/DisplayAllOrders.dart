@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/Design/OrderStatusContainer.dart';
 import 'package:testtapp/constants.dart';
 import 'package:flutter/widgets.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/imageHover.dart';
@@ -322,7 +323,9 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
                     var orderStatusData =
                         statusSnapshot.data!.data() as Map<String, dynamic>;
                     var orderStatusValue = orderStatusData['description'];
-                    return Text(orderStatusValue);
+                    return OrderStatusContainer(
+                      orderStatusValue: orderStatusValue,
+                    );
                   }
                 },
               )),

@@ -123,6 +123,21 @@ class _ListReqState extends State<ListReq> {
         print("No document found with id: $id");
       }
     }).catchError((e) => print("Error getting documents: $e"));
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("id", isEqualTo: id)
+        .limit(1)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        querySnapshot.docs.first.reference.delete().then(
+              (_) => print("Document deleted"),
+              onError: (e) => print("Error deleting document: $e"),
+            );
+      } else {
+        print("No document found with id: $id");
+      }
+    }).catchError((e) => print("Error getting documents: $e"));
   }
 
   void deleteAccount(String userId) {

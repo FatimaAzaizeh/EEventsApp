@@ -55,16 +55,7 @@ class _VendorHomeState extends State<VendorHome> {
   @override
   void initState() {
     super.initState();
-    initialize();
-  }
-
-  void initialize() async {
-    await getCurrentUserInfo();
-    setState(() {
-      userName;
-      userEmail;
-      userImage;
-    });
+    getCurrentUserInfo();
   }
 
   final DocumentReference vendorId =

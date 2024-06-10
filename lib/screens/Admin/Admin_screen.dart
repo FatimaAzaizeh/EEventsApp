@@ -54,25 +54,7 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   void initState() {
     super.initState();
-
-    initialize();
-  }
-
-  void initialize() async {
-    await getCurrentUserInfo(); // Wait for getCurrentUserInfo() to complete
-    if (userName != null && userEmail != null) {
-      setState(() {
-        userName;
-        userEmail;
-        userImage;
-      });
-      print('User Name: $userName');
-      print('User Email: $userEmail');
-      // Continue with your initialization logic here
-    } else {
-      print('User data not available.');
-      // Handle the case where user data is not available
-    }
+    getCurrentUserInfo();
   }
 
   Widget _currentMainSection = AddAdmin();
