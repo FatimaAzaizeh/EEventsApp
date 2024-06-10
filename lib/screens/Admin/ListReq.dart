@@ -108,36 +108,31 @@ class _ListReqState extends State<ListReq> {
   }
 
   void deleteDocument(String id) {
-    FirebaseFirestore.instance
-        .collection("vendor")
-        .where("id", isEqualTo: id)
-        .limit(1)
-        .get()
-        .then((querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        querySnapshot.docs.first.reference.delete().then(
-              (_) => print("Document deleted"),
-              onError: (e) => print("Error deleting document: $e"),
-            );
-      } else {
-        print("No document found with id: $id");
-      }
-    }).catchError((e) => print("Error getting documents: $e"));
-    FirebaseFirestore.instance
-        .collection("users")
-        .where("id", isEqualTo: id)
-        .limit(1)
-        .get()
-        .then((querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        querySnapshot.docs.first.reference.delete().then(
-              (_) => print("Document deleted"),
-              onError: (e) => print("Error deleting document: $e"),
-            );
-      } else {
-        print("No document found with id: $id");
-      }
-    }).catchError((e) => print("Error getting documents: $e"));
+    // Helper function to delete document by ID from a collection
+    void deleteFromCollection(String collection) {
+      FirebaseFirestore.instance
+          .collection(collection)
+          .doc(id)
+          .get()
+          .then((documentSnapshot) {
+        if (documentSnapshot.exists) {
+          documentSnapshot.reference.delete().then(
+                (_) => print("Document deleted from $collection collection"),
+                onError: (e) => print(
+                    "Error deleting document from $collection collection: $e"),
+              );
+        } else {
+          print("No document found with id: $id in $collection collection");
+        }
+      }).catchError((e) =>
+              print("Error getting document from $collection collection: $e"));
+    }
+
+    // Delete document from "vendor" collection
+    deleteFromCollection("vendor");
+
+    // Delete document from "users" collection
+    deleteFromCollection("users");
   }
 
   void deleteAccount(String userId) {
