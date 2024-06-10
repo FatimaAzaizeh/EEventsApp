@@ -13,16 +13,16 @@ class OrderStatusContainer extends StatelessWidget {
 
     switch (orderStatusValue) {
       case "في الانتظار":
-        containerColor = Color.fromARGB(255, 251, 231, 198).withOpacity(0.3);
+        containerColor = Color.fromARGB(255, 251, 231, 198).withOpacity(0.5);
         break;
       case "تم القبول":
         containerColor = Color.fromARGB(255, 180, 248, 201).withOpacity(0.3);
         break;
       case "تم الرفض":
-        containerColor = Color.fromARGB(255, 185, 92, 80).withOpacity(0.3);
+        containerColor = Color.fromARGB(255, 185, 92, 80).withOpacity(0.9);
         break;
       case "تم الإلغاء":
-        containerColor = Color.fromARGB(255, 160, 231, 229).withOpacity(0.3);
+        containerColor = Color.fromARGB(255, 185, 92, 80).withOpacity(0.6);
         break;
       case "خارج للتوصيل":
         containerColor = Color.fromARGB(255, 255, 216, 152).withOpacity(0.3);
