@@ -71,16 +71,29 @@ class _VendorHomeState extends State<VendorHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-            child: SideMenuAdmin(
-              changeMainSection: _changeMainSection,
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/signin.png'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          MainSectionContainer(
-            child: _currentMainSection,
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                child: SideMenuvendor(
+                  changeMainSection: _changeMainSection,
+                ),
+              ),
+              MainSectionContainer(
+                child: _currentMainSection,
+              ),
+            ],
           ),
         ],
       ),
@@ -111,39 +124,38 @@ class MainSectionContainer extends StatelessWidget {
   }
 }
 
-class SideMenuAdmin extends StatefulWidget {
+class SideMenuvendor extends StatefulWidget {
   final Function(Widget) changeMainSection;
 
-  const SideMenuAdmin({
+  const SideMenuvendor({
     Key? key,
     required this.changeMainSection,
   }) : super(key: key);
 
   @override
-  State<SideMenuAdmin> createState() => _SideMenuAdminState();
+  State<SideMenuvendor> createState() => _SideMenuAdminState();
 }
 
-class _SideMenuAdminState extends State<SideMenuAdmin> {
+class _SideMenuAdminState extends State<SideMenuvendor> {
   int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFF6F2EF), // Light background color
-          boxShadow: [
-            BoxShadow(
-              color: Color(0x1D616060).withOpacity(0.5),
-              spreadRadius: 8,
-              blurRadius: 7,
-              offset: Offset(3, 3),
-            ),
-          ],
-        ),
+      
         child: Drawer(
-          backgroundColor: Color(0xFFF6F2EF),
+          elevation: 1,
+        backgroundColor: Color.fromARGB(255, 246, 249, 250).withOpacity(0.05),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+                color:
+                    const Color.fromARGB(165, 255, 255, 255).withOpacity(0.3),
+                width: 3),
+            borderRadius: BorderRadius.circular(20),
+            color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.1),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -152,7 +164,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   height: 150,
                   width: 150,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadiusDirectional.circular(30),
                     image: DecorationImage(
                       image: AssetImage('assets/images/logo2.png'),
                       fit: BoxFit.fill,
@@ -223,6 +235,7 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
           ),
         ),
       ),
+     
     );
   }
 
@@ -258,3 +271,5 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
     );
   }
 }
+
+

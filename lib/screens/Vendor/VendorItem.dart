@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/main.dart';
 import 'package:testtapp/models/item.dart';
 import 'package:testtapp/screens/Vendor/Alert_Edit.dart';
 import 'package:testtapp/screens/Vendor/Alert_Item.dart';
-
 
 class VendorItem extends StatelessWidget {
   @override
@@ -16,14 +14,12 @@ class VendorItem extends StatelessWidget {
       builder: (context, userSnapshot) {
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
-          
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (userSnapshot.hasError) {
           return Scaffold(
-           
             body: Center(child: Text('Error: ${userSnapshot.error}')),
           );
         }
@@ -33,7 +29,6 @@ class VendorItem extends StatelessWidget {
         if (currentUser == null) {
           // User not logged in
           return Scaffold(
-          
             body: Center(child: Text('User not logged in.')),
           );
         }
@@ -73,7 +68,6 @@ class VendorItemContent extends StatelessWidget {
 
         if (snapshot.hasError) {
           return Scaffold(
-           
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         }
@@ -85,7 +79,8 @@ class VendorItemContent extends StatelessWidget {
             name: data['name'] ?? '',
             capacity: data['capacity'] ?? 0,
             createdAt: (data['created_at'] as Timestamp).toDate(),
-            description: data['description'] ?? '',
+            description: data['description'] ?? '', 
+             imageUrl: data['image_url'] ?? '',
           );
         }).toList();
 
@@ -106,8 +101,117 @@ class VendorItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  
-         floatingActionButton: ElevatedButton(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/signin.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Main content
+          Column(
+            children: [
+             
+              Expanded(
+                child: items.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('You have no items.'),
+                            ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertItem(
+                                    vendorId: currentUser.uid,
+                                  ),
+                                );
+                              },
+                              child: Text('اضف منتج جديد'),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Card(
+                            child: ListTile(
+                               leading: item.imageUrl.isNotEmpty
+                                  ? Image.network(
+                                      item.imageUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Placeholder(),
+                              title: Text(item.name),
+                              subtitle: Text('عدد الاشخاص: ${item.capacity}'),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertEditItem(
+                                          vendor_id: currentUser.uid,
+                                          item_code: item.id,
+                                        ),
+                                      );
+                                      // Implement editing functionality
+                                    },
+                                  ),
+                                IconButton(
+  icon: Icon(Icons.delete),
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("حذف المنتج"),
+          content: Text("هل انت متاكد من حذف المنتج؟"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("الغاء"),
+            ),
+            TextButton(
+              onPressed: () {
+                // Implement deletion functionality
+                Item.deactiveItemInFirestore(item.id);
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("حذف"),
+            ),
+          ],
+        );
+      },
+    );
+  },
+),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      floatingActionButton: ElevatedButton(
         onPressed: () {
           showDialog(
             context: context,
@@ -116,69 +220,14 @@ class VendorItemList extends StatelessWidget {
             ),
           );
         },
-                style: ButtonStyle(
-               backgroundColor: MaterialStateProperty.all(ColorPink_100),),
-  
-         
-        child: Text('اضف منتج جديد',style: TextStyle(color: Colors.white),),
-         ),  
-      body: items.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('You have no items.'),
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertItem (
-                          vendorId: currentUser.uid,
-                        ),
-                      );
-             },
-                    child: Text('اضف منتج جديد'),
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(item.name),
-                    subtitle: Text('Capacity: ${item.capacity}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertEditItem(
-                                vendor_id: currentUser.uid,
-                                item_code: item.id,
-                              ),
-                            );
-                            // Implement editing functionality
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            // Implement deletion functionality
-                            Item.deactiveItemInFirestore(item.id);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(ColorPink_100),
+        ),
+        child: Text(
+          'اضف منتج جديد',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 }
@@ -189,6 +238,7 @@ class ItemDisplay {
   final int capacity;
   final DateTime createdAt;
   final String description;
+  final String imageUrl;
 
   ItemDisplay({
     required this.id,
@@ -196,5 +246,6 @@ class ItemDisplay {
     required this.capacity,
     required this.createdAt,
     required this.description,
+     required this.imageUrl,
   });
 }

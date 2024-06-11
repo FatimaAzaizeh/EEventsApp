@@ -26,8 +26,20 @@ class _VendorOrdersState extends State<VendorOrders> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
+   
+        return Scaffold(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/signin.png'),
+                fit: BoxFit.cover,
+                  ),
+            ),
+          ),
+       StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -44,7 +56,7 @@ class _VendorOrdersState extends State<VendorOrders> {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-              child: Text('No orders found.'),
+              child: Text('لا يوجد اي طلب'),
             );
           }
 
@@ -58,7 +70,7 @@ class _VendorOrdersState extends State<VendorOrders> {
 
           if (filteredDocs.isEmpty) {
             return Center(
-              child: Text('No orders found for this vendor.'),
+              child: Text('لا يوجد طلبات لهذا البائع'),
             );
           }
 
@@ -68,12 +80,12 @@ class _VendorOrdersState extends State<VendorOrders> {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: [
-                  DataColumn(label: Text('Order ID')),
-                  DataColumn(label: Text('Created At')),
-                  DataColumn(label: Text('Deliver At')),
-                  DataColumn(label: Text('Order Status')),
-                  DataColumn(label: Text('Price')),
-                  DataColumn(label: Text('Item Details')),
+                  DataColumn(label: Text('رقم الطلب')),
+                  DataColumn(label: Text('تايخ انشاء الطلب')),
+                  DataColumn(label: Text('تاريخ توصيل الطلب')),
+                  DataColumn(label: Text('حالة الطلب')),
+                  DataColumn(label: Text('السعر')),
+                  DataColumn(label: Text('تفاصيل المنتج')),
                 ],
                 rows: filteredDocs.asMap().entries.map((entry) {
                   var index = entry.key;
@@ -181,18 +193,24 @@ class _VendorOrdersState extends State<VendorOrders> {
                       DataCell(
                         ElevatedButton(
                           onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Item Details'),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: _buildItemDetails(
-                                      vendorData['vendor_id_items']),
-                                ),
-                              ),
-                            );
-                          },
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('تفاصيل المنتج'),
+      content: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: [
+            DataColumn(label: Text('رمز المنتج')),
+            DataColumn(label: Text('اسم المنتج')),
+            DataColumn(label: Text('عدد المنتجات المطلوبه')),
+          ],
+          rows: _buildItemDetails(vendorData['vendor_id_items']),
+        ),
+      ),
+    ),
+  );
+},
                           child: Text('عرض تفاصيل الطلب'),
                         ),
                       ),
@@ -204,6 +222,9 @@ class _VendorOrdersState extends State<VendorOrders> {
           );
         },
       ),
+         ],
+      ),
+      
     );
   }
 
@@ -237,25 +258,23 @@ class _VendorOrdersState extends State<VendorOrders> {
     return null;
   }
 
-  List<Widget> _buildItemDetails(Map<dynamic, dynamic>? items) {
-    if (items == null) return [Text('No items')];
-    return items.entries.map((entry) {
-      if (entry.value is Map<String, dynamic>) {
-        var item = entry.value as Map<String, dynamic>;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Item Code: ${item['item_code']}'),
-              Text('Item Name: ${item['item_name']}'),
-              Text('Amount: ${item['amount']}'),
-            ],
-          ),
-        );
-      } else {
-        return Text('Invalid item details');
-      }
-    }).toList();
+ List<DataRow> _buildItemDetails(Map<dynamic, dynamic>? items) {
+  if (items == null || items.isEmpty) {
+    return [DataRow(cells: [DataCell(Text('لا يوجد طلبات'))])];
   }
+  return items.entries.map((entry) {
+    if (entry.value is Map<String, dynamic>) {
+      var item = entry.value as Map<String, dynamic>;
+      return DataRow(cells: [
+        DataCell(Text(item['item_code'] ?? 'N/A')),
+        DataCell(Text(item['item_name'] ?? 'N/A')),
+        DataCell(Text(item['amount']?.toString() ?? 'N/A')),
+      ]);
+    } else {
+      return DataRow(cells: [DataCell(Text('تفاصيل الطلب غير صحيحه'))]);
+    }
+  }).toList();
 }
+      }
+    
+ 

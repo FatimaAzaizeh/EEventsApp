@@ -5,8 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/Alert/error.dart';
 import 'package:testtapp/Alert/success.dart';
 import 'package:testtapp/constants.dart';
@@ -39,7 +37,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
   late TextEditingController ControllerItemCode = TextEditingController();
   late TextEditingController ControllerPrice = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  late String imageUrl;
+  late String imageUrl = '';
   late String fileName = "لم يتم اختيار صورة ";
   late String dropdownValue = '';
   late DocumentReference itemStatusId;
@@ -64,7 +62,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
           ControllerPrice.text = (data['price'] ?? 0).toString();
           ControllerItemCode.text = (data['item_code'] ?? 0).toString();
           DocumentReference? itemStatus = itemSnapshot.get('item_status_id');
-          imageUrl = (data['image_url'] ?? 0).toString();
+          imageUrl = (data['image_url'] ?? '').toString();
 
           if (itemStatus != null) {
             DocumentSnapshot eventDocSnapshot = await itemStatus.get();
@@ -109,160 +107,173 @@ class _AlertEditItemState extends State<AlertEditItem> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Color.fromARGB(147, 246, 242, 239),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'تعديل المنتج',
-            style: StyleTextAdmin(22, Colors.black),
-          ),
-          GestureDetector(
-            onTap: () async {
-              await deleteImageByUrl(imageUrl);
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
-              if (result != null) {
-                setState(() {
-                  fileBytes = result.files.first.bytes;
-                  fileName = result.files.first.name;
-                });
-              }
-            },
-            child: Container(
-              width: 400,
-              height: 200,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 224, 224, 224),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: fileBytes != null
-                  ? Image.memory(
-                      fileBytes!,
-                      fit: BoxFit.cover,
-                    )
-                  : Icon(Icons.camera_alt, color: Colors.grey[700]),
-            ),
-          ),
-          SizedBox(height: 8),
-          SizedBox(width: 8),
-        ],
+      
+   title: Column(
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Text(
+      'تعديل المنتج',
+      style: StyleTextAdmin(22, Colors.black),
+    ),
+    GestureDetector(
+      onTap: () async {
+        await chooseNewImage();
+      },
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 224, 224, 224),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: fileBytes != null
+            ? Image.memory(
+                fileBytes!,
+                fit: BoxFit.cover,
+              )
+            : imageUrl.isNotEmpty
+                ? Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  )
+                : Icon(Icons.camera_alt, color: Colors.grey[700]),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFieldDesign(
-            Text: 'إدخال إسم المنتج',
-            icon: Icons.info_rounded,
-            ControllerTextField: ControllerName,
-            onChanged: (value) {},
-            obscureTextField: false,
-            enabled: true,
-          ),
-          TextFieldDesign(
-            Text: 'إدخال وصف المنتج',
-            icon: Icons.description,
-            ControllerTextField: ControllerDescription,
-            onChanged: (value) {},
-            obscureTextField: false,
-            enabled: true,
-          ),
-          TextFieldDesign(
-            Text: 'إدخال رمز المنتج',
-            icon: Icons.numbers,
-            ControllerTextField: ControllerItemCode,
-            onChanged: (value) {},
-            obscureTextField: false,
-            enabled: false,
-          ),
-          TextFieldDesign(
-            Text: 'السعر',
-            icon: Icons.price_change_outlined,
-            ControllerTextField: ControllerPrice,
-            onChanged: (value) {},
-            obscureTextField: false,
-            enabled: true,
-          ),
-          FirestoreDropdown(
-            collectionName: 'item_status',
-            dropdownLabel: dropdownValue,
-            onChanged: (value) {
-              if (value != null) {
-                FirebaseFirestore.instance
-                    .collection('item_status')
-                    .where('description', isEqualTo: value.toString())
-                    .limit(1)
-                    .get()
-                    .then((QuerySnapshot querySnapshot) {
-                  if (querySnapshot.docs.isNotEmpty) {
-                    DocumentSnapshot docSnapshot = querySnapshot.docs.first;
-                    DocumentReference itemStatusRef = docSnapshot.reference;
-                    itemStatusId = itemStatusRef;
-                  }
-                });
-              }
-            },
-          ),
-          SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                if (ControllerName.text.isEmpty) {
-                  ErrorAlert(
-                      context, 'خطأ', 'الرجاء إدخال كل البيانات المطلوبة');
-                } else {
-                  await uploadFile();
-                  double price = double.tryParse(ControllerPrice.text) ?? 0.0;
-                  int capacity = int.tryParse(ControllerCapacity.text) ?? 0;
-                  DocumentReference Vendorid = FirebaseFirestore.instance
-                      .collection('vendor')
-                      .doc(widget.vendor_id);
-
-                  String result = await Item.editItemInFirestore(
-                      ControllerName.text,
-                      ControllerItemCode.text,
-                      imageUrl,
-                      ControllerDescription.text,
-                      price,
-                      capacity,
-                      itemStatusId);
-
-                  setState(() {
-                    showSpinner = true;
-                  });
-
-                  try {
-                    // Your logic for creating the product
-                  } catch (error) {
-                    // Handle error with specific message
-                  } finally {
-                    Navigator.of(context).pop();
-                    if (result.contains('تعديل')) {
-                      SuccessAlert(context, result);
-                    } else {
-                      ErrorAlert(context, 'خطأ', result);
+    ),
+  ],
+),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFieldDesign(
+              Text: 'إدخال إسم المنتج',
+              icon: Icons.info_rounded,
+              ControllerTextField: ControllerName,
+              onChanged: (value) {},
+              obscureTextField: false,
+              enabled: true,
+            ),
+            TextFieldDesign(
+              Text: 'إدخال وصف المنتج',
+              icon: Icons.description,
+              ControllerTextField: ControllerDescription,
+              onChanged: (value) {},
+              obscureTextField: false,
+              enabled: true,
+            ),
+            TextFieldDesign(
+              Text: 'إدخال رمز المنتج',
+              icon: Icons.numbers,
+              ControllerTextField: ControllerItemCode,
+              onChanged: (value) {},
+              obscureTextField: false,
+              enabled: false,
+              
+            ),
+            TextFieldDesign(
+              Text: 'السعر',
+              icon: Icons.price_change_outlined,
+              ControllerTextField: ControllerPrice,
+              onChanged: (value) {},
+              obscureTextField: false,
+              enabled: true,
+            ),
+            FirestoreDropdown(
+              collectionName: 'item_status',
+              dropdownLabel: dropdownValue,
+              onChanged: (value) {
+                if (value != null) {
+                  FirebaseFirestore.instance
+                      .collection('item_status')
+                      .where('description', isEqualTo: value.toString())
+                      .limit(1)
+                      .get()
+                      .then((QuerySnapshot querySnapshot) {
+                    if (querySnapshot.docs.isNotEmpty) {
+                      DocumentSnapshot docSnapshot = querySnapshot.docs.first;
+                      DocumentReference itemStatusRef = docSnapshot.reference;
+                      itemStatusId = itemStatusRef;
                     }
-
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  }
+                  });
                 }
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(ColorPink_100),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'تعديل المنتج  ',
-                  style: StyleTextAdmin(17, Colors.white),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (ControllerName.text.isEmpty) {
+                    ErrorAlert(
+                        context, 'خطأ', 'الرجاء إدخال كل البيانات المطلوبة');
+                  } else {
+                    await uploadFile();
+                    double price = double.tryParse(ControllerPrice.text) ?? 0.0;
+                    int capacity = int.tryParse(ControllerCapacity.text) ?? 0;
+                    DocumentReference Vendorid = FirebaseFirestore.instance
+                        .collection('vendor')
+                        .doc(widget.vendor_id);
+
+                    String result = await Item.editItemInFirestore(
+                        ControllerName.text,
+                        ControllerItemCode.text,
+                        imageUrl,
+                        ControllerDescription.text,
+                        price,
+                        capacity,
+                        itemStatusId);
+
+                    setState(() {
+                      showSpinner = true;
+                    });
+
+                    try {
+                      // Your logic for creating the product
+                    } catch (error) {
+                      // Handle error with specific message
+                    } finally {
+                      Navigator.of(context).pop();
+                      if (result.contains('تعديل')) {
+                        SuccessAlert(context, result);
+                      } else {
+                        ErrorAlert(context, 'خطأ', result);
+                      }
+
+                      setState(() {
+                        showSpinner = false;
+                      });
+                    }
+                  }
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(ColorPink_100),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'تعديل المنتج  ',
+                    style: StyleTextAdmin(17, Colors.white),
+                  ),
                 ),
               ),
             ),
-          ),
-          if (showSpinner) CircularProgressIndicator(),
-        ],
+            if (showSpinner) CircularProgressIndicator(),
+     
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> chooseNewImage() async {
+    await deleteImageByUrl(imageUrl);
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      setState(() {
+        fileBytes = result.files.first.bytes;
+        fileName = result.files.first.name;
+        imageUrl = ''; // Clear the old imageUrl
+      });
+    }
   }
 }
