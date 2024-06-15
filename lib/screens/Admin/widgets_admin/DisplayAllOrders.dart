@@ -14,6 +14,7 @@ class DisplayAllOrders extends StatefulWidget {
 }
 
 class _DisplayAllOrdersState extends State<DisplayAllOrders> {
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,40 +28,41 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
         borderRadius: BorderRadius.circular(20),
         color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'جدول الطلبات',
-                style: StyleTextAdmin(20, AdminButton),
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              'جدول الطلبات',
+              style: StyleTextAdmin(20, AdminButton),
             ),
-            StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('orders').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+          ),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('خطأ: ${snapshot.error}'),
-                  );
-                }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('خطأ: ${snapshot.error}'),
+                );
+              }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text('لا توجد طلبات.'),
-                  );
-                }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Text('لا توجد طلبات.'),
+                );
+              }
 
-                return SingleChildScrollView(
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -235,11 +237,13 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
                           );
                         }).toList(),
                       ),
-                    ));
-              },
-            ),
-          ],
-        ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }

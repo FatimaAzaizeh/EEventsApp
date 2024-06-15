@@ -303,7 +303,7 @@ class _AlertItemState extends State<AlertItem> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              ' منتج  ',
+                              'إضافة منتج  ',
                               style: StyleTextAdmin(17, Colors.white),
                             ),
                           ),
