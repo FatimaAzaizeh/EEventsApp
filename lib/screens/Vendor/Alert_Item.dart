@@ -281,18 +281,23 @@ class _AlertItemState extends State<AlertItem> {
                                 SuccessAlert(context, result);
                                 setState(() {
                                   showSpinner = false; // Show spinner
-                                  Navigator.of(context).pop();
                                 });
                               } else if (result.contains('خطأ')) {
                                 setState(() {
                                   showSpinner = false; // Show spinner
                                 });
                                 ErrorAlert(context, 'خطأ', result);
+                                setState(() {
+                                  showSpinner = false; // Show spinner
+                                });
                               } else {
                                 setState(() {
                                   showSpinner = false; // Show spinner
                                 });
                                 InfoAlert(context, 'معلومات مكررة', result);
+                                setState(() {
+                                  showSpinner = false; // Show spinner
+                                });
                               }
                             }
                           },
