@@ -2,14 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/Alert/error.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
-import 'package:testtapp/screens/Vendor/VendorHome.dart';
-import 'package:testtapp/widgets/button_design.dart';
+import 'package:testtapp/screens/Vendor/VendorScreen.dart';
+
 import 'package:testtapp/widgets/textfield_design.dart';
 
 class SignIn extends StatefulWidget {
@@ -200,8 +198,7 @@ class _SignInState extends State<SignIn> {
                                               userId, userTypeRef);
                                       if (isValid) {
                                         Navigator.pushNamed(
-                                            context, VendorHome.screenRoute);
-                                        return;
+                                            context, VendorScreen.screenRoute);
                                       } else {
                                         setState(() {
                                           showSpinner = false;

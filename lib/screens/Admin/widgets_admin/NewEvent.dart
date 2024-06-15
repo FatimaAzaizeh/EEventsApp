@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:testtapp/Alert/error.dart';
@@ -12,8 +10,6 @@ import 'package:testtapp/models/EventType.dart';
 import 'package:testtapp/models/FirestoreService.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/widgets/Event_item.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class AddEvent extends StatefulWidget {
   static const String screenRoute = 'NewEvent';

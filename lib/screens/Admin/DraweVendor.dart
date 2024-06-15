@@ -6,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/Alert/error.dart';
 import 'package:testtapp/Alert/info.dart';
 import 'package:testtapp/Alert/success.dart';
@@ -34,6 +32,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
   final TextEditingController _socialMediaController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   late DocumentReference serviceTypeId;
+  late DocumentReference businessTypeId;
   String email = '';
   String socialMedia = '';
   String commercialName = '';
@@ -121,6 +120,29 @@ class _DrawerVendorState extends State<DrawerVendor> {
                               DocumentSnapshot docSnapshot =
                                   querySnapshot.docs.first;
                               serviceTypeId = docSnapshot.reference;
+                            }
+                          });
+                        }
+                      },
+                    ),
+                    FirestoreDropdown(
+                      collectionName: 'business_types',
+                      dropdownLabel: 'نوع المتجر',
+                      onChanged: (value) {
+                        if (value != null) {
+                          FirebaseFirestore.instance
+                              .collection("business_types")
+                              .where('description', isEqualTo: value.toString())
+                              .limit(1)
+                              .get()
+                              .then((QuerySnapshot querySnapshot) {
+                            if (querySnapshot.docs.isNotEmpty) {
+                              DocumentSnapshot docSnapshot =
+                                  querySnapshot.docs.first;
+                              DocumentReference busTypeRef =
+                                  docSnapshot.reference;
+                              businessTypeId = busTypeRef;
+                              setState(() {});
                             }
                           });
                         }

@@ -106,41 +106,40 @@ class _AlertEditItemState extends State<AlertEditItem> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(147, 246, 242, 239),
-      
-   title: Column(
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    Text(
-      'تعديل المنتج',
-      style: StyleTextAdmin(22, Colors.black),
-    ),
-    GestureDetector(
-      onTap: () async {
-        await chooseNewImage();
-      },
-      child: Container(
-        width: 200,
-        height: 200,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 224, 224, 224),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: fileBytes != null
-            ? Image.memory(
-                fileBytes!,
-                fit: BoxFit.cover,
-              )
-            : imageUrl.isNotEmpty
-                ? Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  )
-                : Icon(Icons.camera_alt, color: Colors.grey[700]),
+      backgroundColor: Color.fromARGB(255, 246, 242, 239),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'تعديل المنتج',
+            style: StyleTextAdmin(22, Colors.black),
+          ),
+          GestureDetector(
+            onTap: () async {
+              await chooseNewImage();
+            },
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 224, 224, 224),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: fileBytes != null
+                  ? Image.memory(
+                      fileBytes!,
+                      fit: BoxFit.cover,
+                    )
+                  : imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        )
+                      : Icon(Icons.camera_alt, color: Colors.grey[700]),
+            ),
+          ),
+        ],
       ),
-    ),
-  ],
-),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -168,7 +167,6 @@ class _AlertEditItemState extends State<AlertEditItem> {
               onChanged: (value) {},
               obscureTextField: false,
               enabled: false,
-              
             ),
             TextFieldDesign(
               Text: 'السعر',
@@ -258,7 +256,6 @@ class _AlertEditItemState extends State<AlertEditItem> {
               ),
             ),
             if (showSpinner) CircularProgressIndicator(),
-     
           ],
         ),
       ),

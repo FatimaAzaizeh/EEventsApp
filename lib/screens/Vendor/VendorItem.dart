@@ -20,7 +20,7 @@ class VendorItem extends StatelessWidget {
 
         if (userSnapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('Error: ${userSnapshot.error}')),
+            body: Center(child: Text('Error: Failed to fetch user data.')),
           );
         }
 
@@ -60,15 +60,13 @@ class VendorItemContent extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(title: Text('Items')),
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return CircularProgressIndicator();
         }
 
         if (snapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
+            backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+            body: Center(child: Text('Error: Failed to fetch items.')),
           );
         }
 
@@ -77,156 +75,248 @@ class VendorItemContent extends StatelessWidget {
           return ItemDisplay(
             id: doc.id,
             name: data['name'] ?? '',
+            itemCode: data['item_code'] ?? '',
+            imageUrl: data['image_url'] ?? '',
+            description: data['description'] ?? '',
+            price: data['price']?.toDouble() ?? 0.0,
             capacity: data['capacity'] ?? 0,
+            eventTypeId: data['event_type_id'],
+            itemStatusId: data['item_status_id'],
             createdAt: (data['created_at'] as Timestamp).toDate(),
-            description: data['description'] ?? '', 
-             imageUrl: data['image_url'] ?? '',
           );
         }).toList();
 
-        return VendorItemList(items: items, currentUser: currentUser);
+        return VendorItemGrid(items: items, currentUser: currentUser);
       },
     );
   }
 }
 
-class VendorItemList extends StatelessWidget {
+class VendorItemGrid extends StatelessWidget {
   final List<ItemDisplay> items;
   final User currentUser;
 
-  const VendorItemList(
+  const VendorItemGrid(
       {Key? key, required this.items, required this.currentUser})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(0, 255, 255, 255),
       body: Stack(
         children: [
           // Background image
           Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/signin.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
+            decoration:
+                BoxDecoration(color: const Color.fromARGB(0, 255, 255, 255)),
           ),
           // Main content
           Column(
-            children: [
-             
-              Expanded(
-                child: items.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('You have no items.'),
-                            ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertItem(
-                                    vendorId: currentUser.uid,
-                                  ),
-                                );
-                              },
-                              child: Text('اضف منتج جديد'),
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return Card(
-                            child: ListTile(
-                               leading: item.imageUrl.isNotEmpty
-                                  ? Image.network(
-                                      item.imageUrl,
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Placeholder(),
-                              title: Text(item.name),
-                              subtitle: Text('عدد الاشخاص: ${item.capacity}'),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertEditItem(
-                                          vendor_id: currentUser.uid,
-                                          item_code: item.id,
-                                        ),
-                                      );
-                                      // Implement editing functionality
-                                    },
-                                  ),
-                                IconButton(
-  icon: Icon(Icons.delete),
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("حذف المنتج"),
-          content: Text("هل انت متاكد من حذف المنتج؟"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text("الغاء"),
-            ),
-            TextButton(
-              onPressed: () {
-                // Implement deletion functionality
-                Item.deactiveItemInFirestore(item.id);
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text("حذف"),
-            ),
-          ],
-        );
-      },
-    );
-  },
-),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 13, 8, 8),
+                  child: Container(
+                    width: 230,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color.fromARGB(165, 255, 255, 255)
+                              .withOpacity(0.3),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertItem(
+                            vendorId: currentUser.uid,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: ColorPurple_100,
+                            size: 28,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text("إضافة منتج / خدمة جديدة",
+                              style: StyleTextAdmin(16, Colors.black)),
+                        ],
                       ),
-              ),
-            ],
-          ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: items.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'لا يوجد لديك أي منتجات',
+                                style: StyleTextAdmin(16, AdminButton),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertItem(
+                                      vendorId: currentUser.uid,
+                                    ),
+                                  );
+                                },
+                                child: Text('أضف منتجًا جديدًا',
+                                    style: StyleTextAdmin(16, AdminButton)),
+                              ),
+                            ],
+                          ),
+                        )
+                      : GridView.builder(
+                          padding: EdgeInsets.all(10.0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            childAspectRatio:
+                                1.0, // Ensures square-shaped items
+                          ),
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+                            return GestureDetector(
+                              onTap: () {
+                                // Handle item tap
+                              },
+                              child: Container(
+                                width: double.maxFinite,
+                                height: double.maxFinite,
+                                margin: EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: const Color.fromARGB(
+                                              165, 255, 255, 255)
+                                          .withOpacity(0.3),
+                                      width: 4),
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: const Color.fromARGB(6, 255, 255, 255)
+                                      .withOpacity(0.1),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                      child: item.imageUrl.isNotEmpty
+                                          ? Image.network(
+                                              item.imageUrl,
+                                              width: double.maxFinite,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Placeholder(),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Text(
+                                      item.name,
+                                      style: StyleTextAdmin(14, AdminButton),
+                                    ),
+                                    Text(
+                                      item.description,
+                                      style: StyleTextAdmin(14, AdminButton),
+                                    ),
+                                    Text(
+                                      'السعر:  ${item.price.toStringAsFixed(2)}'
+                                      ' د ,إ',
+                                      style: StyleTextAdmin(14, AdminButton),
+                                    ),
+                                    Text(
+                                      ' السعة:  ${item.capacity}',
+                                      style: StyleTextAdmin(14, AdminButton),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Colors.black,
+                                          ),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  AlertEditItem(
+                                                vendor_id: currentUser.uid,
+                                                item_code: item.id,
+                                              ),
+                                            );
+                                          },
+                                          tooltip: 'تعديل',
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.black,
+                                          ),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text("حذف المنتج"),
+                                                  content: Text(
+                                                    "هل أنت متأكد من حذف المنتج؟",
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(); // Close the dialog
+                                                      },
+                                                      child: Text("الغاء"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        // Implement deletion functionality
+                                                        Item.deactiveItemInFirestore(
+                                                            item.id);
+                                                        Navigator.of(context)
+                                                            .pop(); // Close the dialog
+                                                      },
+                                                      child: Text("حذف"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          tooltip: 'حذف',
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                ),
+              ]),
         ],
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => AlertItem(
-              vendorId: currentUser.uid,
-            ),
-          );
-        },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(ColorPink_100),
-        ),
-        child: Text(
-          'اضف منتج جديد',
-          style: TextStyle(color: Colors.white),
-        ),
       ),
     );
   }
@@ -235,17 +325,25 @@ class VendorItemList extends StatelessWidget {
 class ItemDisplay {
   final String id;
   final String name;
-  final int capacity;
-  final DateTime createdAt;
-  final String description;
+  final String itemCode;
   final String imageUrl;
+  final String description;
+  final double price;
+  final int capacity;
+  final DocumentReference eventTypeId;
+  final DocumentReference itemStatusId;
+  final DateTime createdAt;
 
   ItemDisplay({
     required this.id,
     required this.name,
-    required this.capacity,
-    required this.createdAt,
+    required this.itemCode,
+    required this.imageUrl,
     required this.description,
-     required this.imageUrl,
+    required this.price,
+    required this.capacity,
+    required this.eventTypeId,
+    required this.itemStatusId,
+    required this.createdAt,
   });
 }

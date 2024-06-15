@@ -14,6 +14,11 @@ import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/NewEvent.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/WizardScreen.dart';
+import 'package:testtapp/screens/Vendor/AllOrders.dart';
+import 'package:testtapp/screens/Vendor/Dashboard.dart';
+import 'package:testtapp/screens/Vendor/VendorItem.dart';
+import 'package:testtapp/screens/Vendor/VendorProfile.dart';
+import 'package:testtapp/screens/Vendor/WorkHour.dart';
 
 final _auth = FirebaseAuth.instance;
 String userName = "name";
@@ -21,19 +26,19 @@ String userEmail = "email";
 String userImage = "";
 final TextEditingController ControllerSearch = TextEditingController();
 
-class AdminScreen extends StatefulWidget {
-  static const String screenRoute = 'Admin_screen';
-  const AdminScreen({Key? key});
+class VendorScreen extends StatefulWidget {
+  static const String screenRoute = 'VendorScreen';
+  const VendorScreen({Key? key});
 
   @override
-  State<AdminScreen> createState() => _AdminScreenState();
+  State<VendorScreen> createState() => _VendorScreenState();
 }
 
 Future<void> getCurrentUserInfo() async {
   String uid = _auth.currentUser!.uid;
 
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-      .collection('users')
+      .collection('vendor')
       .where('UID', isEqualTo: uid)
       .get()
       .then((querySnapshot) => querySnapshot.docs.first);
@@ -41,22 +46,22 @@ Future<void> getCurrentUserInfo() async {
   if (userSnapshot.exists) {
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
 
-    userName = userData['name'] ??
+    userName = userData['business_name'] ??
         ''; // Save the 'name' field from the user data, or null if it's null
     userEmail = userData['email'] ??
         ''; // Save the 'email' field from the user data, or null if it's null
-    userImage = userData['Image_url'];
+    userImage = userData['logo_url'];
   }
 }
 
-class _AdminScreenState extends State<AdminScreen> {
+class _VendorScreenState extends State<VendorScreen> {
   @override
   void initState() {
     super.initState();
     getCurrentUserInfo();
   }
 
-  Widget _currentMainSection = AddAdmin();
+  Widget _currentMainSection = Dashboard();
 
   void _changeMainSection(Widget newSection) {
     setState(() {
@@ -230,103 +235,64 @@ class _SideMenuAdminState extends State<SideMenuAdmin> {
                   ),
                 ),
               ),
-              Divider(
-                color: Colors.black.withOpacity(0.25),
-              ),
               buildListTile(
-                'أضافة مسؤول جديد',
-                Icons.person_add_alt,
+                'الصفحه الرئسيه',
+                Icons.dashboard,
                 () {
-                  widget.changeMainSection(AddAdmin());
+                  widget.changeMainSection(Dashboard());
                 },
                 1,
               ),
-              Divider(
-                color: Colors.black.withOpacity(0.25),
-              ),
+              Divider(),
               buildListTile(
-                'طلبات إنشاء حسابات الشركاء ',
-                Icons.add_business_outlined,
+                'اضافة المنتجات / الخدمات',
+                Icons.sell,
                 () {
-                  widget.changeMainSection(ListReq());
+                  widget.changeMainSection(VendorItem());
                 },
                 2,
               ),
+              Divider(),
               buildListTile(
-                'إدارة حسابات الشركاء',
-                Icons.account_circle_outlined,
+                'الطلبات',
+                Icons.online_prediction_rounded,
                 () {
-                  setState(() {
-                    widget.changeMainSection(VendorList());
-                  });
+                  widget.changeMainSection(VendorOrders(
+                    currentUserUID: _auth.currentUser!.uid.toString(),
+                  ));
                 },
                 3,
               ),
-              Divider(
-                color: Colors.black.withOpacity(0.25),
-              ),
+              Divider(),
               buildListTile(
-                'ادارة المناسبات',
-                Icons.post_add,
+                'تعديل معلومات الحساب',
+                Icons.manage_accounts,
                 () {
-                  widget.changeMainSection(AddEvent());
+                  setState(() {
+                    widget.changeMainSection(VendorProfile());
+                  });
                 },
                 4,
               ),
+              Divider(),
               buildListTile(
-                'ادارة الخدمات',
-                Icons.widgets,
+                'ساعات العمل',
+                Icons.timelapse,
                 () {
-                  widget.changeMainSection(AddService());
+                  widget.changeMainSection(OpeningHoursPage());
                 },
                 5,
               ),
+              Divider(),
               buildListTile(
-                'إدارة التصنيفات  ',
-                Icons.category_outlined,
-                () {
-                  widget.changeMainSection(EventClassification());
-                },
-                6,
-              ),
-              buildListTile(
-                'تنظيم مراحل المناسبات ',
-                Icons.onetwothree_rounded,
-                () async {
-                  String? selectedEvent = await showDialog<String>(
-                    context: context,
-                    builder: (context) => CreateNewEventWizard(),
-                  );
-                  if (selectedEvent != null) {
-                    // Do something with the selected event
-                    print('Selected Event: $selectedEvent');
-                    widget.changeMainSection(Wizard(
-                      EventName: selectedEvent,
-                    ));
-                  }
-                },
-                7,
-              ),
-              buildListTile(
-                'إدارة الطلبات ',
-                Icons.online_prediction_rounded,
-                () {
-                  widget.changeMainSection(DisplayAllOrders());
-                },
-                8,
-              ),
-              Divider(
-                color: Colors.black.withOpacity(0.25),
-              ),
-              buildListTile(
-                'تسجيل الخروج',
+                'تسجيل خروج',
                 Icons.logout,
                 () {
                   _auth.signOut();
                   Navigator.pop(context);
                   Navigator.pushNamed(context, AdminLogin.screenRoute);
                 },
-                9,
+                6,
               ),
             ],
           ),

@@ -74,3 +74,61 @@ Future<void> deleteImageByUrl(String imageUrl) async {
     print("Error occurred while deleting image: $e");
   }
 }
+
+Future<String> getImageUrl(String itemCode) async {
+  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+      .instance
+      .collection('item')
+      .where('item_code', isEqualTo: itemCode)
+      .get();
+
+  if (snapshot.docs.isNotEmpty) {
+    return snapshot.docs.first.data()['image_url'];
+  } else {
+    return 'https://example.com/default_image.jpg';
+  }
+}
+
+Color getColorForOrderStatus(String orderStatusValue) {
+  Color containerColor;
+
+  switch (orderStatusValue) {
+    case "في الانتظار":
+      containerColor = Color.fromARGB(255, 210, 105, 30).withOpacity(0.3);
+      break;
+    case "تم القبول":
+      containerColor = Colors.green.withOpacity(0.3);
+      break;
+    case "تم الرفض":
+      containerColor = Colors.red.withOpacity(0.3);
+      break;
+    case "تم الإلغاء":
+      containerColor = Color.fromARGB(255, 185, 92, 80).withOpacity(0.3);
+      break;
+    case "خارج للتوصيل":
+      containerColor = Color.fromARGB(255, 0, 100, 0).withOpacity(0.3);
+      break;
+    case "تم التوصيل":
+      containerColor = Colors.blue.shade200.withOpacity(0.3);
+      break;
+    default:
+      containerColor = Colors.white.withOpacity(0.3).withOpacity(0.3);
+  }
+
+  return containerColor;
+}
+
+bool isOrderStatusComplete(String orderStatusValue) {
+  switch (orderStatusValue) {
+    case "في الانتظار":
+    case "خارج للتوصيل":
+    case "تم القبول":
+      return true;
+    case "تم الرفض":
+    case "تم الإلغاء":
+    case "تم التوصيل":
+      return false; // Complete
+    default:
+      return false; // Default to false if status is unknown
+  }
+}

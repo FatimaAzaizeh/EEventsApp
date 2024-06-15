@@ -13,8 +13,8 @@ import 'package:testtapp/screens/Admin/widgets_admin/SignAV.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/VendorAccount.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/wizard/CreatEventWizard.dart';
 import 'package:testtapp/screens/Event_screen.dart';
-import 'package:testtapp/screens/Vendor/VendorHome.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Add_Admin.dart';
+import 'package:testtapp/screens/Vendor/VendorScreen.dart';
 
 final _auth = FirebaseAuth.instance;
 void main() async {
@@ -61,10 +61,10 @@ class MyApp extends StatelessWidget {
         VendorList.screenRoute: (context) => VendorList(),
         AddService.screenRoute: (context) => AddService(),
         EventClassification.screenRoute: (context) => EventClassification(),
-        VendorHome.screenRoute: (context) => VendorHome(),
+        VendorScreen.screenRoute: (context) => VendorScreen(),
         CreateNewEventWizard.screenRoute: (context) => CreateNewEventWizard(),
       },
-      home:AdminLogin(),
+      home: AdminLogin(),
     );
   }
 }

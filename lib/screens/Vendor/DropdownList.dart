@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/constants.dart';
 
 class FirestoreDropdown extends StatefulWidget {
   final String collectionName;
@@ -60,9 +61,10 @@ class _FirestoreDropdownState extends State<FirestoreDropdown> {
         }
 
         return DropdownButtonFormField<String?>(
+          style: StyleTextAdmin(14, Colors.black),
           decoration: InputDecoration(
-            labelText: widget.dropdownLabel,
-          ),
+              labelText: widget.dropdownLabel,
+              labelStyle: StyleTextAdmin(14, Colors.black)),
           items: snapshot.data?.map((item) {
                 return DropdownMenuItem<String?>(
                   value: item,

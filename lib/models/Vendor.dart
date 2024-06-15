@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
@@ -126,7 +124,7 @@ class Vendor {
     }
   }
 
-  static Future<void> edit({
+  static Future<String> edit({
     required String UID,
     String? businessName,
     String? contactNumber,
@@ -134,7 +132,6 @@ class Vendor {
     String? instagramUrl,
     String? website,
     String? bio,
-    DocumentReference? businessTypesId,
     String? address,
     String? locationUrl,
   }) async {
@@ -151,14 +148,13 @@ class Vendor {
         if (instagramUrl != null) 'instagram_url': instagramUrl,
         if (website != null) 'website': website,
         if (bio != null) 'bio': bio,
-        if (businessTypesId != null) 'business_types_id': businessTypesId,
         if (address != null) 'address': address,
         if (locationUrl != null) 'location_url': locationUrl,
       });
 
-      print('Vendor data updated successfully');
+      return 'تم تعديل المعلومات بنجاح';
     } catch (error) {
-      print('Error updating vendor data: $error');
+      return 'حدث خطأ ,لم يتم تعديل المعلومات';
     }
   }
 }

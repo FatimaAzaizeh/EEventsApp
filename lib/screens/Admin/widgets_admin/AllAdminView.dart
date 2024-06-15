@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testtapp/constants.dart';
-import 'package:testtapp/models/User.dart';
 
 class AllAdminView extends StatefulWidget {
   const AllAdminView({Key? key}) : super(key: key);
@@ -72,8 +71,6 @@ class _AllAdminViewState extends State<AllAdminView> {
 
   Stream<QuerySnapshot> getUsersWithValidUserType() {
     // Assuming user_type is a variable defined elsewhere, let's replace it here
-    String user_type =
-        'admin'; // Change 'admin' to the actual user type you're filtering for
 
     // Filter the snapshots to only include documents where the user type is valid
     return FirebaseFirestore.instance
