@@ -197,8 +197,7 @@ class _VendorCardState extends State<VendorCard> {
               padding: const EdgeInsets.only(top: 4), // Reduced padding
               child: Text(
                 widget.vendorData['business_name'] ?? '',
-                style: TextStyle(
-                    fontSize: 14, color: Colors.black), // Reduced font size
+                style: StyleTextAdmin(14, Colors.black), // Reduced font size
                 textAlign: TextAlign.right,
               ),
             ),
@@ -209,17 +208,15 @@ class _VendorCardState extends State<VendorCard> {
                       children: [
                         Text(
                           widget.vendorData['bio'] ?? '',
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black), // Reduced font size
+                          style: StyleTextAdmin(
+                              10, Colors.black), // Reduced font size
                         ),
                         SizedBox(height: 4),
                         Text(
                           widget.vendorData['instagram_url'] ?? '',
                           maxLines: 4,
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black), // Reduced font size
+                          style: StyleTextAdmin(
+                              10, Colors.black), // Reduced font size
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -235,8 +232,7 @@ class _VendorCardState extends State<VendorCard> {
               },
               child: Text(
                 isExpanded ? 'تقليل المعلومات' : 'المزيد من المعلومات...',
-                style: TextStyle(
-                    fontSize: 10, color: Colors.black), // Reduced font size
+                style: StyleTextAdmin(10, Colors.black), // Reduced font size
               ),
             ),
           ],
