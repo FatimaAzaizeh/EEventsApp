@@ -15,6 +15,7 @@ class DisplayAllOrders extends StatefulWidget {
 
 class _DisplayAllOrdersState extends State<DisplayAllOrders> {
   bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,210 +39,206 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
               style: StyleTextAdmin(20, AdminButton),
             ),
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('orders').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text('خطأ: ${snapshot.error}'),
-                );
-              }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('خطأ: ${snapshot.error}'),
+                  );
+                }
 
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(
-                  child: Text('لا توجد طلبات.'),
-                );
-              }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                    child: Text('لا توجد طلبات.'),
+                  );
+                }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DataTable(
-                        columnSpacing: 40,
-                        headingTextStyle: StyleTextAdmin(15, Colors.black),
-                        border: TableBorder.all(
-                          color: Color.fromARGB(137, 255, 255, 255),
-                          width: 2,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        decoration: BoxDecoration(color: ColorPink_20),
-                        dataTextStyle: StyleTextAdmin(12, AdminButton),
-                        columns: [
-                          DataColumn(
-                            label: Text(
-                              'رقم تعريف الطلب',
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DataTable(
+                            columnSpacing: 40,
+                            headingTextStyle: StyleTextAdmin(15, Colors.black),
+                            border: TableBorder.all(
+                              color: Color.fromARGB(137, 255, 255, 255),
+                              width: 2,
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'رقم تعريف المستخدم',
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'إسم المستخدم',
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'رقم الهاتف ',
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'العنوان ',
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'قيمة الطلب ',
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'تفاصيل الطلب',
-                            ),
-                          ),
-                        ],
-                        rows: snapshot.data!.docs.map<DataRow>((doc) {
-                          final data = doc.data() as Map<String, dynamic>;
-                          final orderId = data['order_id'] ?? 'غير متاح';
-                          final userId = data['user_id'] ?? 'غير متاح';
-                          final vendors =
-                              data['vendors'] as Map<String, dynamic>?;
-                          final total = data['total_price'].toString();
-
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(orderId)),
-                              DataCell(Text(userId)),
-                              DataCell(
-                                FutureBuilder<DocumentSnapshot>(
-                                  future: FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(userId)
-                                      .get(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<DocumentSnapshot>
-                                          snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else if (snapshot.hasData &&
-                                        snapshot.data!.exists) {
-                                      String username =
-                                          snapshot.data!.get('name');
-                                      return Text('$username');
-                                    } else {
-                                      return Text('المستخدم غير موجود');
-                                    }
-                                  },
-                                ),
+                            decoration: BoxDecoration(color: ColorPink_20),
+                            dataTextStyle: StyleTextAdmin(12, AdminButton),
+                            columns: [
+                              DataColumn(
+                                label: Text('رقم تعريف الطلب'),
                               ),
-                              DataCell(
-                                FutureBuilder<DocumentSnapshot>(
-                                  future: FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(userId)
-                                      .get(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<DocumentSnapshot>
-                                          snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else if (snapshot.hasData &&
-                                        snapshot.data!.exists) {
-                                      String phoneNumber =
-                                          snapshot.data!.get('phone');
-                                      return Text('$phoneNumber');
-                                    } else {
-                                      return Text('المستخدم غير موجود');
-                                    }
-                                  },
-                                ),
+                              DataColumn(
+                                label: Text('رقم تعريف المستخدم'),
                               ),
-                              DataCell(
-                                FutureBuilder<DocumentSnapshot>(
-                                  future: FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(userId)
-                                      .get(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<DocumentSnapshot>
-                                          snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else if (snapshot.hasData &&
-                                        snapshot.data!.exists) {
-                                      String address =
-                                          snapshot.data!.get('address');
-                                      return Text('$address');
-                                    } else {
-                                      return Text('المستخدم غير موجود');
-                                    }
-                                  },
-                                ),
+                              DataColumn(
+                                label: Text('إسم المستخدم'),
                               ),
-                              DataCell(Text(total + ' د.إ   ')),
-                              DataCell(Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color:
-                                        const Color.fromARGB(165, 255, 255, 255)
-                                            .withOpacity(0.3),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white.withOpacity(0.3),
-                                ),
-                                child: TextButton(
-                                  onPressed: () {
-                                    _showOrderDialog(
-                                        context, orderId, userId, vendors);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Colors.white,
-                                        content: Center(
-                                          child: Text(
-                                            "يتم تحميل تفاصيل الطلب , إنتظر قليلا",
-                                            style: StyleTextAdmin(
-                                                14, Colors.black),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Text('عرض التفاصيل',
-                                      style: StyleTextAdmin(12, AdminButton)),
-                                ),
-                              )),
+                              DataColumn(
+                                label: Text('رقم الهاتف '),
+                              ),
+                              DataColumn(
+                                label: Text('العنوان '),
+                              ),
+                              DataColumn(
+                                label: Text('قيمة الطلب '),
+                              ),
+                              DataColumn(
+                                label: Text('تفاصيل الطلب'),
+                              ),
                             ],
-                          );
-                        }).toList(),
+                            rows: snapshot.data!.docs.map<DataRow>((doc) {
+                              final data = doc.data() as Map<String, dynamic>;
+                              final orderId = data['order_id'] ?? 'غير متاح';
+                              final userId = data['user_id'] ?? 'غير متاح';
+                              final vendors =
+                                  data['vendors'] as Map<String, dynamic>?;
+                              final total = data['total_price'].toString();
+
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(orderId)),
+                                  DataCell(Text(userId)),
+                                  DataCell(
+                                    FutureBuilder<DocumentSnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userId)
+                                          .get(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<DocumentSnapshot>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        } else if (snapshot.hasData &&
+                                            snapshot.data!.exists) {
+                                          String username =
+                                              snapshot.data!.get('name');
+                                          return Text('$username');
+                                        } else {
+                                          return Text('المستخدم غير موجود');
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  DataCell(
+                                    FutureBuilder<DocumentSnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userId)
+                                          .get(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<DocumentSnapshot>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        } else if (snapshot.hasData &&
+                                            snapshot.data!.exists) {
+                                          String phoneNumber =
+                                              snapshot.data!.get('phone');
+                                          return Text('$phoneNumber');
+                                        } else {
+                                          return Text('المستخدم غير موجود');
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  DataCell(
+                                    FutureBuilder<DocumentSnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userId)
+                                          .get(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<DocumentSnapshot>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        } else if (snapshot.hasData &&
+                                            snapshot.data!.exists) {
+                                          String address =
+                                              snapshot.data!.get('address');
+                                          return Text('$address');
+                                        } else {
+                                          return Text('المستخدم غير موجود');
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  DataCell(Text(total + ' د.إ   ')),
+                                  DataCell(Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: const Color.fromARGB(
+                                                165, 255, 255, 255)
+                                            .withOpacity(0.3),
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white.withOpacity(0.3),
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        _showOrderDialog(
+                                            context, orderId, userId, vendors);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            backgroundColor: Colors.white,
+                                            content: Center(
+                                              child: Text(
+                                                "يتم تحميل تفاصيل الطلب , إنتظر قليلا",
+                                                style: StyleTextAdmin(
+                                                    14, Colors.black),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text('عرض التفاصيل',
+                                          style:
+                                              StyleTextAdmin(12, AdminButton)),
+                                    ),
+                                  )),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),
