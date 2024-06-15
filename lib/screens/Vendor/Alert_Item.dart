@@ -14,7 +14,7 @@ import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/item.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/EventClassification.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
-import 'package:testtapp/screens/Admin/widgets_admin/wizard/textFieldDesign.dart';
+import 'package:testtapp/screens/Admin/widgets_admin/TexFieldDesign.dart';
 import 'package:testtapp/screens/Vendor/DropdownList.dart';
 
 class AlertItem extends StatefulWidget {
