@@ -187,10 +187,7 @@ class _ListReqState extends State<ListReq> {
               style: StyleTextAdmin(18, AdminButton),
             ),
             const SizedBox(height: 8),
-            Text(
-              data['instagram_url'],
-              style: TextStyle(fontSize: 14, color: Colors.black),
-            ),
+            Text(data['instagram_url'], style: StyleTextAdmin(15, AdminButton)),
             const SizedBox(height: 8),
             const Divider(
               color: Colors.white,
@@ -222,7 +219,10 @@ class _ListReqState extends State<ListReq> {
                           color: ColorPurple_100,
                         ),
                         const SizedBox(height: 2.0),
-                        Text('موافقة'),
+                        Text(
+                          'موافقة',
+                          style: StyleTextAdmin(15, ColorPink_100),
+                        ),
                       ],
                     ),
                   ),
@@ -244,7 +244,7 @@ class _ListReqState extends State<ListReq> {
                           color: Colors.black,
                         ),
                         const SizedBox(height: 2.0),
-                        Text('رفض'),
+                        Text('رفض', style: StyleTextAdmin(15, AdminButton)),
                       ],
                     ),
                   ),
@@ -261,10 +261,7 @@ class _ListReqState extends State<ListReq> {
         borderRadius: BorderRadius.circular(20),
         color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
       ),
-      expandedHeaderDecoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(20),
-          // color: const Color.fromARGB(6, 255, 255, 255).withOpacity(0.22),
-          ),
+      expandedHeaderDecoration: BoxDecoration(),
     );
   }
 }

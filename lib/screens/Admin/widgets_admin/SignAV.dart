@@ -76,7 +76,7 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 15),
                         Text(
                           'البريد الالكتروني',
-                          style: StyleTextAdmin(20, Colors.black),
+                          style: StyleTextAdmin(18, Colors.black),
                         ),
                         CustomTextField(
                           hintText: 'ادخال البريد الالكتروني',
@@ -91,7 +91,7 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 10),
                         Text(
                           'كلمة المرور',
-                          style: StyleTextAdmin(20, Colors.black),
+                          style: StyleTextAdmin(18, Colors.black),
                         ),
                         CustomTextField(
                           hintText: 'أدخال كلمة المرور',
@@ -106,12 +106,6 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 15),
                         Row(
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text('مسؤول',
-                                  style: TextStyle(color: activeColor)),
-                            ),
                             Radio<bool>(
                               value: true,
                               groupValue: isAdminSelected,
@@ -125,12 +119,14 @@ class _SignInState extends State<SignIn> {
                                 });
                               },
                             ),
-                            SizedBox(width: 15),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text('بائع',
-                                  style: TextStyle(color: activeColor)),
+                              child: Text('مسؤول',
+                                  style: StyleTextAdmin(16, activeColor)),
+                            ),
+                            SizedBox(
+                              width: 10,
                             ),
                             Radio<bool>(
                               value: true,
@@ -144,6 +140,12 @@ class _SignInState extends State<SignIn> {
                                   admin = false;
                                 });
                               },
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text('بائع',
+                                  style: StyleTextAdmin(16, activeColor)),
                             ),
                           ],
                         ),
@@ -164,7 +166,7 @@ class _SignInState extends State<SignIn> {
                                   )
                                 ],
                                 borderRadius: BorderRadius.circular(20),
-                                color: Color.fromARGB(77, 251, 168, 165)),
+                                color: Color.fromARGB(125, 216, 147, 145)),
                             child: TextButton(
                               child: Text(
                                 'تسجيل الدخول ',

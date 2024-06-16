@@ -11,7 +11,7 @@ class Vendor {
   String website;
   String bio;
   DocumentReference serviceTypesId;
-  String businessTypesId;
+  DocumentReference businessTypesId;
   String address;
   String locationUrl;
   Map<String, Map<String, dynamic>> workingHour;

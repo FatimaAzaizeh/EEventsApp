@@ -38,7 +38,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
   String commercialName = '';
   String description = '';
   String password = '';
-  String fileName = " لم يتم اختيار صورة";
+  String fileName = "اضغط هنا لتحميل الصورة";
   Uint8List? fileBytes;
   bool showSpinner = false;
   String imageUrls = '';
@@ -97,13 +97,6 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         false,
                         (value) => description = value),
                     SizedBox(height: 10),
-                    Text(
-                      fileName,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
                     SizedBox(height: 10),
                     FirestoreDropdown(
                       collectionName: 'service_types',
@@ -148,19 +141,24 @@ class _DrawerVendorState extends State<DrawerVendor> {
                         }
                       },
                     ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor:
-                              ColorPink_100, // Change this to your desired text color
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          )),
-                      child: Text('تسجيل'),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ElevatedButton(
+                        onPressed: _submitForm,
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                ColorPink_100, // Change this to your desired text color
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            )),
+                        child: Text(
+                          'تقديم طلب ',
+                          style: StyleTextAdmin(18, Colors.white),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -190,43 +188,100 @@ class _DrawerVendorState extends State<DrawerVendor> {
           ],
         ),
       ),
-      child: DrawerHeader(
-        padding: EdgeInsets.zero,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: _pickFile, // Handle avatar tap to pick file
-              child: pickedImage != null
-                  ? ClipOval(
-                      child: SizedBox(
-                        width: size.width * 0.04,
-                        height: size.width * 0.04,
-                        child: pickedImage!,
-                      ),
-                    )
-                  : Tooltip(
-                      decoration: BoxDecoration(color: Colors.white),
-                      textStyle: StyleTextAdmin(12, ColorPurple_100),
-                      message: 'إضغط هنا لإضافة صورة',
-                      child: CircleAvatar(
-                        radius: size.width * 0.02,
-                        backgroundColor: Colors.grey[400]!.withOpacity(0.4),
-                        child: Icon(
-                          Icons.person_3_outlined,
-                          color: Colors.white,
-                          size: size.width * 0.02,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                pickedImage != null
+                    ? ClipOval(
+                        child: SizedBox(
+                          width: size.width * 0.04,
+                          height: size.width * 0.04,
+                          child: pickedImage!,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: size.width * 0.03,
+                        backgroundColor: Colors.white.withOpacity(0.6),
+                        backgroundImage: NetworkImage(imageUrls),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            fileName,
+                            style: StyleTextAdmin(
+                              10,
+                              AdminButton,
+                            ),
+                          ),
                         ),
                       ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () async {
+                      try {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles();
+                        if (result != null) {
+                          setState(() {
+                            showSpinner = true;
+                            fileName = result.files.first.name!;
+                          });
+
+                          fileBytes = result.files.first.bytes!;
+                          deleteImageByUrl(
+                              imageUrls); // Implement this function
+
+                          // Upload file to Firebase Storage
+                          final TaskSnapshot uploadTask = await FirebaseStorage
+                              .instance
+                              .ref('uploads/$fileName')
+                              .putData(fileBytes!);
+
+                          // Get download URL of the uploaded file
+                          imageUrls = await uploadTask.ref.getDownloadURL();
+
+                          // Set the picked image
+                          setState(() {
+                            showSpinner = false;
+                            pickedImage = Image.memory(fileBytes!);
+                          });
+                        }
+                      } catch (e) {
+                        print('Error picking image: $e');
+                        // Handle error as needed
+                      }
+                    },
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Color.fromRGBO(255, 255, 255, 0.075),
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: 20,
+                        color: Colors.black,
+                      ),
                     ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            Text(
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
               'هل تود تسجيل الدخول كبائع؟',
               style: StyleTextAdmin(20, activeColor),
+              // Consider using localized text instead of hardcoded string
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -315,7 +370,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
             website: '',
             bio: _descriptionController.text,
             serviceTypesId: serviceTypeId,
-            businessTypesId: '',
+            businessTypesId: businessTypeId,
             address: '',
             locationUrl: '',
             workingHour: {},
@@ -344,6 +399,7 @@ class _DrawerVendorState extends State<DrawerVendor> {
           _socialMediaController.clear();
           _descriptionController.clear();
           pickedImage = null; // Reset picked image
+          fileName = "اضغط هنا لتحميل الصورة";
         });
       }
     } catch (e) {
