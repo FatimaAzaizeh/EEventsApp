@@ -206,6 +206,8 @@ class _DrawerVendorState extends State<DrawerVendor> {
                       ),
                     )
                   : Tooltip(
+                      decoration: BoxDecoration(color: Colors.white),
+                      textStyle: StyleTextAdmin(12, ColorPurple_100),
                       message: 'إضغط هنا لإضافة صورة',
                       child: CircleAvatar(
                         radius: size.width * 0.02,

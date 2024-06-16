@@ -30,6 +30,7 @@ class Item {
   });
 
   // Method to add an item to Firestore
+
   Future<String> addItemToFirestore() async {
     try {
       final collectionRef = FirebaseFirestore.instance.collection('item');
@@ -39,8 +40,9 @@ class Item {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        return 'العنصر ذو المعرف $itemCode موجود بالفعل   .';
+        return 'العنصر ذو المعرف $itemCode موجود بالفعل.';
       }
+
       await collectionRef.add({
         'vendor_id': vendorId,
         'name': name,
@@ -54,9 +56,9 @@ class Item {
         'item_status_id': itemStatusId,
         'created_at': createdAt,
       });
-      return 'تمت إضافة العنصر ذو المعرف $itemCode بنجاح  .';
+      return 'تم إضافة المنتج / الخدمة بنجاح';
     } catch (error) {
-      throw Exception('فشل إضافة العنصر: $error');
+      return 'حدث خطأ أثناء إضافة المنتج: ${error.toString()}';
     }
   }
 
@@ -67,7 +69,8 @@ class Item {
       String description,
       double price,
       int capacity,
-      DocumentReference itemStatusId) async {
+      DocumentReference itemStatusId,
+      DocumentReference itemEventId) async {
     try {
       final collectionRef = FirebaseFirestore.instance.collection('item');
       DocumentReference vendorid = FirebaseFirestore.instance
@@ -91,6 +94,7 @@ class Item {
           'price': price,
           'capacity': capacity,
           'item_status_id': itemStatusId,
+          'event_type_id': itemEventId,
         });
       }
 

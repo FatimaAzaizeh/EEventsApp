@@ -148,20 +148,29 @@ class _VendorCardState extends State<VendorCard> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text(widget.vendorData['vendor_status_id'] ==
-                                  VendorDeactive
-                              ? 'تفعيل الحساب'
-                              : 'تعطيل الحساب'),
-                          content: Text(widget.vendorData['vendor_status_id'] ==
-                                  VendorDeactive
-                              ? 'هل أنت متأكد من رغبتك في تفعيل هذا الحساب؟'
-                              : 'هل أنت متأكد من رغبتك في تعطيل هذا الحساب؟'),
+                          title: Text(
+                            widget.vendorData['vendor_status_id'] ==
+                                    VendorDeactive
+                                ? 'تفعيل الحساب'
+                                : 'تعطيل الحساب',
+                            style: StyleTextAdmin(16, Colors.red),
+                          ),
+                          content: Text(
+                            widget.vendorData['vendor_status_id'] ==
+                                    VendorDeactive
+                                ? 'هل أنت متأكد من رغبتك في تفعيل هذا الحساب؟'
+                                : 'هل أنت متأكد من رغبتك في تعطيل هذا الحساب؟',
+                            style: StyleTextAdmin(14, Colors.black),
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('لا'),
+                              child: Text(
+                                'لا',
+                                style: StyleTextAdmin(14, Colors.black),
+                              ),
                             ),
                             TextButton(
                               onPressed: () {
@@ -179,7 +188,10 @@ class _VendorCardState extends State<VendorCard> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              child: Text('نعم'),
+                              child: Text(
+                                'نعم',
+                                style: StyleTextAdmin(14, Colors.red),
+                              ),
                             ),
                           ],
                         );

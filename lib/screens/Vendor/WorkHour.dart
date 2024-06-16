@@ -158,9 +158,14 @@ class _OpeningHoursPageState extends State<OpeningHoursPage> {
       appBar: AppBar(
         backgroundColor: ColorCream_50,
         actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saving ? null : _saveOpeningHours,
+          Tooltip(
+            decoration: BoxDecoration(color: Colors.white),
+            message: "تحديث ساعات العمل",
+            textStyle: StyleTextAdmin(12, ColorPurple_100),
+            child: IconButton(
+              icon: Icon(Icons.save),
+              onPressed: _saving ? null : _saveOpeningHours,
+            ),
           ),
         ],
       ),

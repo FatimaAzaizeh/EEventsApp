@@ -132,3 +132,21 @@ bool isOrderStatusComplete(String orderStatusValue) {
       return false; // Default to false if status is unknown
   }
 }
+
+Color getColorForStatus(String orderStatusValue) {
+  Color textColor;
+
+  switch (orderStatusValue) {
+    case "فعال":
+      textColor = Colors.green;
+      break;
+    case "نفذ من المخزن":
+      textColor = Colors.red;
+      break;
+    default:
+      // Handle any other cases or provide a default color
+      textColor = Colors.black; // Example of default color
+  }
+
+  return textColor;
+}

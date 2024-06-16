@@ -86,6 +86,8 @@ class _AlertAddAdminState extends State<AlertAddAdmin> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Tooltip(
+                      decoration: BoxDecoration(color: Colors.white),
+                      textStyle: StyleTextAdmin(12, ColorPurple_100),
                       message: 'إضافة صورة',
                       child: Icon(
                         Icons.add,

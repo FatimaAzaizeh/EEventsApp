@@ -172,6 +172,8 @@ class _AddServiceState extends State<AddService> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Tooltip(
+                            decoration: BoxDecoration(color: Colors.white),
+                            textStyle: StyleTextAdmin(12, ColorPurple_100),
                             message: 'إضافة صورة',
                             child: Icon(
                               Icons.add,
@@ -231,7 +233,7 @@ class _AddServiceState extends State<AddService> {
                                 showSpinner = true;
                               });
                               if (ControllerName.text.isNotEmpty &&
-                                  ControllerImage.text.isNotEmpty) {
+                                  fileName != "لم يتم اختيار صورة") {
                                 await uploadFile();
                                 int count =
                                     await FirestoreService.getCountOfRecords(

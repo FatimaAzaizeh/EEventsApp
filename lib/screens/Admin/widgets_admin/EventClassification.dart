@@ -97,6 +97,8 @@ class _EventClassificationState extends State<EventClassification> {
               obscureTextField: false,
             ),
             Tooltip(
+              decoration: BoxDecoration(color: Colors.white),
+              textStyle: StyleTextAdmin(12, ColorPurple_100),
               message: 'تعديل اسم التصنيف',
               child: IconButton(
                 disabledColor: Colors.grey,

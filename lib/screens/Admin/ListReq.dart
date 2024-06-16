@@ -203,6 +203,8 @@ class _ListReqState extends State<ListReq> {
               buttonMinWidth: 90.0,
               children: [
                 Tooltip(
+                  decoration: BoxDecoration(color: Colors.white),
+                  textStyle: StyleTextAdmin(12, ColorPurple_100),
                   waitDuration: Duration(milliseconds: 600),
                   message: 'قبول إنشاء الحساب ',
                   child: TextButton(
@@ -226,6 +228,8 @@ class _ListReqState extends State<ListReq> {
                   ),
                 ),
                 Tooltip(
+                  decoration: BoxDecoration(color: Colors.white),
+                  textStyle: StyleTextAdmin(12, ColorPurple_100),
                   waitDuration: Duration(milliseconds: 600),
                   message: 'رفض إنشاء الحساب ',
                   child: TextButton(

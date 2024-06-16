@@ -213,6 +213,8 @@ class _AddEventState extends State<AddEvent> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Tooltip(
+                            decoration: BoxDecoration(color: Colors.white),
+                            textStyle: StyleTextAdmin(12, ColorPurple_100),
                             message: 'إضافة صورة',
                             child: Icon(
                               Icons.add,
@@ -316,7 +318,7 @@ class _AddEventState extends State<AddEvent> {
                             true; // Set showSpinner to true when button is pressed
                       });
                       if (controllerName.text.isNotEmpty &&
-                          controllerImage.text.isNotEmpty) {
+                          fileName != "لم يتم اختيار صورة") {
                         await uploadFile();
                         int count = await FirestoreService.getCountOfRecords(
                             'event_types');

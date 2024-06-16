@@ -13,9 +13,7 @@ class VendorItem extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, userSnapshot) {
         if (userSnapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return Center(child: CircularProgressIndicator());
         }
 
         if (userSnapshot.hasError) {
@@ -54,13 +52,13 @@ class VendorItemContent extends StatelessWidget {
               isEqualTo: FirebaseFirestore.instance
                   .collection('vendor')
                   .doc(currentUser.uid))
-          .where('item_status_id',
-              isEqualTo:
-                  FirebaseFirestore.instance.collection('item_status').doc('1'))
-          .snapshots(),
+          .where('item_status_id', whereIn: [
+        FirebaseFirestore.instance.collection('item_status').doc('1'),
+        FirebaseFirestore.instance.collection('item_status').doc('3')
+      ]).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
 
         if (snapshot.hasError) {
@@ -228,24 +226,77 @@ class VendorItemGrid extends StatelessWidget {
                                           : Placeholder(),
                                     ),
                                     SizedBox(
-                                      height: 15,
+                                      height: 2,
                                     ),
                                     Text(
-                                      item.name,
-                                      style: StyleTextAdmin(14, AdminButton),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      'إسم المنتج / الخدمة: ${item.name}',
+                                      style: StyleTextAdmin(13, Colors.black),
                                     ),
                                     Text(
-                                      item.description,
-                                      style: StyleTextAdmin(14, AdminButton),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      'الوصف: ${item.description}',
+                                      style: StyleTextAdmin(12, AdminButton),
                                     ),
                                     Text(
-                                      'السعر:  ${item.price.toStringAsFixed(2)}'
+                                      'السعر:  ${item.price}'
                                       ' د ,إ',
-                                      style: StyleTextAdmin(14, AdminButton),
+                                      style: StyleTextAdmin(12, Colors.green),
                                     ),
                                     Text(
                                       ' السعة:  ${item.capacity}',
-                                      style: StyleTextAdmin(14, AdminButton),
+                                      style: StyleTextAdmin(12, AdminButton),
+                                    ),
+                                    FutureBuilder(
+                                      future: Future.wait([
+                                        item.itemStatusId.get(),
+                                        item.eventTypeId.get(),
+                                      ]),
+                                      builder: (context,
+                                          AsyncSnapshot<List<DocumentSnapshot>>
+                                              snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  'Error: ${snapshot.error}'));
+                                        } else if (!snapshot.hasData) {
+                                          return Center(
+                                              child: Text('No data available'));
+                                        } else {
+                                          var itemStatusData = snapshot.data![0]
+                                                  ['description'] ??
+                                              'Unknown';
+                                          var eventTypeData = snapshot.data![1]
+                                                  ['name'] ??
+                                              'Unknown';
+
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'حالة المنتج: $itemStatusData',
+                                                style: StyleTextAdmin(
+                                                    12,
+                                                    getColorForStatus(
+                                                        itemStatusData)),
+                                              ),
+                                              Text(
+                                                'نوع الحدث: $eventTypeData',
+                                                style: StyleTextAdmin(
+                                                    12, AdminButton),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      },
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -278,17 +329,25 @@ class VendorItemGrid extends StatelessWidget {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: Text("حذف المنتج"),
-                                                  content: Text(
-                                                    "هل أنت متأكد من حذف المنتج؟",
+                                                  title: Text(
+                                                    "حذف المنتج",
+                                                    style: StyleTextAdmin(
+                                                        18, Colors.red),
                                                   ),
+                                                  content: Text(
+                                                      "هل أنت متأكد من حذف المنتج؟",
+                                                      style: StyleTextAdmin(
+                                                          16, Colors.black)),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context)
                                                             .pop(); // Close the dialog
                                                       },
-                                                      child: Text("الغاء"),
+                                                      child: Text("الغاء",
+                                                          style: StyleTextAdmin(
+                                                              16,
+                                                              Colors.black)),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
@@ -298,7 +357,9 @@ class VendorItemGrid extends StatelessWidget {
                                                         Navigator.of(context)
                                                             .pop(); // Close the dialog
                                                       },
-                                                      child: Text("حذف"),
+                                                      child: Text("حذف",
+                                                          style: StyleTextAdmin(
+                                                              16, Colors.red)),
                                                     ),
                                                   ],
                                                 );
