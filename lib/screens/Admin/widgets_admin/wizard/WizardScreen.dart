@@ -242,6 +242,7 @@ class _CreateEventWizardState extends State<CreateEventWizard> {
                                     checkboxRecord['name']);
                                 enteredValues.removeWhere(
                                     (value) => services.keys.contains(value));
+                                enteredValues.last = enteredValues.last - 1;
                               }
                             }
                           });

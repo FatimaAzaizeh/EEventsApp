@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:testtapp/constants.dart';
 import 'package:testtapp/screens/Admin/widgets_admin/Service/widgets_service/service.dart';
 
 class DisplayService extends StatelessWidget {
@@ -30,7 +31,11 @@ class DisplayService extends StatelessWidget {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Center(child: Text('No data available'));
+              return Center(
+                  child: Text(
+                "لا يوجد مزودي خدمات لهذه الخدمة",
+                style: StyleTextAdmin(16, Colors.black),
+              ));
             }
             return ListView.builder(
               shrinkWrap:
@@ -42,7 +47,7 @@ class DisplayService extends StatelessWidget {
                   onTap: () {
                     // Handle the tap event
                   },
-                  child: service(
+                  child: Service(
                     title: doc['business_name'],
                     imageUrl: doc['logo_url'],
                     id: doc.id,

@@ -74,7 +74,10 @@ class _VendorOrdersState extends State<VendorOrders> {
 
                 if (filteredDocs.isEmpty) {
                   return Center(
-                    child: Text('لا يوجد طلبات لهذا البائع'),
+                    child: Text(
+                      'لا يوجد طلبات لهذا البائع',
+                      style: StyleTextAdmin(16, Colors.black),
+                    ),
                   );
                 }
 
@@ -406,7 +409,10 @@ class _VendorOrdersState extends State<VendorOrders> {
       var value = entry.value;
       try {
         String imageUrl = await getImageUrl(
-            value['item_code']); // Await inside async function
+            value['item_code'],
+            FirebaseFirestore.instance
+                .collection("vendor")
+                .doc(widget.currentUserUID)); // Await inside async function
 
         // Assuming ImageHoverWidget is properly defined and used
         ImageHoverWidget imageWidget = ImageHoverWidget(

@@ -252,20 +252,6 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
     );
   }
 
-  Future<String> getImageUrl(String itemCode) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection('item')
-        .where('item_code', isEqualTo: itemCode)
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      return snapshot.docs.first.data()['image_url'];
-    } else {
-      return 'https://example.com/default_image.jpg';
-    }
-  }
-
   Future<void> _showOrderDialog(BuildContext context, String orderId,
       String userId, Map<String, dynamic>? vendors) async {
     List<Widget> content = [
@@ -351,7 +337,11 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
           padding: const EdgeInsets.all(10.0),
           child: Text('عناصر البائع:', style: StyleTextAdmin(15, Colors.black)),
         ));
-        vendorWidgets.add(await _buildVendorItems(value['vendor_id_items']));
+        vendorWidgets.add(await _buildVendorItems(
+            value['vendor_id_items'],
+            FirebaseFirestore.instance
+                .collection("vendor")
+                .doc(value['vendor_id'])));
       }
     }
 
@@ -361,10 +351,11 @@ class _DisplayAllOrdersState extends State<DisplayAllOrders> {
     );
   }
 
-  Future<Widget> _buildVendorItems(Map<String, dynamic> vendorItems) async {
+  Future<Widget> _buildVendorItems(
+      Map<String, dynamic> vendorItems, DocumentReference vendorId) async {
     List<DataRow> itemRows = [];
     for (var value in vendorItems.values) {
-      String imageUrl = await getImageUrl(value['item_code']);
+      String imageUrl = await getImageUrl(value['item_code'], vendorId);
       ImageHoverWidget imageWidget = ImageHoverWidget(
         imageUrl: imageUrl,
       );

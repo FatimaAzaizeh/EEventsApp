@@ -75,11 +75,12 @@ Future<void> deleteImageByUrl(String imageUrl) async {
   }
 }
 
-Future<String> getImageUrl(String itemCode) async {
+Future<String> getImageUrl(String itemCode, DocumentReference vendorId) async {
   QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
       .instance
       .collection('item')
       .where('item_code', isEqualTo: itemCode)
+      .where('vendor_id', isEqualTo: vendorId)
       .get();
 
   if (snapshot.docs.isNotEmpty) {
