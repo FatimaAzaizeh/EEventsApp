@@ -42,6 +42,9 @@ const Color activeColor = Color(0xFF09126C);
 const Color textColor1 = Color.fromARGB(255, 104, 118, 125);
 const Color textColor2 = Color.fromARGB(255, 106, 124, 125);
 const Color googleColor = Color(0xFFDE4B39);
+
+/* This function defines a consistent text 
+style used throughout the application*/
 TextStyle StyleTextAdmin(double SizeText, Color colorText) {
   return TextStyle(
       fontFamily: 'Marhey',

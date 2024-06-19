@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
-  // This method can be called from other pages
+  //Method to determine the number of records in Firebase
   static Future<int> getCountOfRecords(String collectionName) async {
     try {
       // Reference to your collection

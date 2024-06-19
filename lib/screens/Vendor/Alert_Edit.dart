@@ -110,6 +110,7 @@ class _AlertEditItemState extends State<AlertEditItem> {
     }
   }
 
+//upload an image to Firebase Storage.
   Future<void> uploadFile() async {
     if (fileBytes == null) return;
 
@@ -118,9 +119,11 @@ class _AlertEditItemState extends State<AlertEditItem> {
     });
 
     try {
+      // Upload file to Firebase Storage under 'uploads/$fileName' path
       final TaskSnapshot uploadTask = await FirebaseStorage.instance
           .ref('uploads/$fileName')
           .putData(fileBytes!);
+      // Get download URL of the uploaded file
       imageUrl = await uploadTask.ref.getDownloadURL();
     } catch (error) {
       print('Error uploading file: $error');

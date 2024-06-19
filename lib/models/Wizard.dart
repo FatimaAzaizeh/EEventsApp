@@ -6,14 +6,12 @@ class EventWizard {
 
   EventWizard({required this.event_type_id, required this.services});
 
-  // Method to upload EventWizard to Firebase Firestore
+// Method to upload EventWizard to Firebase Firestore
   Future<String> uploadToFirebase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Specify the custom document ID
+// Specify the custom document ID
     String customId = this.event_type_id;
-
-    // Reference to the collection where you want to add the document
+// Reference to the collection where you want to add the document
     CollectionReference collectionReference =
         firestore.collection('event_wizard');
 

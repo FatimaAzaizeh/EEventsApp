@@ -25,18 +25,18 @@ class _ListReqState extends State<ListReq> {
     );
   }
 
-  // Send accept email to vendor
+  // Send an acceptance email to the vendor
   static Future<void> sendEmail(String email) async {
     try {
       await EmailJS.send(
-        'service_rjv9jb8',
-        'template_auv3se8',
+        'service_rjv9jb8', // 'SERVICE_ID'
+        'template_auv3se8', //'TEMPLATE_ID'
         {
           'user_email': email,
         },
         const Options(
-          publicKey: 'TpYQwF1u4eoGTKps4',
-          privateKey: '3gCIuEMMsyXcrE9MZAUDz',
+          publicKey: 'TpYQwF1u4eoGTKps4', //_PUBLIC_KEY'
+          privateKey: '3gCIuEMMsyXcrE9MZAUDz', //PRIVATE_KEY'
         ),
       );
       print('SUCCESS! Email sent to $email');
@@ -134,6 +134,7 @@ class _ListReqState extends State<ListReq> {
     deleteFromCollection("users");
   }
 
+//"Method to delete a user account from Firebase"
   void deleteAccount(String userId) {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null && user.uid == userId) {

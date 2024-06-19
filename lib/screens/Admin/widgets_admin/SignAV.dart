@@ -177,67 +177,77 @@ class _SignInState extends State<SignIn> {
                                 setState(() {
                                   showSpinner = true;
                                 });
-                                try {
-                                  final user =
-                                      await _auth.signInWithEmailAndPassword(
-                                    email: email,
-                                    password: password,
-                                  );
+                                if (admin || vendor) {
+                                  try {
+                                    //**Login with Username and Password**
+                                    final user =
+                                        await _auth.signInWithEmailAndPassword(
+                                      email: email,
+                                      password: password,
+                                    );
 
-                                  if (user != null) {
-                                    String? uid =
-                                        FirebaseAuth.instance.currentUser?.uid;
+                                    if (user != null) {
+                                      String? uid = FirebaseAuth
+                                          .instance.currentUser?.uid;
 
-                                    if (!admin && vendor) {
-                                      String userId = uid ?? '';
-                                      DocumentReference userTypeRef =
-                                          FirebaseFirestore.instance
-                                              .collection('user_types')
-                                              .doc('3');
+                                      if (!admin && vendor) {
+                                        String userId = uid ?? '';
+                                        //**Check if the account exists in the vendors table**
+                                        DocumentReference userTypeRef =
+                                            FirebaseFirestore.instance
+                                                .collection('user_types')
+                                                .doc('3');
 
-                                      bool isValid = await UserDataBase
-                                          .isUserTypeReferenceValid(
-                                              userId, userTypeRef);
-                                      if (isValid) {
-                                        Navigator.pushNamed(
-                                            context, VendorScreen.screenRoute);
-                                      } else {
-                                        setState(() {
-                                          showSpinner = false;
-                                        });
-                                        ErrorAlert(context, 'خطأ',
-                                            'الحساب الذي تحاول الدخول بة ليس حساب بائع');
+                                        bool isValid = await UserDataBase
+                                            .isUserTypeReferenceValid(
+                                                userId, userTypeRef);
+                                        if (isValid) {
+                                          Navigator.pushNamed(context,
+                                              VendorScreen.screenRoute);
+                                        } else {
+                                          setState(() {
+                                            showSpinner = false;
+                                          });
+                                          ErrorAlert(context, 'خطأ',
+                                              'الحساب الذي تحاول الدخول بة ليس حساب بائع');
+                                        }
+                                      }
+
+                                      if (admin) {
+                                        String userId = uid ?? '';
+                                        DocumentReference userTypeRef =
+                                            FirebaseFirestore.instance
+                                                .collection('user_types')
+                                                .doc('1');
+
+                                        bool isValid = await UserDataBase
+                                            .isUserTypeReferenceValid(
+                                                userId, userTypeRef);
+
+                                        if (isValid) {
+                                          Navigator.pushNamed(
+                                              context, AdminScreen.screenRoute);
+                                        } else {
+                                          setState(() {
+                                            showSpinner = false;
+                                          });
+                                          ErrorAlert(context, 'خطأ',
+                                              'الحساب الذي تحاول الدخول بة ليس حساب مسؤول');
+                                        }
                                       }
                                     }
-
-                                    if (admin) {
-                                      String userId = uid ?? '';
-                                      DocumentReference userTypeRef =
-                                          FirebaseFirestore.instance
-                                              .collection('user_types')
-                                              .doc('1');
-
-                                      bool isValid = await UserDataBase
-                                          .isUserTypeReferenceValid(
-                                              userId, userTypeRef);
-
-                                      if (isValid) {
-                                        Navigator.pushNamed(
-                                            context, AdminScreen.screenRoute);
-                                      } else {
-                                        setState(() {
-                                          showSpinner = false;
-                                        });
-                                        ErrorAlert(context, 'خطأ',
-                                            'الحساب الذي تحاول الدخول بة ليس حساب مسؤول');
-                                      }
-                                    }
+                                  } catch (e) {
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                    ErrorAlert(context, 'خطأ', e.toString());
                                   }
-                                } catch (e) {
+                                } else {
                                   setState(() {
                                     showSpinner = false;
                                   });
-                                  ErrorAlert(context, 'خطأ', e.toString());
+                                  ErrorAlert(
+                                      context, 'خطأ', "يرجى اختيار نوع الحساب");
                                 }
                               },
                             ),

@@ -117,7 +117,6 @@ class Item {
         'item_status_id':
             FirebaseFirestore.instance.collection('item_status').doc('2')
       });
-      print('succiful');
     } catch (error) {
       throw Exception('Failed to edit item: $error');
     }

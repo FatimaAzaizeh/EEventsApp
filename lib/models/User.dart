@@ -80,16 +80,20 @@ class UserDataBase {
     }
   }
 
+//checks if a user's type reference matches a specified user_type
   static Future<bool> isUserTypeReferenceValid(
       String userId, DocumentReference user_type) async {
     try {
+// Query Firestore collection 'users' where 'UID' is equal to userId
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('UID', isEqualTo: userId)
           .get();
-
+// Retrieve the required document
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot userSnapshot = querySnapshot.docs.first;
+/* Check if the 'user_type_id' field in the 
+  document matches the provided user_type reference*/
         return userSnapshot['user_type_id'] == user_type;
       } else {
         return false;

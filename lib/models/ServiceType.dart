@@ -9,35 +9,28 @@ class ServiceType {
 
   Future<String> saveToDatabase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Reference to the collection where you want to add the document
+// Reference to the collection where you want to add the document
     CollectionReference collectionReference =
         firestore.collection('service_types');
-
     try {
-      // Check if an entry with the same name already exists
+// Check if an entry with the same name already exists
       QuerySnapshot nameQuerySnapshot =
           await collectionReference.where('name', isEqualTo: this.name).get();
-
       if (nameQuerySnapshot.docs.isNotEmpty) {
         return 'An entry with the name "${this.name}" already exists';
       }
-
-      // Check if the document already exists by ID
+// Check if the document already exists by ID
       DocumentSnapshot idDocumentSnapshot =
           await collectionReference.doc(this.id).get();
-
       if (idDocumentSnapshot.exists) {
         return 'Document with ID ${this.id} already exists';
       }
-
-      // Add the document
+// Add the document
       await collectionReference.doc(this.id).set({
         'id': this.id,
         'name': this.name,
         'image_url': this.imageUrl,
       });
-
       print('Document added with ID: ${this.id}');
       return 'تم إضافة الخدمة بنجاح';
     } catch (e) {

@@ -102,34 +102,3 @@ class Classification {
     }
   }
 }
-
-
-/*
-  // Get the number of the last document ID in the Firestore collection
-  static Future<int?> getLastDocumentIdNumber() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Reference to the collection
-    CollectionReference collectionReference =
-        firestore.collection('event_classification_types');
-
-    // Query to get all documents sorted by document ID in descending order
-    QuerySnapshot querySnapshot = await collectionReference
-        .orderBy(FieldPath.documentId, descending: true)
-        .get();
-
-    // Check if there are any documents
-    if (querySnapshot.docs.isNotEmpty) {
-      // Extract the ID of the last document
-      String lastDocumentId = querySnapshot.docs.first.id;
-
-      // Extract the number part of the document ID
-      int? lastDocumentIdNumber = int.tryParse(lastDocumentId.split('_').last);
-
-      return lastDocumentIdNumber;
-    }
-
-    // Return null if no documents are found
-    return null;
-  }
-*/

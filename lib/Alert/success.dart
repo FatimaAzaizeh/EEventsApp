@@ -3,9 +3,11 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:testtapp/constants.dart';
 
+// Display a success alert using QuickAlert
 Future<void> SuccessAlert(BuildContext context, String content) async {
   return QuickAlert.show(
       context: context,
+// Custom animation asset
       customAsset: 'assets/images/Completionanimation.gif',
       width: 300,
       title: '',
