@@ -352,8 +352,15 @@ class VendorItemGrid extends StatelessWidget {
                                                     TextButton(
                                                       onPressed: () {
                                                         // Implement deletion functionality
-                                                        Item.deactiveItemInFirestore(
-                                                            item.id);
+                                                        Item.deactivateItemInFirestore(
+                                                            item.id,
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'vendor')
+                                                                .doc(currentUser
+                                                                    .uid));
+
                                                         Navigator.of(context)
                                                             .pop(); // Close the dialog
                                                       },
