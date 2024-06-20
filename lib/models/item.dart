@@ -105,20 +105,31 @@ class Item {
   }
 
   // Method to disable an item in Firestore
-  static Future<void> deactiveItemInFirestore(String itemCode) async {
+  static Future<void> deactivateItemInFirestore(
+      String itemCode, DocumentReference vendorId) async {
     try {
-      final docRef =
-          FirebaseFirestore.instance.collection('item').doc(itemCode);
-      final docSnapshot = await docRef.get();
-      if (!docSnapshot.exists) {
-        throw Exception('Item with ID $itemCode does not exist.');
+      // Query the collection with the given conditions
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('item')
+          .where("item_code", isEqualTo: itemCode)
+          .where('vendor_id', isEqualTo: vendorId)
+          .get();
+
+      // Ensure the document exists
+      if (querySnapshot.docs.isEmpty) {
+        throw Exception('Item with code $itemCode does not exist.');
       }
+
+      // Assuming there's only one document that matches the query
+      final docRef = querySnapshot.docs.first.reference;
+
+      // Update the document's status
       await docRef.update({
         'item_status_id':
             FirebaseFirestore.instance.collection('item_status').doc('2')
       });
     } catch (error) {
-      throw Exception('Failed to edit item: $error');
+      throw Exception('Failed to deactivate item: $error');
     }
   }
 }
