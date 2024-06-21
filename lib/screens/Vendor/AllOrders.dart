@@ -247,7 +247,8 @@ class _VendorOrdersState extends State<VendorOrders> {
                                                                           .data()?[
                                                                       'email'];
 
-                                                              //sendEmail(useremail);
+                                                              sendEmail(
+                                                                  useremail);
                                                             });
                                                           }
                                                         }

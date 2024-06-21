@@ -90,7 +90,7 @@ class VendorItemContent extends StatelessWidget {
   }
 }
 
-class VendorItemGrid extends StatelessWidget {
+class VendorItemGrid extends StatefulWidget {
   final List<ItemDisplay> items;
   final User currentUser;
 
@@ -98,6 +98,11 @@ class VendorItemGrid extends StatelessWidget {
       {Key? key, required this.items, required this.currentUser})
       : super(key: key);
 
+  @override
+  State<VendorItemGrid> createState() => _VendorItemGridState();
+}
+
+class _VendorItemGridState extends State<VendorItemGrid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +136,7 @@ class VendorItemGrid extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertItem(
-                            vendorId: currentUser.uid,
+                            vendorId: widget.currentUser.uid,
                           ),
                         );
                       },
@@ -153,7 +158,7 @@ class VendorItemGrid extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: items.isEmpty
+                  child: widget.items.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -167,7 +172,7 @@ class VendorItemGrid extends StatelessWidget {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertItem(
-                                      vendorId: currentUser.uid,
+                                      vendorId: widget.currentUser.uid,
                                     ),
                                   );
                                 },
@@ -187,197 +192,213 @@ class VendorItemGrid extends StatelessWidget {
                             childAspectRatio:
                                 1.0, // Ensures square-shaped items
                           ),
-                          itemCount: items.length,
+                          itemCount: widget.items.length,
                           itemBuilder: (context, index) {
-                            final item = items[index];
+                            final item = widget.items[index];
                             return GestureDetector(
                               onTap: () {
                                 // Handle item tap
                               },
-                              child: Container(
-                                width: double.maxFinite,
-                                height: double.maxFinite,
-                                margin: EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: const Color.fromARGB(
-                                              165, 255, 255, 255)
-                                          .withOpacity(0.3),
-                                      width: 4),
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color.fromARGB(6, 255, 255, 255)
-                                      .withOpacity(0.1),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  margin: EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color.fromARGB(
+                                                165, 255, 255, 255)
+                                            .withOpacity(0.3),
+                                        width: 4),
+                                    borderRadius: BorderRadius.circular(20),
+                                    color:
+                                        const Color.fromARGB(6, 255, 255, 255)
+                                            .withOpacity(0.1),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                        child: item.imageUrl.isNotEmpty
+                                            ? Image.network(
+                                                item.imageUrl,
+                                                width: double.maxFinite,
+                                                height: 100,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Placeholder(),
                                       ),
-                                      child: item.imageUrl.isNotEmpty
-                                          ? Image.network(
-                                              item.imageUrl,
-                                              width: double.maxFinite,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Placeholder(),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      'إسم المنتج / الخدمة: ${item.name}',
-                                      style: StyleTextAdmin(13, Colors.black),
-                                    ),
-                                    Text(
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      'الوصف: ${item.description}',
-                                      style: StyleTextAdmin(12, AdminButton),
-                                    ),
-                                    Text(
-                                      'السعر:  ${item.price}'
-                                      ' د ,إ',
-                                      style: StyleTextAdmin(12, Colors.green),
-                                    ),
-                                    Text(
-                                      ' السعة:  ${item.capacity}',
-                                      style: StyleTextAdmin(12, AdminButton),
-                                    ),
-                                    FutureBuilder(
-                                      future: Future.wait([
-                                        item.itemStatusId.get(),
-                                        item.eventTypeId.get(),
-                                      ]),
-                                      builder: (context,
-                                          AsyncSnapshot<List<DocumentSnapshot>>
-                                              snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        } else if (snapshot.hasError) {
-                                          return Center(
-                                              child: Text(
-                                                  'Error: ${snapshot.error}'));
-                                        } else if (!snapshot.hasData) {
-                                          return Center(
-                                              child: Text('No data available'));
-                                        } else {
-                                          var itemStatusData = snapshot.data![0]
-                                                  ['description'] ??
-                                              'Unknown';
-                                          var eventTypeData = snapshot.data![1]
-                                                  ['name'] ??
-                                              'Unknown';
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        'إسم المنتج / الخدمة: ${item.name}',
+                                        style: StyleTextAdmin(13, Colors.black),
+                                      ),
+                                      Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        'الوصف: ${item.description}',
+                                        style: StyleTextAdmin(12, AdminButton),
+                                      ),
+                                      Text(
+                                        'السعر:  ${item.price}'
+                                        ' د ,إ',
+                                        style: StyleTextAdmin(12, Colors.green),
+                                      ),
+                                      Text(
+                                        ' السعة:  ${item.capacity}',
+                                        style: StyleTextAdmin(12, AdminButton),
+                                      ),
+                                      FutureBuilder(
+                                        future: Future.wait([
+                                          item.itemStatusId.get(),
+                                          item.eventTypeId.get(),
+                                        ]),
+                                        builder: (context,
+                                            AsyncSnapshot<
+                                                    List<DocumentSnapshot>>
+                                                snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (snapshot.hasError) {
+                                            return Center(
+                                                child: Text(
+                                                    'Error: ${snapshot.error}'));
+                                          } else if (!snapshot.hasData) {
+                                            return Center(
+                                                child:
+                                                    Text('No data available'));
+                                          } else {
+                                            var itemStatusData = snapshot
+                                                    .data![0]['description'] ??
+                                                'Unknown';
+                                            var eventTypeData =
+                                                snapshot.data![1]['name'] ??
+                                                    'Unknown';
 
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'حالة المنتج: $itemStatusData',
-                                                style: StyleTextAdmin(
-                                                    12,
-                                                    getColorForStatus(
-                                                        itemStatusData)),
-                                              ),
-                                              Text(
-                                                'نوع الحدث: $eventTypeData',
-                                                style: StyleTextAdmin(
-                                                    12, AdminButton),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.edit,
-                                            color: Colors.black,
-                                          ),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  AlertEditItem(
-                                                vendor_id: currentUser.uid,
-                                                item_code: item.id,
-                                              ),
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'حالة المنتج: $itemStatusData',
+                                                  style: StyleTextAdmin(
+                                                      12,
+                                                      getColorForStatus(
+                                                          itemStatusData)),
+                                                ),
+                                                Text(
+                                                  'نوع الحدث: $eventTypeData',
+                                                  style: StyleTextAdmin(
+                                                      12, AdminButton),
+                                                ),
+                                              ],
                                             );
-                                          },
-                                          tooltip: 'تعديل',
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.black,
+                                          }
+                                        },
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.edit,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertEditItem(
+                                                  vendor_id:
+                                                      widget.currentUser.uid,
+                                                  item_code: item.id,
+                                                ),
+                                              );
+                                            },
+                                            tooltip: 'تعديل',
                                           ),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                    "حذف المنتج",
-                                                    style: StyleTextAdmin(
-                                                        18, Colors.red),
-                                                  ),
-                                                  content: Text(
-                                                      "هل أنت متأكد من حذف المنتج؟",
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                      "حذف المنتج",
                                                       style: StyleTextAdmin(
-                                                          16, Colors.black)),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop(); // Close the dialog
-                                                      },
-                                                      child: Text("الغاء",
-                                                          style: StyleTextAdmin(
-                                                              16,
-                                                              Colors.black)),
+                                                          18, Colors.red),
                                                     ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        // Implement deletion functionality
-                                                        Item.deactivateItemInFirestore(
-                                                            item.id,
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'vendor')
-                                                                .doc(currentUser
-                                                                    .uid));
+                                                    content: Text(
+                                                        "هل أنت متأكد من حذف المنتج؟",
+                                                        style: StyleTextAdmin(
+                                                            16, Colors.black)),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop(); // Close the dialog
+                                                        },
+                                                        child: Text("الغاء",
+                                                            style:
+                                                                StyleTextAdmin(
+                                                                    16,
+                                                                    Colors
+                                                                        .black)),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          // Implement deletion functionality
+                                                          setState(() {
+                                                            Item.deactivateItemInFirestore(
+                                                                item.itemCode,
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'vendor')
+                                                                    .doc(widget
+                                                                        .currentUser
+                                                                        .uid
+                                                                        .toString()));
 
-                                                        Navigator.of(context)
-                                                            .pop(); // Close the dialog
-                                                      },
-                                                      child: Text("حذف",
-                                                          style: StyleTextAdmin(
-                                                              16, Colors.red)),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          tooltip: 'حذف',
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); // Close the dialog
+                                                          });
+                                                        },
+                                                        child: Text("حذف",
+                                                            style:
+                                                                StyleTextAdmin(
+                                                                    16,
+                                                                    Colors
+                                                                        .red)),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            tooltip: 'حذف',
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

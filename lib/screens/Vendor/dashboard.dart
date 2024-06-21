@@ -76,83 +76,87 @@ class _DashboardState extends State<Dashboard> {
               child: CircularProgressIndicator()) // Show loader while loading
           : _errorMessage.isNotEmpty
               ? Center(child: Text(_errorMessage)) // Show error message if any
-              : Column(
-                  children: [
-                    IgnorePointer(
-                      ignoring: true,
-                      child: Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      IgnorePointer(
+                        ignoring: true,
+                        child: Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            height: MediaQuery.sizeOf(context).height * 0.8,
+                            width: double.maxFinite,
+                            child: VendorProfile(),
                           ),
-                          height: MediaQuery.sizeOf(context).height * 0.8,
-                          width: double.maxFinite,
-                          child: VendorProfile(),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "الحالة :  ",
-                            style: StyleTextAdmin(17, Colors.black),
-                          ),
-                          DropdownButton<String>(
-                            style: StyleTextAdmin(16, Colors.black),
-                            value: _selectedItem,
-                            borderRadius: BorderRadius.circular(30),
-                            onChanged: (String? newValue) async {
-                              setState(() {
-                                _selectedItem = newValue!;
-                              });
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "الحالة :  ",
+                              style: StyleTextAdmin(17, Colors.black),
+                            ),
+                            DropdownButton<String>(
+                              style: StyleTextAdmin(16, Colors.black),
+                              value: _selectedItem,
+                              borderRadius: BorderRadius.circular(30),
+                              onChanged: (String? newValue) async {
+                                setState(() {
+                                  _selectedItem = newValue!;
+                                });
 
-                              try {
-                                QuerySnapshot querySnapshot =
-                                    await FirebaseFirestore.instance
-                                        .collection('users')
-                                        .where('UID',
-                                            isEqualTo: _auth.currentUser!.uid
-                                                .toString())
-                                        .get();
+                                try {
+                                  QuerySnapshot querySnapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .where('UID',
+                                              isEqualTo: _auth.currentUser!.uid
+                                                  .toString())
+                                          .get();
 
-                                // Check if any documents match the query
-                                if (querySnapshot.docs.isNotEmpty) {
-                                  // Get the first document (assuming id is unique)
-                                  DocumentSnapshot userSnapshot =
-                                      querySnapshot.docs.first;
+                                  // Check if any documents match the query
+                                  if (querySnapshot.docs.isNotEmpty) {
+                                    // Get the first document (assuming id is unique)
+                                    DocumentSnapshot userSnapshot =
+                                        querySnapshot.docs.first;
 
-                                  // Check if the vendor_status_id reference matches the expected reference
-                                  if (newValue == 'متاح')
-                                    userSnapshot.reference
-                                        .update({'is_active': true});
-                                  else
-                                    userSnapshot.reference
-                                        .update({'is_active': false});
-                                } else {
-                                  // User document does not exist
+                                    // Check if the vendor_status_id reference matches the expected reference
+                                    if (newValue == 'متاح')
+                                      userSnapshot.reference
+                                          .update({'is_active': true});
+                                    else
+                                      userSnapshot.reference
+                                          .update({'is_active': false});
+                                  } else {
+                                    // User document does not exist
+                                    print(
+                                        'User document with ID ${_auth.currentUser!.uid} does not exist.');
+                                  }
+                                } catch (error) {
                                   print(
-                                      'User document with ID ${_auth.currentUser!.uid} does not exist.');
+                                      'Error checking user type reference validity: $error');
                                 }
-                              } catch (error) {
-                                print(
-                                    'Error checking user type reference validity: $error');
-                              }
-                            },
-                            items: <String>['متاح', 'مغلق']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ],
+                              },
+                              items: <String>[
+                                'متاح',
+                                'مغلق'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
     );
   }

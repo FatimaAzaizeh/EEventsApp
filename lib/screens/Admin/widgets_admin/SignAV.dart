@@ -29,9 +29,10 @@ class _SignInState extends State<SignIn> {
   bool showSpinner = false;
   bool isAdminSelected = false;
   bool isVendorSelected = false;
-
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -153,9 +154,8 @@ class _SignInState extends State<SignIn> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            width: 300,
-                            height: 50,
-                            margin: EdgeInsets.only(bottom: 90),
+                            width: screenWidth * 0.3,
+                            height: screenHeight * 0.05,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(

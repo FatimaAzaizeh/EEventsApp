@@ -112,7 +112,7 @@ class Item {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('item')
           .where("item_code", isEqualTo: itemCode)
-          .where('vendor_id', isEqualTo: vendorId)
+          .where("vendor_id", isEqualTo: vendorId)
           .get();
 
       // Ensure the document exists

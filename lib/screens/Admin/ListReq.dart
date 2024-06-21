@@ -210,7 +210,7 @@ class _ListReqState extends State<ListReq> {
                       setState(() {
                         Vendor.updateStatusIdInFirestore(
                             vendorStatusRef, data['UID'].toString());
-                        //   sendEmail(data['email']);
+                        sendEmail(data['email']);
                       });
                     },
                     child: Column(
