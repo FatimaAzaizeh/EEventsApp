@@ -112,7 +112,7 @@ class Vendor {
         DocumentSnapshot userSnapshot = querySnapshot.docs.first;
 
         // Check if the vendor_status_id reference matches the expected reference
-        return userSnapshot['vendor_status_id'] == vendorStatusId;
+        return (userSnapshot['vendor_status_id'] == vendorStatusId);
       } else {
         // User document does not exist
         print('User document with ID $visibleForTesting does not exist.');

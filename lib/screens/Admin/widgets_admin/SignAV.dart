@@ -5,6 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:testtapp/Alert/error.dart';
 import 'package:testtapp/constants.dart';
 import 'package:testtapp/models/User.dart';
+import 'package:testtapp/models/Vendor.dart';
 import 'package:testtapp/screens/Admin/Admin_screen.dart';
 import 'package:testtapp/screens/Vendor/VendorScreen.dart';
 
@@ -189,7 +190,6 @@ class _SignInState extends State<SignIn> {
                                     if (user != null) {
                                       String? uid = FirebaseAuth
                                           .instance.currentUser?.uid;
-
                                       if (!admin && vendor) {
                                         String userId = uid ?? '';
                                         //**Check if the account exists in the vendors table**
@@ -197,13 +197,30 @@ class _SignInState extends State<SignIn> {
                                             FirebaseFirestore.instance
                                                 .collection('user_types')
                                                 .doc('3');
+                                        DocumentReference vendorStatus =
+                                            FirebaseFirestore.instance
+                                                .collection('vendor_status')
+                                                .doc('2');
 
                                         bool isValid = await UserDataBase
                                             .isUserTypeReferenceValid(
                                                 userId, userTypeRef);
+
+                                        bool active = await Vendor
+                                            .isVendorTypeReferenceValid(
+                                                userId, vendorStatus);
+
                                         if (isValid) {
-                                          Navigator.pushNamed(context,
-                                              VendorScreen.screenRoute);
+                                          if (active) {
+                                            Navigator.pushNamed(context,
+                                                VendorScreen.screenRoute);
+                                          } else {
+                                            setState(() {
+                                              showSpinner = false;
+                                            });
+                                            ErrorAlert(context, 'خطأ',
+                                                'الحساب الذي تحاول الدخول بة ليس حساب فعال');
+                                          }
                                         } else {
                                           setState(() {
                                             showSpinner = false;
